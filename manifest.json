@@ -1,0 +1,11 @@
+{
+  "name": "Hello Extension",
+  "author": "Seu Nome",
+  "version": "0.1.0",
+  "action": {
+    "default": {
+      "name": "Hello",
+      "url": "https://seu-dominio/hello.html"
+    }
+  }
+}
