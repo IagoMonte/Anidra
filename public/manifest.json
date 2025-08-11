@@ -2,6 +2,7 @@
   "name": "Anidra",
   "author": "Iagodt",
   "version": "0.1.0",
+  "manifest_version": 0.1,
   "action": {
     "default": {
       "name": "AnidraSheet",
