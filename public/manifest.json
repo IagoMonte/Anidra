@@ -1,12 +1,16 @@
 {
   "name": "Anidra",
-  "author": "Iagodt",
   "version": "0.1.0",
-  "manifest_version": 0.1,
+  "manifest_version": 1,
+  "description": "Uma ficha personalizada para Anidra",
+  "author": "Iagodt",
+  "icon": "https://anidraowlbear.netlify.app/icon.svg",
+  "homepage_url": "https://anidraowlbear.netlify.app",
   "action": {
-    "default": {
-      "name": "AnidraSheet",
-      "url": "https://anidraowlbear.netlify.app"
-    }
+    "title": "AnidraSheet",
+    "icon": "https://anidraowlbear.netlify.app/icon.svg",
+    "popover": "https://anidraowlbear.netlify.app",
+    "width": 800,
+    "height": 600
   }
 }
