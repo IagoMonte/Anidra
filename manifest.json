@@ -1,11 +1,11 @@
 {
-  "name": "Hello Extension",
-  "author": "Seu Nome",
+  "name": "Anidra",
+  "author": "Iagodt",
   "version": "0.1.0",
   "action": {
     "default": {
-      "name": "Hello",
-      "url": "https://seu-dominio/hello.html"
+      "name": "AnidraSheet",
+      "url": "https://anidraowlbear.netlify.app"
     }
   }
 }
