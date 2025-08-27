@@ -1,0 +1,347 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>
+        Momon Stats
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+        }
+    </style>
+</head>
+
+<body class="bg-[#1e1e1e] text-white min-h-screen flex flex-col">
+    <header class="flex items-center justify-between px-4 py-3 bg-[#1e1e1e] border-b border-gray-700">
+        <div class="flex items-center space-x-3">
+            <button aria-label="Back" class="text-white text-2xl leading-none">
+                <i class="fas fa-arrow-left">
+                </i>
+            </button>
+            <div>
+                <h1 class="text-lg font-normal">
+                    Momon
+                </h1>
+                <p class="text-gray-500 text-xs -mt-1">
+                    Stats
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-5 text-white text-xl">
+            <button aria-label="Edit" class="leading-none">
+                <i class="fas fa-pencil-alt">
+                </i>
+            </button>
+            <button aria-label="Settings" class="leading-none">
+                <i class="fas fa-cog">
+                </i>
+            </button>
+        </div>
+    </header>
+    <main class="flex-grow px-4 pt-4 pb-20">
+        <!-- Profile image space -->
+        <div class="flex justify-center mb-4">
+            <img alt="Placeholder for profile image, 80 by 80 pixels, gray background with text 'Profile Image'"
+                class="rounded-full border border-gray-600" height="80"
+                src="https://storage.googleapis.com/a1aa/image/526ee3ac-f82f-4b1c-8529-a72d1868105f.jpg" width="80" />
+        </div>
+        <section class="grid grid-cols-2 gap-3 mb-3">
+            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                <span>
+                    Vida
+                </span>
+                <span>
+                    5 / 10
+                </span>
+            </div>
+            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                <span>
+                    Estamina
+                </span>
+                <span>
+                    10 / 20
+                </span>
+            </div>
+            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                <span>
+                    Mana
+                </span>
+                <span>
+                    4 / 4
+                </span>
+            </div>
+            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                <span>
+                    Movimento
+                </span>
+                <span>
+                    9 / 9
+                </span>
+            </div>
+        </section>
+        <section class="grid grid-cols-5 gap-3 mb-4">
+            <div
+                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
+                <span class="mb-1">
+                    Defesa
+                </span>
+                <span class="text-2xl font-light">
+                    3
+                </span>
+                <div
+                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
+                </div>
+            </div>
+            <div
+                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
+                <span class="mb-1">
+                    Carisma
+                </span>
+                <span class="text-2xl font-light">
+                    15
+                </span>
+                <div
+                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
+                </div>
+            </div>
+            <div
+                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
+                <span class="mb-1">
+                    Força
+                </span>
+                <span class="text-2xl font-light">
+                    2
+                </span>
+                <div
+                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
+                </div>
+            </div>
+            <div
+                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
+                <span class="mb-1">
+                    Aura
+                </span>
+                <span class="text-2xl font-light">
+                    4
+                </span>
+                <div
+                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
+                </div>
+            </div>
+            <div
+                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
+                <span class="mb-1">
+                    Sorte
+                </span>
+                <span class="text-2xl font-light">
+                    6
+                </span>
+                <div
+                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
+                </div>
+                <div
+                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
+                </div>
+            </div>
+        </section>
+        <section class="mb-2">
+            <p class="text-base font-normal mb-1">
+                Dom
+            </p>
+            <hr class="border-gray-700" />
+        </section>
+        <section class="mb-4">
+            <p class="text-base font-normal mb-1">
+                Condição
+            </p>
+            <hr class="border-gray-700" />
+        </section>
+        <section class="mb-4">
+            <h2 class="text-xl font-bold mb-3">
+                Proficências
+            </h2>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Percepção
+                    </span>
+                    <span>
+                        3
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Persuasão
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Furtividade
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+                <div
+                    class="border border-gray-600 rounded-md px-3 py-1 flex flex-col justify-center text-xs leading-tight">
+                    <span>
+                        Furtividade De Combate
+                    </span>
+                    <span class="text-right">
+                        0
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Acrobacia
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+                <div
+                    class="border border-gray-600 rounded-md px-3 py-1 flex flex-col justify-center text-xs leading-tight">
+                    <span>
+                        Acrobacia De Combate
+                    </span>
+                    <span class="text-right">
+                        0
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Ataque
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Defesa
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Persistência
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Precisão
+                    </span>
+                    <span>
+                        0
+                    </span>
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Conserto
+                    </span>
+                    <input aria-label="Conserto"
+                        class="w-5 h-5 border border-gray-600 bg-transparent checked:bg-transparent checked:border-white"
+                        type="checkbox" />
+                </div>
+                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+                    <span>
+                        Linguagens
+                    </span>
+                    <input aria-label="Linguagens" checked=""
+                        class="w-5 h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white"
+                        type="checkbox" />
+                </div>
+            </div>
+        </section>
+    </main>
+    <nav
+        class="fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono">
+        <button class="flex flex-col items-center space-y-1 text-white">
+            <i class="fas fa-heartbeat text-xl">
+            </i>
+            <span>
+                Stats
+            </span>
+        </button>
+        <button class="flex flex-col items-center space-y-1">
+            <i class="fas fa-dice text-xl">
+            </i>
+            <span>
+                Roll
+            </span>
+        </button>
+        <button class="flex flex-col items-center space-y-1">
+            <i class="fas fa-robot text-xl">
+            </i>
+            <span>
+                Inventory
+            </span>
+        </button>
+        <button class="flex flex-col items-center space-y-1">
+            <i class="fas fa-scroll text-xl">
+            </i>
+            <span>
+                Notes
+            </span>
+        </button>
+    </nav>
+</body>
+
+</html>
