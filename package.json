@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
     "@owlbear-rodeo/sdk": "^3.1.0",
     "vue": "^3.5.18"
   },

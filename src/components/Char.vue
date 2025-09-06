@@ -1,321 +1,221 @@
 <template>
-<header class="flex items-center justify-between px-4 py-3 bg-[#1e1e1e] border-b border-gray-700">
-        <div class="flex items-center space-x-3">
-            <button aria-label="Back" class="text-white text-2xl leading-none">
-                <i class="fas fa-arrow-left">
-                </i>
+  <main class="bg-[#121212] flex-grow px-4 pt-4 pb-20 text-white min-h-screen p-4">
+    <!-- Atributos -->
+    <section class="mb-6 border border-gray-600 rounded-lg p-3"
+      :class="editingAttributes ? 'ring-2 ring-yellow-500' : ''">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-bold">Atributos</h2>
+        <div class="flex gap-2">
+          <button v-if="!editingAttributes" @click="startEdit('attributes')"
+            class="text-sm text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('attributes')" class="text-sm text-green-400 hover:text-green-200">
+              ✔ Confirmar
             </button>
-            <div>
-                <h1 class="text-lg font-normal">
-                    Momon
-                </h1>
-                <p class="text-gray-500 text-xs -mt-1">
-                    Stats
-                </p>
-            </div>
-        </div>
-        <div class="flex items-center space-x-5 text-white text-xl">
-            <button aria-label="Edit" class="leading-none">
-                <i class="fas fa-pencil-alt">
-                </i>
+            <button @click="cancelEdit('attributes')" class="text-sm text-red-400 hover:text-red-200">
+              ✖ Cancelar
             </button>
-            <button aria-label="Settings" class="leading-none">
-                <i class="fas fa-cog">
-                </i>
+          </template>
+        </div>
+      </div>
+
+      <!-- Principais -->
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div v-for="(attr, i) in mainAttributes" :key="i"
+          class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+          <span>{{ attr.label }}</span>
+          <span v-if="!editingAttributes">{{ attr.value }}</span>
+          <input v-else v-model="attr.tempValue" class="w-24 text-white text-center rounded px-1" />
+        </div>
+      </div>
+
+      <!-- Secundários -->
+      <div class="grid grid-cols-5 gap-3 mb-4">
+        <article v-for="(stat, i) in secondaryStats" :key="i"
+          class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
+          <span class="mb-1">{{ stat.label }}</span>
+          <span v-if="!editingAttributes" class="text-2xl font-light">{{ stat.value }}</span>
+          <input v-else v-model="stat.tempValue" type="number" class="w-12 text-white text-center rounded px-1" />
+          <div v-for="corner in corners" :key="corner"
+            :class="`absolute ${corner} w-4 h-4 border-gray-600 decorative-corner`"></div>
+        </article>
+      </div>
+    </section>
+    <!-- Seções de texto -->
+    <section class="mb-2">
+      <div class="flex items-center justify-between mb-1">
+        <p class="text-base font-normal">Dom</p>
+        <button @click="editingDom = !editingDom" class="text-xs text-yellow-400 hover:text-yellow-300">
+          {{ editingDom ? "Concluir" : "Editar" }}
+        </button>
+      </div>
+      <hr class="border-gray-700 mb-2" />
+
+      <!-- Se não estiver editando -->
+      <p v-if="!editingDom" class="text-gray-300 text-sm">
+        {{ selectedDom || "Nenhum dom selecionado" }}
+      </p>
+
+      <!-- Se estiver editando -->
+      <select v-else v-model="selectedDom"
+        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
+        <option disabled value="">Selecione um Dom</option>
+        <option v-for="(dom, i) in dons" :key="i" :value="dom">
+          {{ dom }}
+        </option>
+      </select>
+    </section>
+
+    <section class="mb-4">
+      <div class="flex items-center justify-between mb-1">
+        <p class="text-base font-normal">Condição</p>
+        <button @click="editingCondition = !editingCondition" class="text-xs text-yellow-400 hover:text-yellow-300">
+          {{ editingCondition ? "Concluir" : "Editar" }}
+        </button>
+      </div>
+      <hr class="border-gray-700 mb-2" />
+
+      <!-- Se não estiver editando -->
+      <p v-if="!editingCondition" class="text-gray-300 text-sm">
+        {{ selectedCondition || "Nenhuma condição selecionada" }}
+      </p>
+
+      <!-- Se estiver editando -->
+      <select v-else v-model="selectedCondition"
+        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
+        <option disabled value="">Selecione uma Condição</option>
+        <option v-for="(cond, i) in conditions" :key="i" :value="cond">
+          {{ cond }}
+        </option>
+      </select>
+    </section>
+
+    <!-- Proficiencias -->
+    <section class="mb-4 border border-gray-600 rounded-lg p-3"
+      :class="editingProficiencies ? 'ring-2 ring-blue-500' : ''">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-bold">Proficências</h2>
+        <div class="flex gap-2">
+          <button v-if="!editingProficiencies" @click="startEdit('proficiencies')"
+            class="text-sm text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('proficiencies')" class="text-sm text-green-400 hover:text-green-200">
+              ✔ Confirmar
             </button>
+            <button @click="cancelEdit('proficiencies')" class="text-sm text-red-400 hover:text-red-200">
+              ✖ Cancelar
+            </button>
+          </template>
         </div>
-    </header>
-    <main class="flex-grow px-4 pt-4 pb-20">
-        <!-- Profile image space -->
-        <div class="flex justify-center mb-4">
-            <img alt="Placeholder for profile image, 80 by 80 pixels, gray background with text 'Profile Image'"
-                class="rounded-full border border-gray-600" height="80"
-                src="https://storage.googleapis.com/a1aa/image/526ee3ac-f82f-4b1c-8529-a72d1868105f.jpg" width="80" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div v-for="(prof, i) in proficiencies" :key="i"
+          class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+          <span>{{ prof.label }}</span>
+
+          <!-- checkbox -->
+          <input v-if="prof.type === 'checkbox'" type="checkbox" v-model="prof.value" :disabled="!editingProficiencies"
+            class="w-5 h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white" />
+
+          <!-- numérico -->
+          <span v-else-if="!editingProficiencies">{{ prof.value }}</span>
+          <input v-else v-model="prof.tempValue" type="number" class="w-14 text-white text-center rounded px-1" />
         </div>
-        <section class="grid grid-cols-2 gap-3 mb-3">
-            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                <span>
-                    Vida
-                </span>
-                <span>
-                    5 / 10
-                </span>
-            </div>
-            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                <span>
-                    Estamina
-                </span>
-                <span>
-                    10 / 20
-                </span>
-            </div>
-            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    Mana
-                <span>
-                    4 / 4
-                </span>
-            </div>
-            <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                <span>
-                    Movimento
-                </span>
-                <span>
-                    9 / 9
-                </span>
-            </div>
-        </section>
-        <section class="grid grid-cols-5 gap-3 mb-4">
-            <div
-                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
-                <span class="mb-1">
-                    Defesa
-                </span>
-                <span class="text-2xl font-light">
-                    3
-                </span>
-                <div
-                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
-                </div>
-            </div>
-            <div
-                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
-                <span class="mb-1">
-                    Carisma
-                </span>
-                <span class="text-2xl font-light">
-                    15
-                </span>
-                <div
-                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
-                </div>
-            </div>
-            <div
-                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
-                <span class="mb-1">
-                    Força
-                </span>
-                <span class="text-2xl font-light">
-                    2
-                </span>
-                <div
-                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
-                </div>
-            </div>
-            <div
-                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
-                <span class="mb-1">
-                    Aura
-                </span>
-                <span class="text-2xl font-light">
-                    4
-                </span>
-                <div
-                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
-                </div>
-            </div>
-            <div
-                class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
-                <span class="mb-1">
-                    Sorte
-                </span>
-                <span class="text-2xl font-light">
-                    6
-                </span>
-                <div
-                    class="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-600 rounded-tl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-600 rounded-tr-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-600 rounded-bl-md decorative-corner">
-                </div>
-                <div
-                    class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-600 rounded-br-md decorative-corner">
-                </div>
-            </div>
-        </section>
-        <section class="mb-2">
-            <p class="text-base font-normal mb-1">
-                Dom
-            </p>
-            <hr class="border-gray-700" />
-        </section>
-        <section class="mb-4">
-            <p class="text-base font-normal mb-1">
-                Condição
-            </p>
-            <hr class="border-gray-700" />
-        </section>
-        <section class="mb-4">
-            <h2 class="text-xl font-bold mb-3">
-                Proficências
-            </h2>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Percepção
-                    </span>
-                    <span>
-                        3
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Persuasão
-                    </span>
-                    <span>
-                        0
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Furtividade
-                    </span>
-                    <span>
-                        0
-                    </span>
-                </div>
-                <div
-                    class="border border-gray-600 rounded-md px-3 py-1 flex flex-col justify-center text-xs leading-tight">
-                    <span>
-                        Furtividade De Combate
-                    </span>
-                    <span class="text-right">
-                        0
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Acrobacia
-                    </span>
-                    <span>
-                        0
-                    </span>
-                </div>
-                <div
-                    class="border border-gray-600 rounded-md px-3 py-1 flex flex-col justify-center text-xs leading-tight">
-                    <span>
-                        Acrobacia De Combate
-                    </span>
-                    <span class="text-right">
-                        0
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Ataque
-                    </span>
-                    <span>
-                        0
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Defesa
-                    </span>
-                    <span>
-                        0
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Persistência
-                    </span>
-                    <span>
-                        0
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Precisão
-                    </span>
-                    <span>
-                        0
-                    </span>
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Conserto
-                    </span>
-                    <input aria-label="Conserto"
-                        class="w-5 h-5 border border-gray-600 bg-transparent checked:bg-transparent checked:border-white"
-                        type="checkbox" />
-                </div>
-                <div class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-                    <span>
-                        Linguagens
-                    </span>
-                    <input aria-label="Linguagens" class="w-5 h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white"type="checkbox" />
-                </div>
-            </div>
-        </section>
-    </main>
-    <nav
-        class="fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono">
-        <button class="flex flex-col items-center space-y-1 text-white">
-            <i class="fas fa-heartbeat text-xl">
-            </i>
-            <span>
-                Stats
-            </span>
-        </button>
-        <button class="flex flex-col items-center space-y-1">
-            <i class="fas fa-dice text-xl">
-            </i>
-            <span>
-                Roll
-            </span>
-        </button>
-        <button class="flex flex-col items-center space-y-1">
-            <i class="fas fa-robot text-xl">
-            </i>
-            <span>
-                Inventory
-            </span>
-        </button>
-        <button class="flex flex-col items-center space-y-1">
-            <i class="fas fa-scroll text-xl">
-            </i>
-            <span>
-                Notes
-            </span>
-        </button>
-    </nav>
+      </div>
+    </section>
+  </main>
 </template>
+
+<script setup>
+import { reactive, ref } from "vue"
+const selectedDom = ref("")
+const selectedCondition = ref("")
+
+const editingDom = ref(false)
+const editingCondition = ref(false)
+
+const editingAttributes = ref(false)
+const editingProficiencies = ref(false)
+
+const dons = ["Talento", "Atenção", "Força", "Sorte", "Esforço", "Carisma"]
+
+const conditions = ["Nocaute", "Alucinação", "Cansaço", "Sangrando",
+  "Agonia", "Paralizado", "Medo", "Histeria", "Raiva", "Tristeza", "Morrendo"]
+
+const mainAttributes = reactive([
+  { label: "Vida", value: "5 / 10" },
+  { label: "Estamina", value: "10 / 20" },
+  { label: "Mana", value: "4 / 4" },
+  { label: "Movimento", value: "9 / 9" },
+])
+
+const secondaryStats = reactive([
+  { label: "Defesa", value: 5 },
+  { label: "Carisma", value: 15 },
+  { label: "Força", value: 2 },
+  { label: "Aura", value: 4 },
+  { label: "Sorte", value: 6 },
+])
+
+const corners = [
+  "top-0 left-0 border-t border-l rounded-tl-md",
+  "top-0 right-0 border-t border-r rounded-tr-md",
+  "bottom-0 left-0 border-b border-l rounded-bl-md",
+  "bottom-0 right-0 border-b border-r rounded-br-md",
+]
+
+const proficiencies = reactive([
+  { label: "Percepção", value: 3, type: "number" },
+  { label: "Persuasão", value: 0, type: "number" },
+  { label: "Furtividade", value: 0, type: "number" },
+  { label: "Furtividade De Combate", value: 0, type: "number" },
+  { label: "Acrobacia", value: 0, type: "number" },
+  { label: "Acrobacia De Combate", value: 0, type: "number" },
+  { label: "Ataque", value: 0, type: "number" },
+  { label: "Defesa", value: 0, type: "number" },
+  { label: "Persistência", value: 0, type: "number" },
+  { label: "Precisão", value: 0, type: "number" },
+  { label: "Conserto", value: false, type: "checkbox" },
+  { label: "Linguagens", value: false, type: "checkbox" },
+])
+
+function startEdit(section) {
+  if (section === "attributes") {
+    editingAttributes.value = true
+    mainAttributes.forEach((a) => (a.tempValue = a.value))
+    secondaryStats.forEach((a) => (a.tempValue = a.value))
+  }
+  if (section === "proficiencies") {
+    editingProficiencies.value = true
+    proficiencies.forEach((p) => (p.tempValue = p.value))
+  }
+}
+
+function confirmEdit(section) {
+  if (section === "attributes") {
+    mainAttributes.forEach((a) => (a.value = a.tempValue))
+    secondaryStats.forEach((a) => (a.value = a.tempValue))
+    editingAttributes.value = false
+  }
+  if (section === "proficiencies") {
+    proficiencies.forEach((p) => {
+      if (p.type === "number") p.value = p.tempValue
+    })
+    editingProficiencies.value = false
+  }
+}
+
+function cancelEdit(section) {
+  if (section === "attributes") {
+    editingAttributes.value = false
+  }
+  if (section === "proficiencies") {
+    editingProficiencies.value = false
+  }
+}
+</script>
