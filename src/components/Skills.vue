@@ -127,8 +127,8 @@ function confirmEdit(section) {
   const newSheet = buildCharacterSheet({
     charData: props.charData,
     skills: {
-      masteredSkills: masteredSkills,
-      unmasteredSkills: unmasteredSkills
+    masteredSkills: JSON.parse(JSON.stringify(masteredSkills)),
+    unmasteredSkills: JSON.parse(JSON.stringify(unmasteredSkills))
     }
   })
 
