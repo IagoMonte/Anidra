@@ -287,7 +287,7 @@ function confirmEdit(section) {
 
   OBR.scene.items.updateItems([props.charId], (items) => {
     for (let item of items) {
-      item.metadata[`${ID}/metadata`] = { info: newSheet };
+      item.metadata[`${ID}/metadata`] = {info: { Stats: newSheet }};
     }
   });
 }
