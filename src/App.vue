@@ -13,8 +13,7 @@ import Char from './components/Char.vue';
 import Rolls from './components/Rolls.vue';
 import Skills from './components/Skills.vue';
 import Notes from './components/Notes.vue';
-import OBR from "@owlbear-rodeo/sdk";
-import { setupContextMenu } from './owlbear/contextMenu';
+import { setupContextMenu,setupCounter } from './owlbear/contextMenu.js';
 
 const navItems = [
   { label: "Stats", icon: HeartIcon },
@@ -24,10 +23,15 @@ const navItems = [
   { label: "Notes", icon: DocumentTextIcon },
 ]
 
-OBR.onReady(() => {
-  setupContextMenu();
-});
+import OBR from "@owlbear-rodeo/sdk";
 
+async function init() {
+  await OBR.isReady(); // espera o SDK estar pronto
+  let viado = 'viado'
+  setupCounter();
+}
+
+init();
 </script>
 
 <template>
@@ -54,6 +58,7 @@ OBR.onReady(() => {
       </section>
 
       <section v-else-if="current === 'Roll'">
+        <h1>{{ viado }}</h1>
         <Rolls />
       </section>
 
