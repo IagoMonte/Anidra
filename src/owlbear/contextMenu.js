@@ -112,7 +112,11 @@ export function setupAnidra() {
       if (addToAnidra) {
         OBR.scene.items.updateItems(context.items, (items) => {
           for (let item of items) {
-            item.metadata[`${ID}/metadata`] = initcharacterSheet;
+            item.metadata[`${ID}/metadata`] = {
+              info: {
+                Stats: initcharacterSheet
+              }
+            };
           }
         });
       } else {
