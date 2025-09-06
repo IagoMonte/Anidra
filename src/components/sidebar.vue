@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import OBR, { isImage } from '@owlbear-rodeo/sdk';
 
 // Lista de itens do menu (vai receber os personagens)
@@ -33,10 +33,9 @@ async function loadMenuItems() {
   }
 }
 
-// Carrega a lista quando o componente montar
-onMounted(() => {
-  loadMenuItems();
-});
+OBR.onReady(()=>{
+    loadMenuItems()
+})
 </script>
 
 <template>
@@ -52,6 +51,13 @@ onMounted(() => {
         isOpen ? 'w-48' : 'w-16'
       ]"
     >
+      <button 
+        class="bg-green-600 hover:bg-green-500 w-full py-2 px-3 text-sm font-semibold text-white"
+        @click="loadMenuItems"
+      >
+        Recarregar
+      </button>
+
       <ul class="flex flex-col mt-4 space-y-2">
         <li 
           v-for="(item, idx) in menuItems" 
@@ -77,7 +83,7 @@ onMounted(() => {
 
     <!-- Conteúdo principal -->
     <div class="flex-1 bg-gray-900">
-      <!-- Aqui você pode renderizar detalhes do personagem selecionado -->
+      <!-- Detalhes do personagem selecionado -->
     </div>
   </div>
 </template>
