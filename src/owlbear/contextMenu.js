@@ -1,7 +1,86 @@
 import OBR from "@owlbear-rodeo/sdk";
 const ID = "com.anidra.addto"
 
-export function setupCounter() {
+const initcharacterSheet = {
+  dons: null, // pode virar array depois
+
+  conditions: null, // pode virar array depois
+
+  mainAttributes: {
+    Vida: "5 / 10",
+    Estamina: "10 / 20",
+    Mana: "4 / 4",
+    Movimento: "9 / 9",
+  },
+
+  secondaryStats: {
+    Defesa: 1,
+    Carisma: 1,
+    Força: 1,
+    Aura: 1,
+    Sorte: 1,
+  },
+
+  proficiencies: {
+    Percepção: 0,
+    Persuasão: 0,
+    Furtividade: 0,
+    Furtividade_De_Combate: 0,
+    Acrobacia: 0,
+    Acrobacia_De_Combate: 0,
+    Ataque: 0,
+    Defesa: 0,
+    Persistência: 0,
+    Precisão: 0,
+    Conserto: false,
+    Linguagens: false,
+  },
+
+  masteredSkills: [
+    {
+      title: "Habilidade",
+      tags: [
+        { name: "combate", checks: 1 },
+        { name: "campanha", checks: 1 },
+      ],
+      description: "Descricao da Habilidade",
+      completed: true,
+    },
+  ],
+
+  unmasteredSkills: [
+    {
+      title: "Habilidade não dominada",
+      tags: [
+        { name: "10", checks: 1 },
+        { name: "8", checks: 2 },
+        { name: "6", checks: 4 },
+        { name: "4", checks: 6 },
+      ],
+      description: "Não dominada ainda.",
+      completed: false,
+    },
+  ],
+
+  inventory: [
+    {
+      name: "Item",
+      quantity: 1,
+      description: "Descricao",
+    },
+  ],
+
+  notes: [
+    {
+      title: "Primeira Nota",
+      content: "Esta é a primeira nota.\nEla pode ter várias linhas.",
+    },
+  ],
+};
+
+
+
+export function setupAnidra() {
   OBR.notification.show(`Anidra pronto!!`);
   OBR.contextMenu.create({
     id: `${ID}/context-menu`,
@@ -31,7 +110,9 @@ export function setupCounter() {
       if (addToAnidra) {
         OBR.scene.items.updateItems(context.items, (items) => {
           for (let item of items) {
-            item.metadata[`${ID}/metadata`] = {};
+            item.metadata[`${ID}/metadata`] = {info:{
+              Stats: initcharacterSheet
+            }};
           }
         });
       } else {
