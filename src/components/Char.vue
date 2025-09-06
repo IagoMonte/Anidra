@@ -175,6 +175,66 @@ const corners = [
   "bottom-0 right-0 border-b border-r rounded-br-md",
 ];
 
+function buildCharacterSheet({
+  mainAttributesReactive,
+  secondaryStatsReactive,
+  proficienciesReactive,
+  dons = null,
+  conditions = null,
+  skills = null,
+  inventory = null,
+  notes = null
+}) {
+  return {
+    dons: dons ?? null,
+    conditions: conditions ?? null,
+    stats: {
+      mainAttributes: Object.fromEntries(
+        mainAttributesReactive.map(a => [a.label, a.value])
+      ),
+      secondaryStats: Object.fromEntries(
+        secondaryStatsReactive.map(a => [a.label, a.value])
+      ),
+      proficiencies: Object.fromEntries(
+        proficienciesReactive.map(p => [p.label, p.value])
+      ),
+    },
+    skills: skills ? JSON.parse(JSON.stringify(skills)) : {
+      masteredSkills: [
+        {
+          title: "Habilidade",
+          tags: [
+            { name: "combate", checks: 1 },
+            { name: "campanha", checks: 1 },
+          ],
+          description: "Descricao da Habilidade",
+          completed: true,
+        }
+      ],
+      unmasteredSkills: [
+        {
+          title: "Habilidade não dominada",
+          tags: [
+            { name: "10", checks: 1 },
+            { name: "8", checks: 2 },
+            { name: "6", checks: 4 },
+            { name: "4", checks: 6 },
+          ],
+          description: "Não dominada ainda.",
+          completed: false,
+        }
+      ]
+    },
+    inventory: inventory ? JSON.parse(JSON.stringify(inventory)) : [
+      { name: "Item", quantity: 1, description: "Descricao" }
+    ],
+    notes: notes ? JSON.parse(JSON.stringify(notes)) : [
+      { title: "Primeira Nota", content: "Esta é a primeira nota.\nEla pode ter várias linhas." }
+    ]
+  }
+}
+
+
 // Funções de edição
 function startEdit(section) {
   if (section === "attributes") {
@@ -203,33 +263,33 @@ function confirmEdit(section) {
 
 
   let mainAttributesPlain = Object.fromEntries(
-  mainAttributesReactive.map(a => [a.label, a.value])
-)
+    mainAttributesReactive.map(a => [a.label, a.value])
+  )
 
-let secondaryStatsPlain = Object.fromEntries(
-  secondaryStatsReactive.map(a => [a.label, a.value])
-)
+  let secondaryStatsPlain = Object.fromEntries(
+    secondaryStatsReactive.map(a => [a.label, a.value])
+  )
 
-let proficienciesPlain = Object.fromEntries(
-  proficienciesReactive.map(p => [p.label, p.value])
-)
+  let proficienciesPlain = Object.fromEntries(
+    proficienciesReactive.map(p => [p.label, p.value])
+  )
   // Atualiza o metadata no Owlbear Rodeo
+  const newSheet = buildCharacterSheet({
+    mainAttributesReactive,
+    secondaryStatsReactive,
+    proficienciesReactive,
+    dons: props.charData.dons,
+    conditions: props.charData.conditions,
+    skills: props.charData.skills,
+    inventory: props.charData.inventory,
+    notes: props.charData.notes
+  });
+
   OBR.scene.items.updateItems([props.charId], (items) => {
-  for (let item of items) {
-    item.metadata[`${ID}/metadata`] = {
-      stats: {
-        mainAttributes: mainAttributesPlain,
-        secondaryStats: secondaryStatsPlain,
-        proficiencies: proficienciesPlain
-      },
-      dons: [...(props.charData.dons || [])],
-      conditions: [...(props.charData.conditions || [])],
-      skills: JSON.parse(JSON.stringify(props.charData.skills || {})),
-      inventory: JSON.parse(JSON.stringify(props.charData.inventory || [])),
-      notes: JSON.parse(JSON.stringify(props.charData.notes || []))
+    for (let item of items) {
+      item.metadata[`${ID}/metadata`] = { info: newSheet };
     }
-  }
-});
+  });
 }
 
 function cancelEdit(section) {
