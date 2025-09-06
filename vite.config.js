@@ -17,4 +17,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+    server: {
+    host: '0.0.0.0',  // permite acessar a rede local (não só localhost)
+    port: 5173,        // porta que você quer usar
+    strictPort: true,  // falha se a porta já estiver ocupado
+    }
 })
