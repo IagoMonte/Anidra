@@ -13,6 +13,8 @@ import Char from './components/Char.vue';
 import Rolls from './components/Rolls.vue';
 import Skills from './components/Skills.vue';
 import Notes from './components/Notes.vue';
+import OBR from "@owlbear-rodeo/sdk";
+import { setupContextMenu } from './owlbear/contextMenu';
 
 const navItems = [
   { label: "Stats", icon: HeartIcon },
@@ -21,6 +23,10 @@ const navItems = [
   { label: "Inventory", icon: ArchiveBoxIcon },
   { label: "Notes", icon: DocumentTextIcon },
 ]
+
+OBR.onReady(() => {
+  setupContextMenu();
+});
 
 </script>
 
