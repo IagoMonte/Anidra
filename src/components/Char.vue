@@ -128,94 +128,111 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import OBR from "@owlbear-rodeo/sdk";
 
 const ID = "com.anidra.addto";
 
+// Props esperam receber o objeto completo de selectedChar.data.info.Stats
 const props = defineProps({
-  mainAttributes: { type: Object, default: () => ({}) },
-  secondaryStats: { type: Object, default: () => ({}) },
-  proficiencies: { type: Object, default: () => ({}) },
-  dons: { type: Array, default: () => [] },
-  conditions: { type: Array, default: () => [] },
+  charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
   charId: { type: String, required: true } // id do item no Owlbear
 })
 
-const editingDom = ref(false)
-const editingCondition = ref(false)
+const editingDom = ref(false);
+const editingCondition = ref(false);
+const editingAttributes = ref(false);
+const editingProficiencies = ref(false);
 
-const editingAttributes = ref(false)
-const editingProficiencies = ref(false)
-
+// Reativos que serão usados na UI
 const mainAttributesReactive = reactive(
-  Object.entries(props.mainAttributes || {}).map(([label, value]) => ({ label, value }))
-)
+  Object.entries(props.charData.stats.mainAttributes || {}).map(([label, value]) => ({ label, value }))
+);
 
 const secondaryStatsReactive = reactive(
-  Object.entries(props.secondaryStats || {}).map(([label, value]) => ({ label, value }))
-)
+  Object.entries(props.charData.stats.secondaryStats || {}).map(([label, value]) => ({ label, value }))
+);
 
 const proficienciesReactive = reactive(
-  Object.entries(props.proficiencies || {}).map(([label, value]) => ({
+  Object.entries(props.charData.stats.proficiencies || {}).map(([label, value]) => ({
     label,
     value,
     tempValue: value,
     type: typeof value === "boolean" ? "checkbox" : "number"
   }))
-)
+);
 
-const selectedDom = ref(props.dons?.[0] || "")
-const selectedCondition = ref(props.conditions?.[0] || "")
+const dons = props.charData.dons || [];
+const conditions = props.charData.conditions || [];
+
+const selectedDom = ref(dons?.[0] || "");
+const selectedCondition = ref(conditions?.[0] || "");
 
 const corners = [
   "top-0 left-0 border-t border-l rounded-tl-md",
   "top-0 right-0 border-t border-r rounded-tr-md",
   "bottom-0 left-0 border-b border-l rounded-bl-md",
   "bottom-0 right-0 border-b border-r rounded-br-md",
-]
+];
 
+// Funções de edição
 function startEdit(section) {
   if (section === "attributes") {
-    editingAttributes.value = true
-    mainAttributesReactive.forEach((a) => (a.tempValue = a.value))
-    secondaryStatsReactive.forEach((a) => (a.tempValue = a.value))
+    editingAttributes.value = true;
+    mainAttributesReactive.forEach((a) => (a.tempValue = a.value));
+    secondaryStatsReactive.forEach((a) => (a.tempValue = a.value));
   }
   if (section === "proficiencies") {
-    editingProficiencies.value = true
-    proficienciesReactive.forEach((p) => (p.tempValue = p.value))
+    editingProficiencies.value = true;
+    proficienciesReactive.forEach((p) => (p.tempValue = p.value));
   }
 }
 
 function confirmEdit(section) {
   if (section === "attributes") {
-    mainAttributesReactive.forEach((a) => (a.value = a.tempValue))
-    secondaryStatsReactive.forEach((a) => (a.value = a.tempValue))
-    editingAttributes.value = false
+    mainAttributesReactive.forEach((a) => (a.value = a.tempValue));
+    secondaryStatsReactive.forEach((a) => (a.value = a.tempValue));
+    editingAttributes.value = false;
   }
   if (section === "proficiencies") {
     proficienciesReactive.forEach((p) => {
-      if (p.type === "number") p.value = p.tempValue
-    })
-    editingProficiencies.value = false
+      if (p.type === "number") p.value = p.tempValue;
+    });
+    editingProficiencies.value = false;
   }
 
   // Atualiza o metadata no Owlbear Rodeo
   OBR.scene.items.updateItems([props.charId], (items) => {
     for (let item of items) {
       item.metadata[`${ID}/metadata`] = {
-        stats: Object.fromEntries(mainAttributesReactive.map(a => [a.label, a.value])),
-        secondaryStats: Object.fromEntries(secondaryStatsReactive.map(a => [a.label, a.value])),
-        proficiencies: Object.fromEntries(proficienciesReactive.map(p => [p.label, p.value])),
-        dons: props.dons,
-        conditions: props.conditions
-      }
+        stats: {
+          mainAttributes: Object.fromEntries(mainAttributesReactive.map(a => [a.label, a.value])),
+          secondaryStats: Object.fromEntries(secondaryStatsReactive.map(a => [a.label, a.value])),
+          proficiencies: Object.fromEntries(proficienciesReactive.map(p => [p.label, p.value]))
+        },
+        dons,
+        conditions,
+        skills: props.charData.skills,
+        inventory: props.charData.inventory,
+        notes: props.charData.notes
+      };
     }
   });
 }
 
 function cancelEdit(section) {
-  if (section === "attributes") editingAttributes.value = false
-  if (section === "proficiencies") editingProficiencies.value = false
+  if (section === "attributes") editingAttributes.value = false;
+  if (section === "proficiencies") editingProficiencies.value = false;
 }
+
+// Atualiza os reativos caso charData mude
+watch(() => props.charData, (newVal) => {
+  Object.assign(mainAttributesReactive, Object.entries(newVal.stats.mainAttributes || {}).map(([label, value]) => ({ label, value })));
+  Object.assign(secondaryStatsReactive, Object.entries(newVal.stats.secondaryStats || {}).map(([label, value]) => ({ label, value })));
+  Object.assign(proficienciesReactive, Object.entries(newVal.stats.proficiencies || {}).map(([label, value]) => ({ label, value, tempValue: value, type: typeof value === "boolean" ? "checkbox" : "number" })));
+  dons.splice(0, dons.length, ...(newVal.dons || []));
+  conditions.splice(0, conditions.length, ...(newVal.conditions || []));
+  selectedDom.value = dons?.[0] || "";
+  selectedCondition.value = conditions?.[0] || "";
+}, { deep: true });
 </script>

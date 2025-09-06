@@ -107,19 +107,19 @@ OBR.onReady(() => {
           <main class="flex-1 overflow-auto p-4 bg-[#121212]">
             <template v-if="selectedChar">
               <section v-if="current === 'Stats'">
-                <Char v-bind="selectedChar" />
+                <Char :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
               </section>
               <section v-else-if="current === 'Skills'">
-                <Skills v-bind="selectedChar" />
+                <Skills :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
               </section>
               <section v-else-if="current === 'Roll'">
-                <Rolls v-bind="selectedChar" />
+                <Rolls :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
               </section>
               <section v-else-if="current === 'Inventory'">
-                <Inventory v-bind="selectedChar" />
+                <Inventory :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
               </section>
               <section v-else-if="current === 'Notes'">
-                <Notes v-bind="selectedChar" />
+                <Notes :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
               </section>
             </template>
             <template v-else>
