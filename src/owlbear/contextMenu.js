@@ -7,14 +7,40 @@ export function setupCounter() {
     id: `${ID}/context-menu`,
     icons: [
       {
-        icon: "/src/assets/img/add.svg",
+        icon: "/add.svg",
         label: "Adicionar ao AnidraCtl",
+        filter: {
+          every: [
+            { key: "layer", value: "CHARACTER" },
+            { key: ["metadata", `${ID}/metadata`], value: undefined },
+          ],
+        },
+      },
+      {
+        icon: "/remove.svg",
+        label: "Remover do AnidraCtl",
         filter: {
           every: [{ key: "layer", value: "CHARACTER" }],
         },
       },
     ],
-    onClick() {
+    onClick(context) {
+      const addToAnidra = context.items.every(
+        (item) => item.metadata[`${ID}/metadata`] === undefined
+      );
+      if (addToAnidra) {
+        OBR.scene.items.updateItems(context.items, (items) => {
+          for (let item of items) {
+            item.metadata[`${ID}/metadata`] = {};
+          }
+        });
+      } else {
+        OBR.scene.items.updateItems(context.items, (items) => {
+          for (let item of items) {
+            delete item.metadata[`${ID}/metadata`];
+          }
+        });
+      }
     },
-  })
+  });
 }
