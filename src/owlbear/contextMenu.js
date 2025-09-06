@@ -7,7 +7,7 @@ export function setupCounter() {
     id: `${ID}/context-menu`,
     icons: [
       {
-        icon: "/add.svg",
+        icon: "/img/add.svg",
         label: "Adicionar ao AnidraCtl",
         filter: {
           every: [
@@ -17,7 +17,7 @@ export function setupCounter() {
         },
       },
       {
-        icon: "/remove.svg",
+        icon: "/img/remove.svg",
         label: "Remover do AnidraCtl",
         filter: {
           every: [{ key: "layer", value: "CHARACTER" }],
