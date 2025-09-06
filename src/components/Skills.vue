@@ -35,6 +35,10 @@ const tempUnmastered = ref([])
 // ================================
 // Funções de edição
 // ================================
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 function startEdit(section) {
   if (section === "mastered") {
     editingMastered.value = true
@@ -48,19 +52,18 @@ function startEdit(section) {
 
 async function confirmEdit(section) {
   if (section === "mastered") {
-    masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value)
+    masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value.map(s => deepClone(s)))
     editingMastered.value = false
   }
   if (section === "unmastered") {
-    unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value)
+    unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value.map(s => deepClone(s)))
     editingUnmastered.value = false
   }
 
-  // Sincroniza a metadata globalmente
   await syncCharacterMetadata(props.charId, {
     skills: {
-      masteredSkills: JSON.parse(JSON.stringify(masteredSkills)),
-      unmasteredSkills: JSON.parse(JSON.stringify(unmasteredSkills))
+      masteredSkills: deepClone(masteredSkills),
+      unmasteredSkills: deepClone(unmasteredSkills)
     }
   })
 }
