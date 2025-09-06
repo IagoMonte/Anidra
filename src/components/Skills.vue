@@ -55,21 +55,50 @@ const tempUnmastered = ref([])
 // ================================
 // Função para atualizar metadata
 // ================================
-function updateSkillsMetadata() {
-  const newSheet = {
-    ...props.charData,
-    skills: {
-      masteredSkills: masteredSkills.map(s => JSON.parse(JSON.stringify(s))),
-      unmasteredSkills: unmasteredSkills.map(s => JSON.parse(JSON.stringify(s)))
-    }
+function buildCharacterSheet({ charData, skills }) {
+  return {
+    dons: charData.dons ?? null,
+    conditions: charData.conditions ?? null,
+    stats: {
+      mainAttributes: charData.stats?.mainAttributes ?? {},
+      secondaryStats: charData.stats?.secondaryStats ?? {},
+      proficiencies: charData.stats?.proficiencies ?? {},
+    },
+    skills: skills ? JSON.parse(JSON.stringify(skills)) : {
+      masteredSkills: [
+        {
+          title: "Habilidade",
+          tags: [
+            { name: "combate", checks: 1 },
+            { name: "campanha", checks: 1 },
+          ],
+          description: "Descricao da Habilidade",
+          completed: true,
+        }
+      ],
+      unmasteredSkills: [
+        {
+          title: "Habilidade não dominada",
+          tags: [
+            { name: "10", checks: 1 },
+            { name: "8", checks: 2 },
+            { name: "6", checks: 4 },
+            { name: "4", checks: 6 },
+          ],
+          description: "Não dominada ainda.",
+          completed: false,
+        }
+      ]
+    },
+    inventory: charData.inventory ? JSON.parse(JSON.stringify(charData.inventory)) : [
+      { name: "Item", quantity: 1, description: "Descricao" }
+    ],
+    notes: charData.notes ? JSON.parse(JSON.stringify(charData.notes)) : [
+      { title: "Primeira Nota", content: "Esta é a primeira nota.\nEla pode ter várias linhas." }
+    ]
   }
-
-  OBR.scene.items.updateItems([props.charId], (items) => {
-    for (let item of items) {
-      item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } }
-    }
-  })
 }
+
 
 // ================================
 // Funções de edição
@@ -95,7 +124,20 @@ function confirmEdit(section) {
     editingUnmastered.value = false
   }
 
-  updateSkillsMetadata()
+  const newSheet = buildCharacterSheet({
+    charData: props.charData,
+    skills: {
+      masteredSkills: masteredSkills,
+      unmasteredSkills: unmasteredSkills
+    }
+  })
+
+  // Atualiza o metadata no Owlbear Rodeo
+  OBR.scene.items.updateItems([props.charId], (items) => {
+    for (let item of items) {
+      item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } }
+    }
+  })
 }
 
 function cancelEdit(section) {
@@ -113,7 +155,7 @@ function addSkill(section) {
     : editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
 
   target.push(newSkill)
-  updateSkillsMetadata()
+  confirmEdit(section)
 }
 
 function removeSkill(section, idx) {
@@ -122,7 +164,7 @@ function removeSkill(section, idx) {
     : editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
 
   target.splice(idx, 1)
-  updateSkillsMetadata()
+  confirmEdit(section)
 }
 
 function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
@@ -131,7 +173,7 @@ function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
     : editingUnmastered.value ? tempUnmastered.value[skillIdx] : unmasteredSkills[skillIdx]
 
   targetSkill.tags.push({ ...newTag })
-  updateSkillsMetadata()
+  confirmEdit(section)
 }
 </script>
 

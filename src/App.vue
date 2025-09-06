@@ -36,7 +36,7 @@ async function getAnidraCharacters() {
     (item) => item.layer === "CHARACTER" && item.type === "IMAGE"
   )
   return characters.map(char => ({
-    charId: char.id,
+    charId: char.id, // Adicionar verifcacao para so parecer char com metadata.info.stats
     label: char.name || "Sem nome",
     icon: char.image?.url || "🧙",
     visible: char.visible,
