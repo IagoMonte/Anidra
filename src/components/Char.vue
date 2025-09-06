@@ -23,7 +23,7 @@
 
       <!-- Principais -->
       <div class="grid grid-cols-2 gap-3 mb-3">
-        <div v-for="(attr, i) in mainAttributes" :key="i"
+        <div v-for="(attr, i) in mainAttributesReactive" :key="i"
           class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
           <span>{{ attr.label }}</span>
           <span v-if="!editingAttributes">{{ attr.value }}</span>
@@ -33,7 +33,7 @@
 
       <!-- Secundários -->
       <div class="grid grid-cols-5 gap-3 mb-4">
-        <article v-for="(stat, i) in secondaryStats" :key="i"
+        <article v-for="(stat, i) in secondaryStatsReactive" :key="i"
           class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
           <span class="mb-1">{{ stat.label }}</span>
           <span v-if="!editingAttributes" class="text-2xl font-light">{{ stat.value }}</span>
@@ -43,7 +43,8 @@
         </article>
       </div>
     </section>
-    <!-- Seções de texto -->
+
+    <!-- Dons -->
     <section class="mb-2">
       <div class="flex items-center justify-between mb-1">
         <p class="text-base font-normal">Dom</p>
@@ -53,12 +54,10 @@
       </div>
       <hr class="border-gray-700 mb-2" />
 
-      <!-- Se não estiver editando -->
       <p v-if="!editingDom" class="text-gray-300 text-sm">
         {{ selectedDom || "Nenhum dom selecionado" }}
       </p>
 
-      <!-- Se estiver editando -->
       <select v-else v-model="selectedDom"
         class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
         <option disabled value="">Selecione um Dom</option>
@@ -68,6 +67,7 @@
       </select>
     </section>
 
+    <!-- Condições -->
     <section class="mb-4">
       <div class="flex items-center justify-between mb-1">
         <p class="text-base font-normal">Condição</p>
@@ -77,12 +77,10 @@
       </div>
       <hr class="border-gray-700 mb-2" />
 
-      <!-- Se não estiver editando -->
       <p v-if="!editingCondition" class="text-gray-300 text-sm">
         {{ selectedCondition || "Nenhuma condição selecionada" }}
       </p>
 
-      <!-- Se estiver editando -->
       <select v-else v-model="selectedCondition"
         class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
         <option disabled value="">Selecione uma Condição</option>
@@ -114,15 +112,13 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3">
-        <div v-for="(prof, i) in proficiencies" :key="i"
+        <div v-for="(prof, i) in proficienciesReactive" :key="i"
           class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
           <span>{{ prof.label }}</span>
 
-          <!-- checkbox -->
           <input v-if="prof.type === 'checkbox'" type="checkbox" v-model="prof.value" :disabled="!editingProficiencies"
             class="w-5 h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white" />
 
-          <!-- numérico -->
           <span v-else-if="!editingProficiencies">{{ prof.value }}</span>
           <input v-else v-model="prof.tempValue" type="number" class="w-14 text-white text-center rounded px-1" />
         </div>
@@ -132,9 +128,19 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue"
-const selectedDom = ref("")
-const selectedCondition = ref("")
+import { reactive, ref } from "vue";
+import OBR from "@owlbear-rodeo/sdk";
+
+const ID = "com.anidra.addto";
+
+const props = defineProps({
+  mainAttributes: { type: Object, default: () => ({}) },
+  secondaryStats: { type: Object, default: () => ({}) },
+  proficiencies: { type: Object, default: () => ({}) },
+  dons: { type: Array, default: () => [] },
+  conditions: { type: Array, default: () => [] },
+  charId: { type: String, required: true } // id do item no Owlbear
+})
 
 const editingDom = ref(false)
 const editingCondition = ref(false)
@@ -142,25 +148,25 @@ const editingCondition = ref(false)
 const editingAttributes = ref(false)
 const editingProficiencies = ref(false)
 
-const dons = ["Talento", "Atenção", "Força", "Sorte", "Esforço", "Carisma"]
+const mainAttributesReactive = reactive(
+  Object.entries(props.mainAttributes || {}).map(([label, value]) => ({ label, value }))
+)
 
-const conditions = ["Nocaute", "Alucinação", "Cansaço", "Sangrando",
-  "Agonia", "Paralizado", "Medo", "Histeria", "Raiva", "Tristeza", "Morrendo"]
+const secondaryStatsReactive = reactive(
+  Object.entries(props.secondaryStats || {}).map(([label, value]) => ({ label, value }))
+)
 
-const mainAttributes = reactive([
-  { label: "Vida", value: "5 / 10" },
-  { label: "Estamina", value: "10 / 20" },
-  { label: "Mana", value: "4 / 4" },
-  { label: "Movimento", value: "9 / 9" },
-])
+const proficienciesReactive = reactive(
+  Object.entries(props.proficiencies || {}).map(([label, value]) => ({
+    label,
+    value,
+    tempValue: value,
+    type: typeof value === "boolean" ? "checkbox" : "number"
+  }))
+)
 
-const secondaryStats = reactive([
-  { label: "Defesa", value: 5 },
-  { label: "Carisma", value: 15 },
-  { label: "Força", value: 2 },
-  { label: "Aura", value: 4 },
-  { label: "Sorte", value: 6 },
-])
+const selectedDom = ref(props.dons?.[0] || "")
+const selectedCondition = ref(props.conditions?.[0] || "")
 
 const corners = [
   "top-0 left-0 border-t border-l rounded-tl-md",
@@ -169,53 +175,47 @@ const corners = [
   "bottom-0 right-0 border-b border-r rounded-br-md",
 ]
 
-const proficiencies = reactive([
-  { label: "Percepção", value: 3, type: "number" },
-  { label: "Persuasão", value: 0, type: "number" },
-  { label: "Furtividade", value: 0, type: "number" },
-  { label: "Furtividade De Combate", value: 0, type: "number" },
-  { label: "Acrobacia", value: 0, type: "number" },
-  { label: "Acrobacia De Combate", value: 0, type: "number" },
-  { label: "Ataque", value: 0, type: "number" },
-  { label: "Defesa", value: 0, type: "number" },
-  { label: "Persistência", value: 0, type: "number" },
-  { label: "Precisão", value: 0, type: "number" },
-  { label: "Conserto", value: false, type: "checkbox" },
-  { label: "Linguagens", value: false, type: "checkbox" },
-])
-
 function startEdit(section) {
   if (section === "attributes") {
     editingAttributes.value = true
-    mainAttributes.forEach((a) => (a.tempValue = a.value))
-    secondaryStats.forEach((a) => (a.tempValue = a.value))
+    mainAttributesReactive.forEach((a) => (a.tempValue = a.value))
+    secondaryStatsReactive.forEach((a) => (a.tempValue = a.value))
   }
   if (section === "proficiencies") {
     editingProficiencies.value = true
-    proficiencies.forEach((p) => (p.tempValue = p.value))
+    proficienciesReactive.forEach((p) => (p.tempValue = p.value))
   }
 }
 
 function confirmEdit(section) {
   if (section === "attributes") {
-    mainAttributes.forEach((a) => (a.value = a.tempValue))
-    secondaryStats.forEach((a) => (a.value = a.tempValue))
+    mainAttributesReactive.forEach((a) => (a.value = a.tempValue))
+    secondaryStatsReactive.forEach((a) => (a.value = a.tempValue))
     editingAttributes.value = false
   }
   if (section === "proficiencies") {
-    proficiencies.forEach((p) => {
+    proficienciesReactive.forEach((p) => {
       if (p.type === "number") p.value = p.tempValue
     })
     editingProficiencies.value = false
   }
+
+  // Atualiza o metadata no Owlbear Rodeo
+  OBR.scene.items.updateItems([props.charId], (items) => {
+    for (let item of items) {
+      item.metadata[`${ID}/metadata`] = {
+        stats: Object.fromEntries(mainAttributesReactive.map(a => [a.label, a.value])),
+        secondaryStats: Object.fromEntries(secondaryStatsReactive.map(a => [a.label, a.value])),
+        proficiencies: Object.fromEntries(proficienciesReactive.map(p => [p.label, p.value])),
+        dons: props.dons,
+        conditions: props.conditions
+      }
+    }
+  });
 }
 
 function cancelEdit(section) {
-  if (section === "attributes") {
-    editingAttributes.value = false
-  }
-  if (section === "proficiencies") {
-    editingProficiencies.value = false
-  }
+  if (section === "attributes") editingAttributes.value = false
+  if (section === "proficiencies") editingProficiencies.value = false
 }
 </script>
