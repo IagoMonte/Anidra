@@ -40,8 +40,7 @@ async function getAnidraCharacters() {
     label: char.name || "Sem nome",
     icon: char.image?.url || "🧙",
     visible: char.visible,
-    count: data?.count || 1,
-    data
+    data: char.metadata
   }))
 }
 
