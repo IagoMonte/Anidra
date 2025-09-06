@@ -60,6 +60,10 @@ OBR.onReady(() => {
   OBR.scene.onReadyChange(()=>{
     loadMenuItems()
   })
+
+  OBR.scene.items.onChange(() => { // ideia do gpt sla me parece bem ruim acho melhor um callback
+    loadMenuItems()
+  })
 })
 </script>
 <template>
