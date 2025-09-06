@@ -6,8 +6,8 @@ import { setupContextMenu } from './owlbear/contextMenu';
 
 
 
-createApp(App).mount('#app')
-
 OBR.onReady(() => {
   setupContextMenu();
 });
+
+createApp(App).mount('#app')
