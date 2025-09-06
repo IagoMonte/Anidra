@@ -22,10 +22,10 @@ export async function syncCharacterMetadata(charId, metadataPartial = {}) {
       // Atualiza apenas os campos passados
       Object.keys(metadataPartial).forEach((key) => {
         // Clona para garantir que não tenha Proxies ou referências
-        item.metadata[`${ID}/metadata`].info[key] = JSON.parse(JSON.stringify(metadataPartial[key]));
+        item.metadata[`${ID}/metadata`].info.Stats[key] = JSON.parse(JSON.stringify(metadataPartial[key]));
       });
 
-      updatedMetadata = item.metadata[`${ID}/metadata`].info;
+      updatedMetadata = item.metadata[`${ID}/metadata`].info.Stats;
       console.log(updatedMetadata)
     }
   });
