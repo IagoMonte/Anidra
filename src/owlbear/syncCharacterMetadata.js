@@ -26,6 +26,7 @@ export async function syncCharacterMetadata(charId, metadataPartial = {}) {
       });
 
       updatedMetadata = item.metadata[`${ID}/metadata`].info;
+      console.log(updatedMetadata)
     }
   });
 
