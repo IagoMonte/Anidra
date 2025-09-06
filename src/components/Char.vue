@@ -201,23 +201,35 @@ function confirmEdit(section) {
     editingProficiencies.value = false;
   }
 
+
+  let mainAttributesPlain = Object.fromEntries(
+  mainAttributesReactive.map(a => [a.label, a.value])
+)
+
+let secondaryStatsPlain = Object.fromEntries(
+  secondaryStatsReactive.map(a => [a.label, a.value])
+)
+
+let proficienciesPlain = Object.fromEntries(
+  proficienciesReactive.map(p => [p.label, p.value])
+)
   // Atualiza o metadata no Owlbear Rodeo
   OBR.scene.items.updateItems([props.charId], (items) => {
-    for (let item of items) {
-      item.metadata[`${ID}/metadata`] = {
-        stats: {
-          mainAttributes: Object.fromEntries(mainAttributesReactive.map(a => [a.label, a.value])),
-          secondaryStats: Object.fromEntries(secondaryStatsReactive.map(a => [a.label, a.value])),
-          proficiencies: Object.fromEntries(proficienciesReactive.map(p => [p.label, p.value]))
-        },
-        dons,
-        conditions,
-        skills: props.charData.skills,
-        inventory: props.charData.inventory,
-        notes: props.charData.notes
-      };
+  for (let item of items) {
+    item.metadata[`${ID}/metadata`] = {
+      stats: {
+        mainAttributes: mainAttributesPlain,
+        secondaryStats: secondaryStatsPlain,
+        proficiencies: proficienciesPlain
+      },
+      dons: [...(props.charData.dons || [])],
+      conditions: [...(props.charData.conditions || [])],
+      skills: JSON.parse(JSON.stringify(props.charData.skills || {})),
+      inventory: JSON.parse(JSON.stringify(props.charData.inventory || [])),
+      notes: JSON.parse(JSON.stringify(props.charData.notes || []))
     }
-  });
+  }
+});
 }
 
 function cancelEdit(section) {
