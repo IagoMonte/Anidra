@@ -35,13 +35,13 @@ async function getAnidraCharacters() {
   const characters = await OBR.scene.items.getItems(
     (item) => item.layer === "CHARACTER" && item.type === "IMAGE"
   )
-
   return characters.map(char => ({
     id: char.id,
     label: char.name || "Sem nome",
     icon: char.image?.url || "🧙",
     visible: char.visible,
     count: char.metadata?.count || 1,
+    data: char.metadata?.stats
   }))
 }
 
@@ -54,15 +54,14 @@ async function loadMenuItems() {
   }
 }
 
-// Espera o Owlbear Rodeo estar pronto
+
 OBR.onReady(() => {
   setupAnidra()
-  loadMenuItems()
+  OBR.scene.onReadyChange(()=>{
+    loadMenuItems()
+  })
 })
 </script>
-
-
-
 <template>
   <div class="relative h-screen flex">
     <!-- Menu lateral -->
