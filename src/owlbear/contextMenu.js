@@ -117,6 +117,7 @@ export function setupAnidra() {
                 Stats: initcharacterSheet
               }
             };
+            console.log(item.metadata[`${ID}/metadata`])
           }
         });
       } else {
