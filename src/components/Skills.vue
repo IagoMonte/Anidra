@@ -1,11 +1,9 @@
 <script setup>
 import { reactive, ref } from "vue"
 import SkillCard from "./SkillCard.vue"
-import OBR from "@owlbear-rodeo/sdk"
+import { syncCharacterMetadata } from "@/owlbear/syncCharacterMetadata"
 
-const ID = "com.anidra.addto"
-
-// Props recebem o charData completo
+// Props
 const props = defineProps({
   charData: { type: Object, required: true },
   charId: { type: String, required: true }
@@ -16,31 +14,13 @@ const props = defineProps({
 // ================================
 const masteredSkills = reactive(
   props.charData.skills?.masteredSkills?.map(s => ({ ...s })) || [
-    {
-      title: "Habilidade",
-      tags: [
-        { name: "combate", checks: 1 },
-        { name: "campanha", checks: 1 }
-      ],
-      description: "Descricao da Habilidade",
-      completed: true
-    }
+    { title: "Habilidade", tags: [{ name: "combate", checks: 1 }, { name: "campanha", checks: 1 }], description: "Descricao da Habilidade", completed: true }
   ]
 )
 
 const unmasteredSkills = reactive(
   props.charData.skills?.unmasteredSkills?.map(s => ({ ...s })) || [
-    {
-      title: "Habilidade não dominada",
-      tags: [
-        { name: "10", checks: 1 },
-        { name: "8", checks: 2 },
-        { name: "6", checks: 4 },
-        { name: "4", checks: 6 }
-      ],
-      description: "Não dominada ainda.",
-      completed: false
-    }
+    { title: "Habilidade não dominada", tags: [{ name: "10", checks: 1 }, { name: "8", checks: 2 }, { name: "6", checks: 4 }, { name: "4", checks: 6 }], description: "Não dominada ainda.", completed: false }
   ]
 )
 
@@ -51,54 +31,6 @@ const editingUnmastered = ref(false)
 // Temporários para edição
 const tempMastered = ref([])
 const tempUnmastered = ref([])
-
-// ================================
-// Função para atualizar metadata
-// ================================
-function buildCharacterSheet({ charData, skills }) {
-  return {
-    dons: charData.dons ?? null,
-    conditions: charData.conditions ?? null,
-    stats: {
-      mainAttributes: charData.stats?.mainAttributes ?? {},
-      secondaryStats: charData.stats?.secondaryStats ?? {},
-      proficiencies: charData.stats?.proficiencies ?? {},
-    },
-    skills: skills ? JSON.parse(JSON.stringify(skills)) : {
-      masteredSkills: [
-        {
-          title: "Habilidade",
-          tags: [
-            { name: "combate", checks: 1 },
-            { name: "campanha", checks: 1 },
-          ],
-          description: "Descricao da Habilidade",
-          completed: true,
-        }
-      ],
-      unmasteredSkills: [
-        {
-          title: "Habilidade não dominada",
-          tags: [
-            { name: "10", checks: 1 },
-            { name: "8", checks: 2 },
-            { name: "6", checks: 4 },
-            { name: "4", checks: 6 },
-          ],
-          description: "Não dominada ainda.",
-          completed: false,
-        }
-      ]
-    },
-    inventory: charData.inventory ? JSON.parse(JSON.stringify(charData.inventory)) : [
-      { name: "Item", quantity: 1, description: "Descricao" }
-    ],
-    notes: charData.notes ? JSON.parse(JSON.stringify(charData.notes)) : [
-      { title: "Primeira Nota", content: "Esta é a primeira nota.\nEla pode ter várias linhas." }
-    ]
-  }
-}
-
 
 // ================================
 // Funções de edição
@@ -114,7 +46,7 @@ function startEdit(section) {
   }
 }
 
-function confirmEdit(section) {
+async function confirmEdit(section) {
   if (section === "mastered") {
     masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value)
     editingMastered.value = false
@@ -124,18 +56,11 @@ function confirmEdit(section) {
     editingUnmastered.value = false
   }
 
-  const newSheet = buildCharacterSheet({
-    charData: props.charData,
+  // Sincroniza a metadata globalmente
+  await syncCharacterMetadata(props.charId, {
     skills: {
-    masteredSkills: JSON.parse(JSON.stringify(masteredSkills)),
-    unmasteredSkills: JSON.parse(JSON.stringify(unmasteredSkills))
-    }
-  })
-
-  // Atualiza o metadata no Owlbear Rodeo
-  OBR.scene.items.updateItems([props.charId], (items) => {
-    for (let item of items) {
-      item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } }
+      masteredSkills: JSON.parse(JSON.stringify(masteredSkills)),
+      unmasteredSkills: JSON.parse(JSON.stringify(unmasteredSkills))
     }
   })
 }
@@ -145,7 +70,7 @@ function cancelEdit(section) {
   if (section === "unmastered") editingUnmastered.value = false
 }
 
-function addSkill(section) {
+async function addSkill(section) {
   const newSkill = section === "mastered"
     ? { title: "Nova Habilidade", tags: [{ name: "Combate", checks: 1 }, { name: "Campanha", checks: 1 }], description: "Descrição...", completed: true }
     : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1 }], description: "Descrição...", completed: false }
@@ -155,25 +80,25 @@ function addSkill(section) {
     : editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
 
   target.push(newSkill)
-  confirmEdit(section)
+  await confirmEdit(section)
 }
 
-function removeSkill(section, idx) {
+async function removeSkill(section, idx) {
   const target = section === "mastered"
     ? editingMastered.value ? tempMastered.value : masteredSkills
     : editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
 
   target.splice(idx, 1)
-  confirmEdit(section)
+  await confirmEdit(section)
 }
 
-function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
+async function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
   const targetSkill = section === "mastered"
     ? editingMastered.value ? tempMastered.value[skillIdx] : masteredSkills[skillIdx]
     : editingUnmastered.value ? tempUnmastered.value[skillIdx] : unmasteredSkills[skillIdx]
 
   targetSkill.tags.push({ ...newTag })
-  confirmEdit(section)
+  await confirmEdit(section)
 }
 </script>
 
