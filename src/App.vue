@@ -26,7 +26,7 @@ const navItems = [
 import OBR from "@owlbear-rodeo/sdk";
 
 async function init() {
-  await OBR.isReady(); // espera o SDK estar pronto
+  await OBR.isReady; // espera o SDK estar pronto
   let viado = 'viado'
   setupCounter();
 }
