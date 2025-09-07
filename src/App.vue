@@ -84,10 +84,10 @@ OBR.onReady(() => {
   <div class="relative h-screen flex overflow-hidden">
     <!-- Menu lateral -->
     <aside :class="[
-      'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out',
+      'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out overflow-visible',
       isOpen ? 'w-48' : 'w-16'
     ]" @mouseenter="isOpen = true" @mouseleave="isOpen = false">
-      <ul class="flex flex-col mt-4 space-y-2 overflow-visible">
+      <ul class="flex flex-col mt-4 space-y-2 ">
         <li v-for="(item, idx) in menuItems" :key="item.id"
           class="flex items-center cursor-pointer hover:bg-gray-700 rounded px-2 py-3 transition-colors"
           @click="selectedChar = item">
