@@ -10,7 +10,7 @@ const props = defineProps({
 // ================================
 // Estado
 // ================================
-
+defineEmits(['updateData'])
 
 const masteredSkills = reactive([
   ...(props.charData.skills?.masteredSkills || [])
