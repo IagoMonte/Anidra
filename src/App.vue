@@ -107,19 +107,19 @@ OBR.onReady(() => {
           <main class="flex-1 overflow-auto p-4 bg-[#121212]">
             <template v-if="selectedChar">
               <section v-if="current === 'Stats'">
-                <Char :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
+                <Char :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
               </section>
               <section v-else-if="current === 'Skills'">
                 <Skills :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
               </section>
               <section v-else-if="current === 'Roll'">
-                <Rolls :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
+                <Rolls :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
               </section>
               <section v-else-if="current === 'Inventory'">
-                <Inventory :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
+                <Inventory :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
               </section>
               <section v-else-if="current === 'Notes'">
-                <Notes :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
+                <Notes :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
               </section>
             </template>
             <template v-else>
@@ -133,7 +133,7 @@ OBR.onReady(() => {
           <nav
             class="flex-shrink-0 fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono">
             <button v-for="(item, i) in navItems" :key="i" class="flex flex-col items-center space-y-1"
-              :class="current === item.label ? 'text-white' : 'text-gray-400'" @click="current = item.label">
+              :class="current === item.label ? 'text-white' : 'text-gray-400'" @click="current = item.label; loadMenuItems()">
               <component :is="item.icon" class="w-6 h-6" />
               <span>{{ item.label }}</span>
             </button>

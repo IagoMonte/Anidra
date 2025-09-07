@@ -290,6 +290,8 @@ function confirmEdit(section) {
       item.metadata[`${ID}/metadata`] = {info: { Stats: newSheet }};
     }
   });
+
+  emit("updateData")
 }
 
 function cancelEdit(section) {
