@@ -110,7 +110,7 @@ OBR.onReady(() => {
                 <Char :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
               </section>
               <section v-else-if="current === 'Skills'">
-                <Skills v-model:charData="charData" :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
+                <Skills v-model:charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
               </section>
               <section v-else-if="current === 'Roll'">
                 <Rolls :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" />
