@@ -138,7 +138,7 @@ const props = defineProps({
   charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
   charId: { type: String, required: true } // id do item no Owlbear
 })
-defineEmits(['updateData'])
+const emit = defineEmits(['updateData'])
 
 const editingDom = ref(false);
 const editingCondition = ref(false);

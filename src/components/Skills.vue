@@ -10,7 +10,7 @@ const props = defineProps({
 // ================================
 // Estado
 // ================================
-defineEmits(['updateData'])
+const emit = defineEmits(['updateData'])
 
 const masteredSkills = reactive([
   ...(props.charData.skills?.masteredSkills || [])
@@ -84,7 +84,6 @@ async function confirmEdit(section) {
     console.error("Erro ao atualizar metadata:", err)
   }
   emit("updateData")
-
   console.log(props.charData)
 }
 
