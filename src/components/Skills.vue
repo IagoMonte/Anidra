@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref, toRaw } from "vue"
 import SkillCard from "./SkillCard.vue"
-import { updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
+import { getMetadaById, updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
   charData: { type: Object, required: true },
@@ -69,13 +69,13 @@ async function confirmEdit(section) {
   }
 
   try {
-    console.log(await updateMetada(props.charId, newCharData))
+    await updateMetada(props.charId, newCharData)
     console.log("Metadata atualizado com sucesso!")
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
 
-  
+  console.log(getMetadaById(props.charId))
 }
 
 function cancelEdit(section) {
