@@ -81,13 +81,7 @@ async function confirmEdit(section) {
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
-
-  currentData = await getMetadaById(props.charId)
-  console.log(currentData)
-  let update = {info: {Stats: currentData}}
-  emit("update:charData", update)
-
-  console.log(props.charData)
+  emit("updateData")
 }
 
 function cancelEdit(section) {
