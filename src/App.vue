@@ -58,7 +58,7 @@ function getMenuItemById(id) {
 }
 
 function atualizarPersonagem(charid){
-    item = getMenuItemById(charid)
+    let item = getMenuItemById(charid)
     selectedChar = item
 }
 
@@ -81,13 +81,13 @@ OBR.onReady(() => {
 })
 </script>
 <template>
-  <div class="relative h-screen flex">
+  <div class="relative h-screen flex overflow-hidden">
     <!-- Menu lateral -->
     <aside :class="[
       'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out',
       isOpen ? 'w-48' : 'w-16'
     ]" @mouseenter="isOpen = true" @mouseleave="isOpen = false">
-      <ul class="flex flex-col mt-4 space-y-2">
+      <ul class="flex flex-col mt-4 space-y-2 overflow-visible">
         <li v-for="(item, idx) in menuItems" :key="item.id"
           class="flex items-center cursor-pointer hover:bg-gray-700 rounded px-2 py-3 transition-colors"
           @click="selectedChar = item">
