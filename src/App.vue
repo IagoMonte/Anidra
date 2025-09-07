@@ -88,21 +88,23 @@ OBR.onReady(() => {
   <div class="relative h-screen flex overflow-hidden">
     <!-- Menu lateral -->
     <aside :class="[
-      'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out overflow-visible',
-      isOpen ? 'w-48' : 'w-16'
-    ]" @mouseenter="isOpen = true" @mouseleave="isOpen = false">
-      <ul class="flex flex-col mt-4 space-y-2 ">
-        <li v-for="(item, idx) in menuItems" :key="item.id"
-          class="flex items-center cursor-pointer hover:bg-gray-700 rounded px-2 py-3 transition-colors"
-          @click="selectedChar = item">
-          <img v-if="item.icon !== '🧙'" :src="item.icon" alt="char" class="w-8 h-8 rounded-full mr-3 object-cover" />
-          <span v-else class="text-xl mr-3">{{ item.icon }}</span>
-          <span class="whitespace-nowrap transition-opacity duration-300" :class="isOpen ? 'opacity-100' : 'opacity-0'">
-            {{ item.label }}
-          </span>
-        </li>
-      </ul>
-    </aside>
+  'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out',
+  isOpen ? 'w-48' : 'w-16'
+]" @mouseenter="isOpen = true" @mouseleave="isOpen = false">
+  <div class="h-full overflow-y-auto">
+    <ul class="flex flex-col mt-4 space-y-2">
+      <li v-for="(item, idx) in menuItems" :key="item.id"
+        class="flex items-center cursor-pointer hover:bg-gray-700 rounded px-2 py-3 transition-colors"
+        @click="selectedChar = item">
+        <img v-if="item.icon !== '🧙'" :src="item.icon" alt="char" class="w-8 h-8 rounded-full mr-3 object-cover" />
+        <span v-else class="text-xl mr-3">{{ item.icon }}</span>
+        <span class="whitespace-nowrap transition-opacity duration-300" :class="isOpen ? 'opacity-100' : 'opacity-0'">
+          {{ item.label }}
+        </span>
+      </li>
+    </ul>
+  </div>
+</aside>
 
     <!-- Conteúdo principal -->
     <div class="flex-1 bg-gray-900">
