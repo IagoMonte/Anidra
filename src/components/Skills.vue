@@ -13,8 +13,12 @@ const props = defineProps({
 // ================================
 
 
-const masteredSkills = reactive([...props.charData.masteredSkills || []])
-const unmasteredSkills = reactive([...props.charData.unmasteredSkills || []])
+const masteredSkills = reactive([
+  ...(props.charData.info?.Stats?.skills?.masteredSkills || [])
+])
+const unmasteredSkills = reactive([
+  ...(props.charData.info?.Stats?.skills?.unmasteredSkills || [])
+])
 
 const editingMastered = ref(false)
 const editingUnmastered = ref(false)
@@ -70,12 +74,10 @@ async function confirmEdit(section) {
   currentData.info.Stats.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
 
 
-  console.log("skill")
-  console.log(currentData)
+
   try {
     await updateMetada(props.charId, currentData)
     console.log("Metadata atualizado com sucesso!")
-    props.charData = currentData
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
