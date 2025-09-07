@@ -75,6 +75,7 @@ async function confirmEdit(section) {
   try {
     await updateMetada(props.charId, currentData)
     console.log("Metadata atualizado com sucesso!")
+    props.charData = currentData
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
