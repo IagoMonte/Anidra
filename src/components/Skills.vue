@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue"
+import { reactive, ref, toRaw } from "vue"
 import SkillCard from "./SkillCard.vue"
 import { updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
@@ -11,48 +11,12 @@ const props = defineProps({
 // ================================
 // Estado
 // ================================
+const masteredSkills = reactive([...props.charData.masteredSkills || []])
+const unmasteredSkills = reactive([...props.charData.unmasteredSkills || []])
 
-const masteredSkills = reactive([
-  {
-    title: "Golpe Sorrateiro",
-    tags: [
-      { name: "combate", checks: 4 },
-      { name: "campanha", checks: 4 }
-    ],
-    description:
-      "Se obtiver 11-12 na próxima rolagem, causa o dobro de dano; se falhar (<5), perde 1 ponto de vida.",
-    completed: true,
-  },
-  {
-    title: "Ataque Rápido",
-    tags: [
-      { name: "combate", checks: 3 },
-      { name: "campanha", checks: 4 }
-    ],
-    description: "Permite atacar duas vezes no mesmo turno se rolagem >= 10.",
-    completed: true,
-  },
-])
-
-const unmasteredSkills = reactive([
-  {
-    title: "Golpe Devastador",
-    tags: [
-      { name: "10", checks: 1 },
-      { name: "8", checks: 2 },
-      { name: "6", checks: 4 },
-      { name: "4", checks: 6 }
-    ],
-    description: "Não dominada ainda.",
-    completed: true,
-  },
-])
-
-// Flags de edição
 const editingMastered = ref(false)
 const editingUnmastered = ref(false)
 
-// Temporário para edição
 const tempMastered = ref([])
 const tempUnmastered = ref([])
 
@@ -70,24 +34,22 @@ function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
 
   targetSkill.tags.push({ ...newTag })
 }
+
 function removeSkill(section, idx) {
-  if (section === "mastered") {
-    const target = editingMastered.value ? tempMastered.value : masteredSkills
-    target.splice(idx, 1)
-  } else {
-    const target = editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
-    target.splice(idx, 1)
-  }
+  const target = section === "mastered"
+    ? (editingMastered.value ? tempMastered.value : masteredSkills)
+    : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
+  target.splice(idx, 1)
 }
 
 function startEdit(section) {
   if (section === "mastered") {
     editingMastered.value = true
-    tempMastered.value = masteredSkills.map((s) => ({ ...s }))
+    tempMastered.value = masteredSkills.map(s => ({ ...s, tags: s.tags.map(t => ({ ...t })) }))
   }
   if (section === "unmastered") {
     editingUnmastered.value = true
-    tempUnmastered.value = unmasteredSkills.map((s) => ({ ...s }))
+    tempUnmastered.value = unmasteredSkills.map(s => ({ ...s, tags: s.tags.map(t => ({ ...t })) }))
   }
 }
 
@@ -101,7 +63,20 @@ async function confirmEdit(section) {
     editingUnmastered.value = false
   }
 
-   updateMetada(props.charId,updateCharacterSheet(props.charData,['stats', 'mainAttributes', 'Vida'],'150/10'))
+  // ================================
+  // Atualiza metadata no Owlbear
+  // ================================
+  const newCharData = {
+    masteredSkills: toRaw(masteredSkills),
+    unmasteredSkills: toRaw(unmasteredSkills)
+  }
+
+  try {
+    await updateMetada(props.charId, newCharData)
+    console.log("Metadata atualizado com sucesso!")
+  } catch (err) {
+    console.error("Erro ao atualizar metadata:", err)
+  }
 }
 
 function cancelEdit(section) {
@@ -110,29 +85,18 @@ function cancelEdit(section) {
 }
 
 function addSkill(section) {
-  const newSkill = {
-    title: "Nova Habilidade",
-    tags: [{ name: "Combate", checks: 1 },{ name: "Campanha", checks: 1 }],
-    description: "Descrição...",
-    completed: section === "mastered",
-  }
+  const newSkill = section === "mastered"
+    ? { title: "Nova Habilidade", tags: [{ name: "Combate", checks: 1 }, { name: "Campanha", checks: 1 }], description: "Descrição...", completed: true }
+    : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1 }], description: "Descrição...", completed: false }
 
-  const newUnSkill = {
-    title: "Nova Habilidade",
-    tags: [{ name: "10", checks: 1 }],
-    description: "Descrição...",
-    completed: section === "mastered",
-  }
+  const target = section === "mastered"
+    ? (editingMastered.value ? tempMastered.value : masteredSkills)
+    : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
 
-  if (section === "mastered") {
-    const target = editingMastered.value ? tempMastered.value : masteredSkills
-    target.push(newSkill)
-  } else {
-    const target = editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
-    target.push(newUnSkill)
-  }
+  target.push(newSkill)
 }
 </script>
+
 
 <template>
   <main class="bg-[#121212] min-h-screen p-4 text-white font-sans">
