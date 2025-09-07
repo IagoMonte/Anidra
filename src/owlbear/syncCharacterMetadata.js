@@ -24,7 +24,7 @@ export async function updateMetada(CharID, sheet) {
     console.log(sheet)
     await OBR.scene.items.updateItems([CharID], (items) => {
     for (let item of items) {
-            item.metadata[`${ID}/metadata`] = sheet
+            item.metadata[`${ID}/metadata`] = JSON.parse(JSON.stringify(sheet))
 
       // Remove qualquer proxy do Vue e garante serialização
     //   item.metadata[`${ID}/metadata`] = {
