@@ -52,7 +52,13 @@ async function loadMenuItems() {
     console.error('Erro ao carregar personagens do AnidraCtl:', err)
   }
 }
+import { watch } from 'vue'
 
+watch(current, (newPage, oldPage) => {
+  if (selectedChar.value) {
+    loadMenuItems()
+  }
+})
 
 OBR.onReady(() => {
   setupAnidra()

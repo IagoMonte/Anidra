@@ -38,7 +38,6 @@ function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
   }
 
   targetSkill.tags.push({ ...newTag })
-  confirmEdit(section)
 }
 
 function removeSkill(section, idx) {
@@ -46,8 +45,6 @@ function removeSkill(section, idx) {
     ? (editingMastered.value ? tempMastered.value : masteredSkills)
     : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
   target.splice(idx, 1)
-
-  confirmEdit(section)
 }
 
 function startEdit(section) {
@@ -102,7 +99,6 @@ function addSkill(section) {
     : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
 
   target.push(newSkill)
-  confirmEdit(section)
 }
 </script>
 
