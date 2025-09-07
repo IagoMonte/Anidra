@@ -53,9 +53,18 @@ async function loadMenuItems() {
   }
 }
 import { watch } from 'vue'
+function getMenuItemById(id) {
+  return menuItems.value.find(item => item.charId === id)
+}
+
+function atualizarPersonagem(charid){
+    item = getMenuItemById(charid)
+    selectedChar = item
+}
 
 watch(current, (newPage, oldPage) => {
   if (selectedChar.value) {
+   
     loadMenuItems()
   }
 })
@@ -75,7 +84,7 @@ OBR.onReady(() => {
   <div class="relative h-screen flex">
     <!-- Menu lateral -->
     <aside :class="[
-      'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out overflow-hidden',
+      'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out',
       isOpen ? 'w-48' : 'w-16'
     ]" @mouseenter="isOpen = true" @mouseleave="isOpen = false">
       <ul class="flex flex-col mt-4 space-y-2">
@@ -113,19 +122,19 @@ OBR.onReady(() => {
           <main class="flex-1 overflow-auto p-4 bg-[#121212]">
             <template v-if="selectedChar">
               <section v-if="current === 'Stats'">
-                <Char :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
+                <Char :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
               </section>
               <section v-else-if="current === 'Skills'">
-                <Skills :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
+                <Skills :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
               </section>
               <section v-else-if="current === 'Roll'">
-                <Rolls :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
+                <Rolls :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
               </section>
               <section v-else-if="current === 'Inventory'">
-                <Inventory :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
+                <Inventory :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
               </section>
               <section v-else-if="current === 'Notes'">
-                <Notes :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="loadMenuItems"/>
+                <Notes :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
               </section>
             </template>
             <template v-else>
@@ -139,7 +148,7 @@ OBR.onReady(() => {
           <nav
             class="flex-shrink-0 fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono">
             <button v-for="(item, i) in navItems" :key="i" class="flex flex-col items-center space-y-1"
-              :class="current === item.label ? 'text-white' : 'text-gray-400'" @click="current = item.label; loadMenuItems()">
+              :class="current === item.label ? 'text-white' : 'text-gray-400'" @click="current = item.label">
               <component :is="item.icon" class="w-6 h-6" />
               <span>{{ item.label }}</span>
             </button>
