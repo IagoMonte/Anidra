@@ -1,9 +1,8 @@
 <script setup>
 import { reactive, ref } from "vue"
 import SkillCard from "./SkillCard.vue"
-import { syncCharacterMetadata } from "@/owlbear/syncCharacterMetadata"
+import { updateCharacterSheet } from "@/owlbear/syncCharacterMetadata"
 
-// Props
 const props = defineProps({
   charData: { type: Object, required: true },
   charId: { type: String, required: true }
@@ -12,60 +11,97 @@ const props = defineProps({
 // ================================
 // Estado
 // ================================
-const masteredSkills = reactive(
-  props.charData.skills?.masteredSkills?.map(s => ({ ...s })) || [
-    { title: "Habilidade", tags: [{ name: "combate", checks: 1 }, { name: "campanha", checks: 1 }], description: "Descricao da Habilidade", completed: true }
-  ]
-)
 
-const unmasteredSkills = reactive(
-  props.charData.skills?.unmasteredSkills?.map(s => ({ ...s })) || [
-    { title: "Habilidade não dominada", tags: [{ name: "10", checks: 1 }, { name: "8", checks: 2 }, { name: "6", checks: 4 }, { name: "4", checks: 6 }], description: "Não dominada ainda.", completed: false }
-  ]
-)
+const masteredSkills = reactive([
+  {
+    title: "Golpe Sorrateiro",
+    tags: [
+      { name: "combate", checks: 4 },
+      { name: "campanha", checks: 4 }
+    ],
+    description:
+      "Se obtiver 11-12 na próxima rolagem, causa o dobro de dano; se falhar (<5), perde 1 ponto de vida.",
+    completed: true,
+  },
+  {
+    title: "Ataque Rápido",
+    tags: [
+      { name: "combate", checks: 3 },
+      { name: "campanha", checks: 4 }
+    ],
+    description: "Permite atacar duas vezes no mesmo turno se rolagem >= 10.",
+    completed: true,
+  },
+])
+
+const unmasteredSkills = reactive([
+  {
+    title: "Golpe Devastador",
+    tags: [
+      { name: "10", checks: 1 },
+      { name: "8", checks: 2 },
+      { name: "6", checks: 4 },
+      { name: "4", checks: 6 }
+    ],
+    description: "Não dominada ainda.",
+    completed: true,
+  },
+])
 
 // Flags de edição
 const editingMastered = ref(false)
 const editingUnmastered = ref(false)
 
-// Temporários para edição
+// Temporário para edição
 const tempMastered = ref([])
 const tempUnmastered = ref([])
 
 // ================================
-// Funções de edição
+// Funções
 // ================================
-function deepClone(obj) {
-  return JSON.parse(JSON.stringify(obj))
+function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
+  let targetSkill
+
+  if (section === "mastered") {
+    targetSkill = editingMastered.value ? tempMastered.value[skillIdx] : masteredSkills[skillIdx]
+  } else {
+    targetSkill = editingUnmastered.value ? tempUnmastered.value[skillIdx] : unmasteredSkills[skillIdx]
+  }
+
+  targetSkill.tags.push({ ...newTag })
+}
+function removeSkill(section, idx) {
+  if (section === "mastered") {
+    const target = editingMastered.value ? tempMastered.value : masteredSkills
+    target.splice(idx, 1)
+  } else {
+    const target = editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
+    target.splice(idx, 1)
+  }
 }
 
 function startEdit(section) {
   if (section === "mastered") {
     editingMastered.value = true
-    tempMastered.value = masteredSkills.map(s => ({ ...s }))
+    tempMastered.value = masteredSkills.map((s) => ({ ...s }))
   }
   if (section === "unmastered") {
     editingUnmastered.value = true
-    tempUnmastered.value = unmasteredSkills.map(s => ({ ...s }))
+    tempUnmastered.value = unmasteredSkills.map((s) => ({ ...s }))
   }
 }
 
-async function confirmEdit(section) {
+function confirmEdit(section) {
   if (section === "mastered") {
-    masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value.map(s => deepClone(s)))
+    masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value)
     editingMastered.value = false
   }
   if (section === "unmastered") {
-    unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value.map(s => deepClone(s)))
+    unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value)
     editingUnmastered.value = false
   }
 
-  await syncCharacterMetadata(props.charId, {
-    skills: {
-      masteredSkills: deepClone(masteredSkills),
-      unmasteredSkills: deepClone(unmasteredSkills)
-    }
-  })
+  console.log(updateCharacterSheet(props.charData,['info', 'Stats', 'stats', 'mainAttributes', 'Vida'],'150/10'))
 }
 
 function cancelEdit(section) {
@@ -73,38 +109,30 @@ function cancelEdit(section) {
   if (section === "unmastered") editingUnmastered.value = false
 }
 
-async function addSkill(section) {
-  const newSkill = section === "mastered"
-    ? { title: "Nova Habilidade", tags: [{ name: "Combate", checks: 1 }, { name: "Campanha", checks: 1 }], description: "Descrição...", completed: true }
-    : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1 }], description: "Descrição...", completed: false }
+function addSkill(section) {
+  const newSkill = {
+    title: "Nova Habilidade",
+    tags: [{ name: "Combate", checks: 1 },{ name: "Campanha", checks: 1 }],
+    description: "Descrição...",
+    completed: section === "mastered",
+  }
 
-  const target = section === "mastered"
-    ? editingMastered.value ? tempMastered.value : masteredSkills
-    : editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
+  const newUnSkill = {
+    title: "Nova Habilidade",
+    tags: [{ name: "10", checks: 1 }],
+    description: "Descrição...",
+    completed: section === "mastered",
+  }
 
-  target.push(newSkill)
-  await confirmEdit(section)
-}
-
-async function removeSkill(section, idx) {
-  const target = section === "mastered"
-    ? editingMastered.value ? tempMastered.value : masteredSkills
-    : editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
-
-  target.splice(idx, 1)
-  await confirmEdit(section)
-}
-
-async function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
-  const targetSkill = section === "mastered"
-    ? editingMastered.value ? tempMastered.value[skillIdx] : masteredSkills[skillIdx]
-    : editingUnmastered.value ? tempUnmastered.value[skillIdx] : unmasteredSkills[skillIdx]
-
-  targetSkill.tags.push({ ...newTag })
-  await confirmEdit(section)
+  if (section === "mastered") {
+    const target = editingMastered.value ? tempMastered.value : masteredSkills
+    target.push(newSkill)
+  } else {
+    const target = editingUnmastered.value ? tempUnmastered.value : unmasteredSkills
+    target.push(newUnSkill)
+  }
 }
 </script>
-
 
 <template>
   <main class="bg-[#121212] min-h-screen p-4 text-white font-sans">
