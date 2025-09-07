@@ -82,6 +82,8 @@ async function confirmEdit(section) {
     console.error("Erro ao atualizar metadata:", err)
   }
   emit("updateData")
+
+  console.log(props.charData)
 }
 
 function cancelEdit(section) {
