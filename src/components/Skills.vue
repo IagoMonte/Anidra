@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref } from "vue"
 import SkillCard from "./SkillCard.vue"
-import { updateCharacterSheet } from "@/owlbear/syncCharacterMetadata"
+import { updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
   charData: { type: Object, required: true },
@@ -101,7 +101,7 @@ async function confirmEdit(section) {
     editingUnmastered.value = false
   }
 
-   console.log(await updateCharacterSheet(props.charData,['stats', 'mainAttributes', 'Vida'],'150/10'))
+   updateMetada(props.charId,updateCharacterSheet(props.charData,['stats', 'mainAttributes', 'Vida'],'150/10'))
 }
 
 function cancelEdit(section) {
