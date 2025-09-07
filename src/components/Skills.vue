@@ -70,7 +70,7 @@ async function confirmEdit(section) {
   currentData.info.Stats.skills.unmasteredSkills = unmasteredSkills
 
   try {
-    await updateMetada(props.charId, data)
+    await updateMetada(props.charId, currentData)
     console.log("Metadata atualizado com sucesso!")
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
