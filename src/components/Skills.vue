@@ -4,15 +4,16 @@ import SkillCard from "./SkillCard.vue"
 import { getMetadaById, updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
-  charData: { type: Object, required: true },
   charId: { type: String, required: true }
 })
 
 // ================================
 // Estado
 // ================================
-const masteredSkills = reactive([...props.charData.masteredSkills || []])
-const unmasteredSkills = reactive([...props.charData.unmasteredSkills || []])
+const data = await getMetadaById(props.charId)
+
+const masteredSkills = reactive([data.info.Stats.masteredSkills || []])
+const unmasteredSkills = reactive([data.info.Stats.unmasteredSkills || []])
 
 const editingMastered = ref(false)
 const editingUnmastered = ref(false)
@@ -55,29 +56,18 @@ function startEdit(section) {
 
 async function confirmEdit(section) {
   if (section === "mastered") {
-    masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value)
+    // Atualiza diretamente no data
+    data.info.Stats.masteredSkills.splice(0, data.info.Stats.masteredSkills.length, ...tempMastered.value)
     editingMastered.value = false
   }
   if (section === "unmastered") {
-    unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value)
+    data.info.Stats.unmasteredSkills.splice(0, data.info.Stats.unmasteredSkills.length, ...tempUnmastered.value)
     editingUnmastered.value = false
   }
 
-  const newCharData = {
-    masteredSkills: JSON.parse(JSON.stringify(toRaw(masteredSkills))),
-    unmasteredSkills: JSON.parse(JSON.stringify(toRaw(unmasteredSkills))),
-  }
-  var skills = updateCharacterSheet(await getMetadaById(props.charId),masteredSkills)
-  skills = updateCharacterSheet(skills,unmasteredSkills)
-  try {
-    await updateMetada(props.charId, skills)
-    console.log("Metadata atualizado com sucesso!")
-  } catch (err) {
-    console.error("Erro ao atualizar metadata:", err)
-  }
-  console.log()
-}
+  updateMetada(props.charId, data)
 
+}
 function cancelEdit(section) {
   if (section === "mastered") editingMastered.value = false
   if (section === "unmastered") editingUnmastered.value = false
