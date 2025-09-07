@@ -21,11 +21,11 @@ export function updateCharacterSheet(sheet, updateObj) {
 }
 export async function updateMetada(CharID, sheet) {
   await OBR.scene.items.updateItems([CharID], (items) => {
-    return items.map(item => {
+    for (let item of items) {
+      // Remove qualquer proxy do Vue e garante serialização
       item.metadata[`${ID}/metadata`] = {
         info: { Stats: JSON.parse(JSON.stringify(sheet)) }
       };
-      return item;
-    });
+    }
   });
 }
