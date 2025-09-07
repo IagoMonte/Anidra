@@ -14,10 +14,10 @@ const emit = defineEmits(["update:charData"])
 
 
 const masteredSkills = reactive([
-  ...(props.charData.info?.Stats?.skills?.masteredSkills || [])
+  ...(props.charData.skills?.masteredSkills || [])
 ])
 const unmasteredSkills = reactive([
-  ...(props.charData.info?.Stats?.skills?.unmasteredSkills || [])
+  ...(props.charData.skills?.unmasteredSkills || [])
 ])
 
 const editingMastered = ref(false)
