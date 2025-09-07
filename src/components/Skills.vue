@@ -69,11 +69,13 @@ async function confirmEdit(section) {
   }
 
   try {
-    await updateMetada(props.charId, newCharData)
+    console.log(await updateMetada(props.charId, newCharData))
     console.log("Metadata atualizado com sucesso!")
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
+
+  
 }
 
 function cancelEdit(section) {
