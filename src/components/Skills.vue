@@ -101,7 +101,7 @@ async function confirmEdit(section) {
     editingUnmastered.value = false
   }
 
-   console.log(await updateCharacterSheet(props.charData,['info', 'Stats', 'stats', 'mainAttributes', 'Vida'],'150/10'))
+   console.log(await updateCharacterSheet(props.charData,['stats', 'mainAttributes', 'Vida'],'150/10'))
 }
 
 function cancelEdit(section) {
