@@ -75,7 +75,7 @@ async function confirmEdit(section) {
     console.error("Erro ao atualizar metadata:", err)
   }
 
-  console.log(getMetadaById(props.charId))
+  console.log(await getMetadaById(props.charId))
 }
 
 function cancelEdit(section) {

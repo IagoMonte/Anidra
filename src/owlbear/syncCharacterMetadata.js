@@ -30,5 +30,6 @@ export async function updateMetada(CharID, sheet) {
   });
 }
 export async function getMetadaById(CharID) {
-    await OBR.scene.items.getItems([CharID])
+    const item = await OBR.scene.items.getItems([CharID])
+    return item
 }
