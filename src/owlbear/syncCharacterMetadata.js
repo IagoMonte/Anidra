@@ -31,5 +31,5 @@ export async function updateMetada(CharID, sheet) {
 }
 export async function getMetadaById(CharID) {
     const item = await OBR.scene.items.getItems([CharID])
-    return item
+    return item[0].metadata[`${ID}/metadata`]
 }

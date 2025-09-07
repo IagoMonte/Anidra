@@ -67,9 +67,10 @@ async function confirmEdit(section) {
     masteredSkills: JSON.parse(JSON.stringify(toRaw(masteredSkills))),
     unmasteredSkills: JSON.parse(JSON.stringify(toRaw(unmasteredSkills))),
   }
-
+  var skills = updateCharacterSheet(props.charData,masteredSkills)
+  skills = updateCharacterSheet(props.charData,unmasteredSkills)
   try {
-    await updateMetada(props.charId, newCharData)
+    await updateMetada(props.charId, skills)
     console.log("Metadata atualizado com sucesso!")
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
