@@ -84,7 +84,7 @@ async function confirmEdit(section) {
 
   currentData = await getMetadaById(props.charId)
   console.log(currentData)
-  emit("update:charData", {currentData})
+  emit("update:charData", currentData)
 
 }
 
