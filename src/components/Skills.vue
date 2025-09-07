@@ -4,13 +4,14 @@ import SkillCard from "./SkillCard.vue"
 import { getMetadaById, updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
+  charData: { type: Object, required: true },
   charId: { type: String, required: true }
 })
 
 // ================================
 // Estado
 // ================================
-const data = await getMetadaById(props.charId)
+
 
 const masteredSkills = reactive([...props.charData.masteredSkills || []])
 const unmasteredSkills = reactive([...props.charData.unmasteredSkills || []])
@@ -43,8 +44,6 @@ function removeSkill(section, idx) {
   target.splice(idx, 1)
 }
 
-
-
 function startEdit(section) {
   if (section === "mastered") {
     editingMastered.value = true
@@ -65,10 +64,10 @@ async function confirmEdit(section) {
     unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value)
     editingUnmastered.value = false
   }
+  const currentData = await getMetadaById(props.charId)
 
-
-  data.info.Stats.skills.masteredSkills = masteredSkills
-  data.info.Stats.skills.unmasteredSkills = unmasteredSkills
+  currentData.info.Stats.skills.masteredSkills = masteredSkills
+  currentData.info.Stats.skills.unmasteredSkills = unmasteredSkills
 
   try {
     await updateMetada(props.charId, data)
