@@ -68,7 +68,7 @@ async function confirmEdit(section) {
     unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value)
     editingUnmastered.value = false
   }
-  const currentData = await getMetadaById(props.charId)
+  let currentData = await getMetadaById(props.charId)
 
   currentData.info.Stats.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
   currentData.info.Stats.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
@@ -78,12 +78,13 @@ async function confirmEdit(section) {
   try {
     await updateMetada(props.charId, currentData)
     console.log("Metadata atualizado com sucesso!")
-    currentData = await getMetadaById(props.charId)
-    console.log(currentData)
-    emit("update:charData", {currentData})
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
+
+  currentData = await getMetadaById(props.charId)
+  console.log(currentData)
+  emit("update:charData", {currentData})
 
 }
 
