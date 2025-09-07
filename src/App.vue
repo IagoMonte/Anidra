@@ -33,15 +33,19 @@ const navItems = [
 
 async function getAnidraCharacters() {
   const characters = await OBR.scene.items.getItems(
-    (item) => item.layer === "CHARACTER" && item.type === "IMAGE"
+    (item) => item.layer === "CHARACTER" && item.type === "IMAGE" && item.metadata
   )
-  return characters.map(char => ({
-    charId: char.id, // Adicionar verifcacao para so parecer char com metadata.info.stats
-    label: char.name || "Sem nome",
-    icon: char.image?.url || "🧙",
-    visible: char.visible,
-    data: char.metadata[`com.anidra.addto/metadata`]
-  }))
+
+  return characters
+    .filter(char => char.metadata && char.metadata['com.anidra.addto/metadata'])
+    .map(char => ({
+      charId: char.id,
+      label: char.name || "Sem nome",
+      icon: char.image?.url || "🧙",
+      visible: char.visible,
+      data: char.metadata['com.anidra.addto/metadata']
+    }))
+  
 }
 
 async function loadMenuItems() {
