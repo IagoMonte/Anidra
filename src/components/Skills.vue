@@ -86,6 +86,7 @@ async function confirmEdit(section) {
   console.log(currentData)
   emit("update:charData", currentData)
 
+  console.log(props.charData)
 }
 
 function cancelEdit(section) {
