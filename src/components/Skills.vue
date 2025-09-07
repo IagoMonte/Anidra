@@ -67,8 +67,8 @@ async function confirmEdit(section) {
   // Atualiza metadata no Owlbear
   // ================================
   const newCharData = {
-    masteredSkills: toRaw(masteredSkills),
-    unmasteredSkills: toRaw(unmasteredSkills)
+      masteredSkills: JSON.parse(JSON.stringify(toRaw(masteredSkills))),
+      unmasteredSkills: JSON.parse(JSON.stringify(toRaw(unmasteredSkills))),
   }
 
   try {
