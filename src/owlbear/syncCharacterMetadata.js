@@ -20,7 +20,9 @@ export function updateCharacterSheet(sheet, updateObj) {
   return deepMerge(sheet, updateObj);
 }
 export async function updateMetada(CharID, sheet) {
-  await OBR.scene.items.updateItems([CharID], (items) => {
+    console.log("syncdata")
+    console.log(sheet)
+    await OBR.scene.items.updateItems([CharID], (items) => {
     for (let item of items) {
             item.metadata[`${ID}/metadata`] = sheet
 
