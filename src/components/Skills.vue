@@ -66,8 +66,8 @@ async function confirmEdit(section) {
   }
   const currentData = await getMetadaById(props.charId)
 
-  currentData.info.Stats.skills.masteredSkills = masteredSkills
-  currentData.info.Stats.skills.unmasteredSkills = unmasteredSkills
+  currentData.info.Stats.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
+  currentData.info.Stats.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
 
 
   console.log("skill")
