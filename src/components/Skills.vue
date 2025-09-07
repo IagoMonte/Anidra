@@ -7,7 +7,7 @@ const props = defineProps({
   charData: { type: Object, required: true },
   charId: { type: String, required: true }
 })
-
+const emit = defineEmits(["update:charData"])
 // ================================
 // Estado
 // ================================
@@ -78,12 +78,11 @@ async function confirmEdit(section) {
   try {
     await updateMetada(props.charId, currentData)
     console.log("Metadata atualizado com sucesso!")
+    emit("update:charData", currentData)
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
 
-
-  console.log(masteredSkills,unmasteredSkills)
 }
 
 function cancelEdit(section) {
