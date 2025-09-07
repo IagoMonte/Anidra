@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, toRaw } from "vue"
+import { ref, toRaw } from "vue"
 import SkillCard from "./SkillCard.vue"
 import { getMetadaById, updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
@@ -12,9 +12,8 @@ const props = defineProps({
 // ================================
 const data = await getMetadaById(props.charId)
 
-const masteredSkills = reactive(data.info.Stats.masteredSkills || [])
-const unmasteredSkills = reactive(data.info.Stats.unmasteredSkills || [])
-
+const masteredSkills = ref(toRaw(data.info.Stats.masteredSkills) || [])
+const unmasteredSkills = ref(toRaw(data.info.Stats.unmasteredSkills) || [])
 
 const editingMastered = ref(false)
 const editingUnmastered = ref(false)
@@ -29,9 +28,9 @@ function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
   let targetSkill
 
   if (section === "mastered") {
-    targetSkill = editingMastered.value ? tempMastered.value[skillIdx] : masteredSkills[skillIdx]
+    targetSkill = editingMastered.value ? tempMastered.value[skillIdx] : masteredSkills.value[skillIdx]
   } else {
-    targetSkill = editingUnmastered.value ? tempUnmastered.value[skillIdx] : unmasteredSkills[skillIdx]
+    targetSkill = editingUnmastered.value ? tempUnmastered.value[skillIdx] : unmasteredSkills.value[skillIdx]
   }
 
   targetSkill.tags.push({ ...newTag })
@@ -39,36 +38,43 @@ function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
 
 function removeSkill(section, idx) {
   const target = section === "mastered"
-    ? (editingMastered.value ? tempMastered.value : masteredSkills)
-    : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
+    ? (editingMastered.value ? tempMastered.value : masteredSkills.value)
+    : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills.value)
   target.splice(idx, 1)
 }
 
 function startEdit(section) {
   if (section === "mastered") {
     editingMastered.value = true
-    tempMastered.value = masteredSkills.map(s => ({ ...s, tags: s.tags.map(t => ({ ...t })) }))
+    tempMastered.value = masteredSkills.value.map(s => ({
+      ...s,
+      tags: s.tags.map(t => ({ ...t }))
+    }))
   }
   if (section === "unmastered") {
     editingUnmastered.value = true
-    tempUnmastered.value = unmasteredSkills.map(s => ({ ...s, tags: s.tags.map(t => ({ ...t })) }))
+    tempUnmastered.value = unmasteredSkills.value.map(s => ({
+      ...s,
+      tags: s.tags.map(t => ({ ...t }))
+    }))
   }
 }
 
 async function confirmEdit(section) {
   if (section === "mastered") {
-    // Atualiza diretamente no data
+    masteredSkills.value.splice(0, masteredSkills.value.length, ...tempMastered.value)
     data.info.Stats.masteredSkills.splice(0, data.info.Stats.masteredSkills.length, ...tempMastered.value)
     editingMastered.value = false
   }
   if (section === "unmastered") {
+    unmasteredSkills.value.splice(0, unmasteredSkills.value.length, ...tempUnmastered.value)
     data.info.Stats.unmasteredSkills.splice(0, data.info.Stats.unmasteredSkills.length, ...tempUnmastered.value)
     editingUnmastered.value = false
   }
 
-  updateMetada(props.charId, data)
-
+  await updateMetada(props.charId, data)
 }
+
 function cancelEdit(section) {
   if (section === "mastered") editingMastered.value = false
   if (section === "unmastered") editingUnmastered.value = false
@@ -80,13 +86,12 @@ function addSkill(section) {
     : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1 }], description: "Descrição...", completed: false }
 
   const target = section === "mastered"
-    ? (editingMastered.value ? tempMastered.value : masteredSkills)
-    : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
+    ? (editingMastered.value ? tempMastered.value : masteredSkills.value)
+    : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills.value)
 
   target.push(newSkill)
 }
 </script>
-
 
 <template>
   <main class="bg-[#121212] min-h-screen p-4 text-white font-sans">
@@ -105,7 +110,6 @@ function addSkill(section) {
             <button @click="cancelEdit('mastered')" class="text-sm text-red-400 hover:text-red-200">
               ✖ Cancelar
             </button>
-            <!-- Botão remover -->
           </template>
         </div>
       </div>
@@ -115,7 +119,7 @@ function addSkill(section) {
       </button>
 
       <div class="space-y-4">
-        <div v-for="(skill, idx) in (editingMastered ? tempMastered : masteredSkills)" :key="idx"
+        <div v-for="(skill, idx) in (editingMastered ? tempMastered : masteredSkills.value)" :key="idx"
           class="border border-gray-700 p-3 rounded">
           <div v-if="!editingMastered">
             <SkillCard v-bind="skill" />
@@ -125,17 +129,11 @@ function addSkill(section) {
               class="mt-2 px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">
               🗑 Remover
             </button>
-            <input v-model="skill.title" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
-              placeholder="Título" />
-            <textarea v-model="skill.description"
-              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
-            <!-- Tags/Checks editáveis -->
+            <input v-model="skill.title" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Título" />
+            <textarea v-model="skill.description" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
             <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
-              <input v-model="tag.name" placeholder="DT"
-                class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-              <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-
+              <input v-model="tag.name" placeholder="DT" class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+              <input v-model.number="tag.checks" type="number" placeholder="Checks" class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
             </div>
           </div>
         </div>
@@ -143,13 +141,11 @@ function addSkill(section) {
     </section>
 
     <!-- NÃO DOMINADAS -->
-    <section class="mb-6 border border-gray-600 rounded-lg p-3"
-      :class="editingUnmastered ? 'ring-2 ring-yellow-500' : ''">
+    <section class="mb-6 border border-gray-600 rounded-lg p-3" :class="editingUnmastered ? 'ring-2 ring-yellow-500' : ''">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-2xl font-bold">Habilidades Não Dominadas</h2>
         <div class="flex gap-2">
-          <button v-if="!editingUnmastered" @click="startEdit('unmastered')"
-            class="text-sm text-gray-400 hover:text-white">
+          <button v-if="!editingUnmastered" @click="startEdit('unmastered')" class="text-sm text-gray-400 hover:text-white">
             Editar
           </button>
           <template v-else>
@@ -168,30 +164,20 @@ function addSkill(section) {
       </button>
 
       <div class="space-y-4">
-        <div v-for="(skill, idx) in (editingUnmastered ? tempUnmastered : unmasteredSkills)" :key="idx"
+        <div v-for="(skill, idx) in (editingUnmastered ? tempUnmastered : unmasteredSkills.value)" :key="idx"
           class="border border-gray-700 p-3 rounded">
           <div v-if="!editingUnmastered">
             <SkillCard v-bind="skill" />
           </div>
           <div v-else class="space-y-2">
-            <button @click="removeSkill('unmastered', idx)"
-              class="mt-2 px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">
-              🗑 Remover
-            </button>
-            <input v-model="skill.title" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
-              placeholder="Título" />
-            <textarea v-model="skill.description"
-              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
+            <button @click="removeSkill('unmastered', idx)" class="mt-2 px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑 Remover</button>
+            <input v-model="skill.title" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Título" />
+            <textarea v-model="skill.description" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
             <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
-              <input v-model="tag.name" placeholder="DT"
-                class="w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-              <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+              <input v-model="tag.name" placeholder="DT" class="w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+              <input v-model.number="tag.checks" type="number" placeholder="Checks" class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
             </div>
-            <button @click="addTag('unmastered', idx, { name: 'DTS', checks: 1 })"
-              class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm">
-              ➕ Adicionar DT
-            </button>
+            <button @click="addTag('unmastered', idx, { name: 'DTS', checks: 1 })" class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm">➕ Adicionar DT</button>
           </div>
         </div>
       </div>
