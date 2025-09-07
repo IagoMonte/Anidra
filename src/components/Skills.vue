@@ -91,7 +91,7 @@ function startEdit(section) {
   }
 }
 
-function confirmEdit(section) {
+async function confirmEdit(section) {
   if (section === "mastered") {
     masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value)
     editingMastered.value = false
@@ -101,7 +101,7 @@ function confirmEdit(section) {
     editingUnmastered.value = false
   }
 
-  console.log(updateCharacterSheet(props.charData,['info', 'Stats', 'stats', 'mainAttributes', 'Vida'],'150/10'))
+   console.log(await updateCharacterSheet(props.charData,['info', 'Stats', 'stats', 'mainAttributes', 'Vida'],'150/10'))
 }
 
 function cancelEdit(section) {
