@@ -12,8 +12,9 @@ const props = defineProps({
 // ================================
 const data = await getMetadaById(props.charId)
 
-const masteredSkills = reactive([data.info.Stats.masteredSkills || []])
-const unmasteredSkills = reactive([data.info.Stats.unmasteredSkills || []])
+const masteredSkills = reactive(data.info.Stats.masteredSkills || [])
+const unmasteredSkills = reactive(data.info.Stats.unmasteredSkills || [])
+
 
 const editingMastered = ref(false)
 const editingUnmastered = ref(false)
