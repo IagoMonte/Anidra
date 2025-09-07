@@ -81,6 +81,9 @@ async function confirmEdit(section) {
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
+
+
+  console.log(masteredSkills,unmasteredSkills)
 }
 
 function cancelEdit(section) {
