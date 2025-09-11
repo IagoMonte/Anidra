@@ -35,6 +35,16 @@ async function getAnidraCharacters() {
   const characters = await OBR.scene.items.getItems(
     (item) => item.layer === "CHARACTER" && item.type === "IMAGE" && item.metadata
   )
+  console.log(characters
+    .filter(char => char.metadata && char.metadata['com.anidra.addto/metadata'])
+    .map(char => ({
+      charId: char.id,
+      label: char.name || "Sem nome",
+      icon: char.image?.url || "🧙",
+      visible: char.visible,
+      data: char.metadata['com.anidra.addto/metadata']
+    })))
+
 
   return characters
     .filter(char => char.metadata && char.metadata['com.anidra.addto/metadata'])
@@ -63,13 +73,13 @@ function getMenuItemById(id) {
 
 function atualizarPersonagem(charid){
     let item = getMenuItemById(charid)
-    selectedChar = item
+    selectedChar.value = item
 }
 
-watch(current, (newPage, oldPage) => {
+watch(current, async (newPage, oldPage) => {
   if (selectedChar.value) {
-   
-    loadMenuItems()
+    await loadMenuItems()
+    atualizarPersonagem(selectedChar.value.charId) // 🔑 recarrega o char atualizado
   }
 })
 
@@ -87,24 +97,39 @@ OBR.onReady(() => {
 <template>
   <div class="relative h-screen flex overflow-hidden">
     <!-- Menu lateral -->
-    <aside :class="[
-  'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out',
-  isOpen ? 'w-48' : 'w-16'
-]" @mouseenter="isOpen = true" @mouseleave="isOpen = false">
-  <div class="h-full overflow-y-auto">
-    <ul class="flex flex-col mt-4 space-y-2">
-      <li v-for="(item, idx) in menuItems" :key="item.id"
-        class="flex items-center cursor-pointer hover:bg-gray-700 rounded px-2 py-3 transition-colors"
-        @click="selectedChar = item">
-        <img v-if="item.icon !== '🧙'" :src="item.icon" alt="char" class="w-8 h-8 rounded-full mr-3 object-cover" />
-        <span v-else class="text-xl mr-3">{{ item.icon }}</span>
-        <span class="whitespace-nowrap transition-opacity duration-300" :class="isOpen ? 'opacity-100' : 'opacity-0'">
-          {{ item.label }}
-        </span>
-      </li>
-    </ul>
-  </div>
-</aside>
+    <aside
+      :class="[
+        'bg-gray-800 text-white h-full transition-all duration-300 ease-in-out',
+        isOpen ? 'w-48' : 'w-16'
+      ]"
+      @mouseenter="isOpen = true"
+      @mouseleave="isOpen = false"
+    >
+      <div class="h-full overflow-y-auto">
+        <ul class="flex flex-col mt-4 space-y-2">
+          <li
+            v-for="(item, idx) in menuItems"
+            :key="item.charId"
+            class="flex items-center cursor-pointer hover:bg-gray-700 rounded px-2 py-3 transition-colors"
+            @click="selectedChar = item"
+          >
+            <img
+              v-if="item.icon !== '🧙'"
+              :src="item.icon"
+              alt="char"
+              class="w-8 h-8 rounded-full mr-3 object-cover"
+            />
+            <span v-else class="text-xl mr-3">{{ item.icon }}</span>
+            <span
+              class="whitespace-nowrap transition-opacity duration-300"
+              :class="isOpen ? 'opacity-100' : 'opacity-0'"
+            >
+              {{ item.label }}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </aside>
 
     <!-- Conteúdo principal -->
     <div class="flex-1 bg-gray-900">
@@ -112,7 +137,8 @@ OBR.onReady(() => {
         <div class="flex-1 flex flex-col overflow-hidden">
           <!-- Header -->
           <header
-            class="flex items-center justify-between px-4 py-3 bg-[#1e1e1e] border-b border-gray-700 flex-shrink-0">
+            class="flex items-center justify-between px-4 py-3 bg-[#1e1e1e] border-b border-gray-700 flex-shrink-0"
+          >
             <div>
               <h1 class="text-white text-lg font-normal">
                 {{ selectedChar ? selectedChar.label : "Nenhum personagem" }}
@@ -120,31 +146,59 @@ OBR.onReady(() => {
               <p class="text-gray-500 text-xs -mt-1">{{ current }}</p>
             </div>
 
-            <img v-if="selectedChar?.icon && selectedChar.icon !== '🧙'" :src="selectedChar.icon" alt="Imagem de perfil"
-              class="rounded-full border border-gray-600" height="64" width="64" />
+            <img
+              v-if="selectedChar?.icon && selectedChar.icon !== '🧙'"
+              :src="selectedChar.icon"
+              alt="Imagem de perfil"
+              class="rounded-full border border-gray-600"
+              height="64"
+              width="64"
+            />
           </header>
 
           <!-- Conteúdo que muda -->
           <main class="flex-1 overflow-auto p-4 bg-[#121212]">
             <template v-if="selectedChar">
               <section v-if="current === 'Stats'">
-                <Char :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
+                <Char
+                  :charData="selectedChar.data.info.Stats"
+                  :charId="selectedChar.charId"
+                  @updateData="atualizarPersonagem"
+                />
               </section>
               <section v-else-if="current === 'Skills'">
-                <Skills :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
+                <Skills
+                  :charData="selectedChar.data.info.Stats"
+                  :charId="selectedChar.charId"
+                  @updateData="atualizarPersonagem"
+                />
               </section>
               <section v-else-if="current === 'Roll'">
-                <Rolls :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
+                <Rolls
+                  :charData="selectedChar.data.info.Stats"
+                  :charId="selectedChar.charId"
+                  @updateData="atualizarPersonagem"
+                />
               </section>
               <section v-else-if="current === 'Inventory'">
-                <Inventory :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
+                <Inventory
+                  :charData="selectedChar.data.info.Stats"
+                  :charId="selectedChar.charId"
+                  @updateData="atualizarPersonagem"
+                />
               </section>
               <section v-else-if="current === 'Notes'">
-                <Notes :charData="selectedChar.data.info.Stats" :charId="selectedChar.charId" @updateData="atualizarPersonagem"/>
+                <Notes
+                  :charData="selectedChar.data.info.Stats"
+                  :charId="selectedChar.charId"
+                  @updateData="atualizarPersonagem"
+                />
               </section>
             </template>
             <template v-else>
-              <div class="h-full flex items-center justify-center text-gray-500 text-lg">
+              <div
+                class="h-full flex items-center justify-center text-gray-500 text-lg"
+              >
                 Nenhum personagem selecionado
               </div>
             </template>
@@ -152,9 +206,15 @@ OBR.onReady(() => {
 
           <!-- Navbar inferior -->
           <nav
-            class="flex-shrink-0 fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono">
-            <button v-for="(item, i) in navItems" :key="i" class="flex flex-col items-center space-y-1"
-              :class="current === item.label ? 'text-white' : 'text-gray-400'" @click="current = item.label">
+            class="flex-shrink-0 fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono"
+          >
+            <button
+              v-for="(item, i) in navItems"
+              :key="i"
+              class="flex flex-col items-center space-y-1"
+              :class="current === item.label ? 'text-white' : 'text-gray-400'"
+              @click="current = item.label"
+            >
               <component :is="item.icon" class="w-6 h-6" />
               <span>{{ item.label }}</span>
             </button>
@@ -164,3 +224,4 @@ OBR.onReady(() => {
     </div>
   </div>
 </template>
+
