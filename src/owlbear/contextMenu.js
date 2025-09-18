@@ -7,10 +7,10 @@ const initcharacterSheet = {
   conditions: null, // pode virar array depois
   stats: {
     mainAttributes: {
-      Vida: "5 / 10",
-      Estamina: "10 / 20",
-      Mana: "4 / 4",
-      Movimento: "9 / 9",
+      Vida: "1 / 1",
+      Estamina: "1 / 1",
+      Mana: "1 / 1",
+      Movimento: "1 / 1",
     },
 
     secondaryStats: {

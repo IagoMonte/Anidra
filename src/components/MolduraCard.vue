@@ -13,7 +13,7 @@ const corners = [
 </script>
 
 <template>
-  <div class="card">
+  <div class="card hover:cursor-pointer">
     <span class="text-amber-300 text-sm font-serif tracking-wide">
       {{ label }}
     </span>

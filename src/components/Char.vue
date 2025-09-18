@@ -61,7 +61,7 @@
       <select v-else v-model="selectedDom"
         class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
         <option disabled value="">Selecione um Dom</option>
-        <option v-for="(dom, i) in dons" :key="i" :value="dom">
+        <option v-for="(dom, i) in domList" :key="i" :value="dom">
           {{ dom }}
         </option>
       </select>
@@ -84,7 +84,7 @@
       <select v-else v-model="selectedCondition"
         class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
         <option disabled value="">Selecione uma Condição</option>
-        <option v-for="(cond, i) in conditions" :key="i" :value="cond">
+        <option v-for="(cond, i) in conditionsList" :key="i" :value="cond">
           {{ cond }}
         </option>
       </select>
@@ -163,11 +163,27 @@ const proficienciesReactive = reactive(
   }))
 );
 
+const domList = ["Talento", "Atenção", "Força", "Sorte", "Esforço", "Carisma"]
+const conditionsList = [
+                      'Nocaute',
+                      'Alucinação',
+                      'Cnasaço',
+                      'Sangrando',
+                      'Agonia',
+                      'Paralizado',
+                      'Medo',
+                      'Histeria',
+                      'Fora de controle',
+                      'Raiva',
+                      'Tristeza',
+                      'Morrendo'
+                      ]
+
 const dons = props.charData.dons || [];
 const conditions = props.charData.conditions || [];
 
-const selectedDom = ref(dons?.[0] || "");
-const selectedCondition = ref(conditions?.[0] || "");
+const selectedDom = ref(dons || "");
+const selectedCondition = ref(conditions || "");
 
 const corners = [
   "top-0 left-0 border-t border-l rounded-tl-md",
@@ -288,11 +304,11 @@ function confirmEdit(section) {
 
   OBR.scene.items.updateItems([props.charId], (items) => {
     for (let item of items) {
-      item.metadata[`${ID}/metadata`] = {info: { Stats: newSheet }};
+      item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } };
     }
   });
 
-  emit("updateData",props.charId)
+  emit("updateData", props.charId)
 }
 
 function cancelEdit(section) {
