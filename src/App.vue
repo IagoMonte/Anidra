@@ -1,5 +1,5 @@
 <script setup>
-import { ref,onMounted, onBeforeUnmount } from 'vue'
+import { ref } from 'vue'
 import OBR from '@owlbear-rodeo/sdk'
 import {
   HeartIcon,
@@ -97,19 +97,6 @@ OBR.onReady(() => {
   })
 })
 loadMenuItems()
-
-
-let unsubscribe
-onMounted(() => {
-  unsubscribe = OBR.broadcast.onMessage("ROOM", (msg)=>{
-    console.log(msg)
-
-  })
-})
-
-onBeforeUnmount(() => {
-  if (unsubscribe) unsubscribe()
-})
 </script>
 <template>
   <div class="relative h-screen flex overflow-hidden">
