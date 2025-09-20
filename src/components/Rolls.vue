@@ -118,7 +118,7 @@ const AtributosAtivos = reactive([
   { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
 ])
 
-OBR.broadcast.onMessage("ROLL_RESULT", (msg) => {
+OBR.broadcast.onMessage("ROOM", (msg) => {
   let { rolls, modi, bonus, total } = msg.data;
 
   OBR.notification.show(
