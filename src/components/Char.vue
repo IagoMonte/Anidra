@@ -179,6 +179,7 @@ const proficienciesReactive = reactive(
 
 const domList = ["Talento", "Atenção", "Força", "Sorte", "Esforço", "Carisma"]
 const conditionsList = [
+  'Saudavel',
   'Nocaute',
   'Alucinação',
   'Cnasaço',

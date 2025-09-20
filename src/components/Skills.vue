@@ -41,12 +41,10 @@ function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
 }
 
 function removeSkill(section, idx) {
-  startEdit()
   const target = section === "mastered"
     ? (editingMastered.value ? tempMastered.value : masteredSkills)
     : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
   target.splice(idx, 1)
-  confirmEdit(section)
 }
 
 function startEdit(section) {
@@ -91,7 +89,7 @@ function cancelEdit(section) {
 }
 
 function addSkill(section) {
-  startEdit()
+  startEdit(section)
   const newSkill = section === "mastered"
     ? { title: "Nova Habilidade", tags: [{ name: "Combate", checks: 1 }, { name: "Campanha", checks: 1 }], description: "Descrição...", completed: true }
     : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1 }], description: "Descrição...", completed: false }

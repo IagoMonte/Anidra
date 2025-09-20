@@ -102,33 +102,33 @@ function toggleNote(idx) {
 
     <!-- Lista rolável de notas -->
     <div class="flex-1 overflow-y-auto space-y-4">
-      <div v-for="(note, idx) in (editingNotes ? tempNotes : notes)" :key="idx"
-        class="border border-gray-600 rounded p-3">
+  <div v-for="(note, idx) in (editingNotes ? tempNotes : notes)" :key="idx"
+    class="border border-gray-600 rounded p-3">
 
-        <!-- Modo visualização -->
-        <div v-if="!editingNotes && openedNote !== idx" @click="toggleNote(idx)" class="cursor-pointer">
-          <div class="flex justify-between items-center">
-            <h2 class="text-white text-[20px] font-normal">{{ note.title }}</h2>
-            <button @click.stop="removeNote(idx)"
-              class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑</button>
-          </div>
-          <p class="text-gray-400 text-[16px] font-normal">
-            {{ note.content.split('\n')[0] }}
-          </p>
-        </div>
-
-        <!-- Modo edição/aberto -->
-        <div v-else class="space-y-2">
-          <input v-model="note.title" placeholder="Título"
-            class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-          <textarea v-model="note.content" placeholder="Conteúdo"
-            class="w-full h-65 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"></textarea>
-          <button v-if="!editingNotes" @click="toggleNote(idx)"
-            class="px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded text-sm">Fechar</button>
-        </div>
-
+    <!-- 🔹 Visualização (SEM edição) -->
+    <div v-if="!editingNotes">
+      <div class="flex justify-between items-center cursor-pointer" @click="toggleNote(idx)">
+        <h2 class="text-white text-[20px] font-normal">{{ note.title }}</h2>
+        <button @click.stop="removeNote(idx)"
+          class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑</button>
       </div>
+
+      <!-- Mostra só primeira linha ou todo conteúdo se aberto -->
+      <p class="text-gray-400 text-[16px] font-normal whitespace-pre-line">
+        {{ openedNote === idx ? note.content : note.content.split('\n')[0] }}
+      </p>
     </div>
+
+    <!-- 🔹 Modo edição -->
+    <div v-else class="space-y-2">
+      <input v-model="note.title" placeholder="Título"
+        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+      <textarea v-model="note.content" placeholder="Conteúdo"
+        class="w-full h-65 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"></textarea>
+    </div>
+
+  </div>
+</div>
 
   </main>
 </template>

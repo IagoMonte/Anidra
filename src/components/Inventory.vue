@@ -61,10 +61,8 @@ function addItem() {
 }
 
 function removeItem(idx) {
-  startEdit()
   const target = editingInventory.value ? tempInventory.value : inventory
   target.splice(idx, 1)
-  confirmEdit()
 }
 </script>
 
