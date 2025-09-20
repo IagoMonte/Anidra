@@ -54,9 +54,9 @@ const initcharacterSheet = {
         title: "Habilidade não dominada",
         tags: [
           { name: "10", checks: 1, checked: [false] },
-          { name: "8", checks: 2, checked: [false,false] },
-          { name: "6", checks: 4, checked: [false,false,false,false] },
-          { name: "4", checks: 6, checked: [false,false,false,false,false,false]},
+          { name: "8", checks: 2, checked: [false, false] },
+          { name: "6", checks: 4, checked: [false, false, false, false] },
+          { name: "4", checks: 6, checked: [false, false, false, false, false, false] },
         ],
         description: "Não dominada ainda.",
         completed: false,
@@ -128,6 +128,9 @@ export function setupAnidra() {
         });
       }
     },
+  });
+  OBR.broadcast.onMessage('ROOM', (msg) => {
+    console.log('Received message:', msg);
   });
 
 }
