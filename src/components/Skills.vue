@@ -29,6 +29,7 @@ const tempUnmastered = ref([])
 // Funções
 // ================================
 async function saveSkillUpdate(section, idx, payload) {
+  console.log('2. to aqui')
   let currentData = await getMetadaById(props.charId)
 
   if (section === "mastered") {

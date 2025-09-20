@@ -21,12 +21,6 @@ const { title, tags, description, completed } = defineProps({
   }
 })
 
-// Estado para dominadas
-const checkStates = ref(tags.map(tag => Array(tag.checks).fill(false)))
-
-// Estado para não dominadas
-const testStates = ref(tags.map(tag => Array(tag.checks).fill(false)))
-
 // Cantos decorativos
 const corners = [
   { pos: "top-0 left-0", rot: "rot-0" },
@@ -36,13 +30,14 @@ const corners = [
 ]
 
 // Watch para emitir evento quando todos testes são concluídos
-watch(testStates, (val) => {
+watch(tags, (val) => {
   if (!completed) {
     const allDone = val.every(arr => arr.every(v => v))
     if (allDone) {
       emit("mastered", title)
     }
   }
+  console.log('1. to aqui')
   emit("update", { title, tags })
 }, { deep: true })
 </script>
