@@ -53,6 +53,7 @@ function cancelEdit() {
 }
 
 function addItem() {
+  startEdit()
   const newItem = { name: "Novo Item", quantity: 1, description: "" }
   const target = editingInventory.value ? tempInventory.value : inventory
   target.push(newItem)
@@ -60,6 +61,7 @@ function addItem() {
 }
 
 function removeItem(idx) {
+  startEdit()
   const target = editingInventory.value ? tempInventory.value : inventory
   target.splice(idx, 1)
   confirmEdit()

@@ -48,14 +48,20 @@
     <section class="mb-2">
       <div class="flex items-center justify-between mb-1">
         <p class="text-base font-normal">Dom</p>
-        <button @click="editingDom = !editingDom" class="text-xs text-yellow-400 hover:text-yellow-300">
-          {{ editingDom ? "Concluir" : "Editar" }}
-        </button>
+        <div class="flex gap-2">
+          <button v-if="!editingDom" @click="startEdit('dom')" class="text-xs text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('dom')" class="text-xs text-green-400 hover:text-green-200">✔ Confirmar</button>
+            <button @click="cancelEdit('dom')" class="text-xs text-red-400 hover:text-red-200">✖ Cancelar</button>
+          </template>
+        </div>
       </div>
       <hr class="border-gray-700 mb-2" />
 
       <p v-if="!editingDom" class="text-gray-300 text-sm">
-        {{ selectedDom || "Nenhum dom selecionado" }}
+        {{ dons || "Nenhum dom selecionado" }}
       </p>
 
       <select v-else v-model="selectedDom"
@@ -71,14 +77,22 @@
     <section class="mb-4">
       <div class="flex items-center justify-between mb-1">
         <p class="text-base font-normal">Condição</p>
-        <button @click="editingCondition = !editingCondition" class="text-xs text-yellow-400 hover:text-yellow-300">
-          {{ editingCondition ? "Concluir" : "Editar" }}
-        </button>
+        <div class="flex gap-2">
+          <button v-if="!editingCondition" @click="startEdit('condition')"
+            class="text-xs text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('condition')" class="text-xs text-green-400 hover:text-green-200">✔
+              Confirmar</button>
+            <button @click="cancelEdit('condition')" class="text-xs text-red-400 hover:text-red-200">✖ Cancelar</button>
+          </template>
+        </div>
       </div>
       <hr class="border-gray-700 mb-2" />
 
       <p v-if="!editingCondition" class="text-gray-300 text-sm">
-        {{ selectedCondition || "Nenhuma condição selecionada" }}
+        {{ conditions || "Nenhuma condição selecionada" }}
       </p>
 
       <select v-else v-model="selectedCondition"
@@ -165,19 +179,19 @@ const proficienciesReactive = reactive(
 
 const domList = ["Talento", "Atenção", "Força", "Sorte", "Esforço", "Carisma"]
 const conditionsList = [
-                      'Nocaute',
-                      'Alucinação',
-                      'Cnasaço',
-                      'Sangrando',
-                      'Agonia',
-                      'Paralizado',
-                      'Medo',
-                      'Histeria',
-                      'Fora de controle',
-                      'Raiva',
-                      'Tristeza',
-                      'Morrendo'
-                      ]
+  'Nocaute',
+  'Alucinação',
+  'Cnasaço',
+  'Sangrando',
+  'Agonia',
+  'Paralizado',
+  'Medo',
+  'Histeria',
+  'Fora de controle',
+  'Raiva',
+  'Tristeza',
+  'Morrendo'
+]
 
 const dons = ref(props.charData.dons || "");
 const conditions = ref(props.charData.conditions || "");
@@ -264,6 +278,14 @@ function startEdit(section) {
     editingProficiencies.value = true;
     proficienciesReactive.forEach((p) => (p.tempValue = p.value));
   }
+  if (section === "dom") {
+    editingDom.value = true;
+    selectedDom.value = dons.value || "";
+  }
+  if (section === "condition") {
+    editingCondition.value = true;
+    selectedCondition.value = conditions.value || "";
+  }
 }
 
 function confirmEdit(section) {
@@ -278,19 +300,15 @@ function confirmEdit(section) {
     });
     editingProficiencies.value = false;
   }
+  if (section === "dom") {
+    dons.value = selectedDom.value;
+    editingDom.value = false;
+  }
+  if (section === "condition") {
+    conditions.value = selectedCondition.value;
+    editingCondition.value = false;
+  }
 
-
-  let mainAttributesPlain = Object.fromEntries(
-    mainAttributesReactive.map(a => [a.label, a.value])
-  )
-
-  let secondaryStatsPlain = Object.fromEntries(
-    secondaryStatsReactive.map(a => [a.label, a.value])
-  )
-
-  let proficienciesPlain = Object.fromEntries(
-    proficienciesReactive.map(p => [p.label, p.value])
-  )
   // Atualiza o metadata no Owlbear Rodeo
   const newSheet = buildCharacterSheet({
     mainAttributesReactive,
