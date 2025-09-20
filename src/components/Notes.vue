@@ -55,6 +55,7 @@ function cancelEdit() {
 }
 
 function addNote() {
+  startEdit()
   const newNote = { title: "Nova Nota", content: "" }
   const target = editingNotes.value ? tempNotes.value : notes
   target.push(newNote)
@@ -62,6 +63,7 @@ function addNote() {
 }
 
 function removeNote(idx) {
+  startEdit()
   const target = editingNotes.value ? tempNotes.value : notes
   target.splice(idx, 1)
   confirmEdit()
