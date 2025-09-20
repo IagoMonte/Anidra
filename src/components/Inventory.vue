@@ -1,15 +1,18 @@
 <script setup>
 import { reactive, ref } from "vue"
+import {updateMetada, getMetadaById } from "@/owlbear/syncCharacterMetadata"
+
+const props = defineProps({
+  charData: { type: Object, required: true },
+  charId: { type: String, required: true }
+})
+const emit = defineEmits(['updateData'])
 
 // ================================
 // Estado
 // ================================
 const inventory = reactive([
-  {
-    name: "Soco Inglês Melhorado",
-    quantity: 1,
-    description: "1d6+2 de dano, extra em acertos críticos"
-  }
+  ...(props.charData.inventory|| [])
 ])
 
 // ================================
@@ -27,9 +30,22 @@ function startEdit() {
   tempInventory.value = inventory.map(item => ({ ...item }))
 }
 
-function confirmEdit() {
+async function confirmEdit() {
   inventory.splice(0, inventory.length, ...tempInventory.value)
   editingInventory.value = false
+
+  let currentData = await getMetadaById(props.charId)
+
+  currentData.info.Stats.inventory = JSON.parse(JSON.stringify(inventory))
+  
+  try {
+    await updateMetada(props.charId, currentData)
+    console.log("Metadata atualizado com sucesso!")
+  } catch (err) {
+    console.error("Erro ao atualizar metadata:", err)
+  }
+  emit("updateData",props.charId)
+
 }
 
 function cancelEdit() {
@@ -40,11 +56,13 @@ function addItem() {
   const newItem = { name: "Novo Item", quantity: 1, description: "" }
   const target = editingInventory.value ? tempInventory.value : inventory
   target.push(newItem)
+  confirmEdit()
 }
 
 function removeItem(idx) {
   const target = editingInventory.value ? tempInventory.value : inventory
   target.splice(idx, 1)
+  confirmEdit()
 }
 </script>
 

@@ -179,11 +179,12 @@ const conditionsList = [
                       'Morrendo'
                       ]
 
-const dons = props.charData.dons || [];
-const conditions = props.charData.conditions || [];
+const dons = ref(props.charData.dons || "");
+const conditions = ref(props.charData.conditions || "");
 
-const selectedDom = ref(dons || "");
-const selectedCondition = ref(conditions || "");
+const selectedDom = ref(dons.value || "");
+const selectedCondition = ref(conditions.value || "");
+
 
 const corners = [
   "top-0 left-0 border-t border-l rounded-tl-md",
@@ -321,9 +322,9 @@ watch(() => props.charData, (newVal) => {
   Object.assign(mainAttributesReactive, Object.entries(newVal.stats.mainAttributes || {}).map(([label, value]) => ({ label, value })));
   Object.assign(secondaryStatsReactive, Object.entries(newVal.stats.secondaryStats || {}).map(([label, value]) => ({ label, value })));
   Object.assign(proficienciesReactive, Object.entries(newVal.stats.proficiencies || {}).map(([label, value]) => ({ label, value, tempValue: value, type: typeof value === "boolean" ? "checkbox" : "number" })));
-  dons.splice(0, dons.length, ...(newVal.dons || []));
-  conditions.splice(0, conditions.length, ...(newVal.conditions || []));
-  selectedDom.value = dons?.[0] || "";
-  selectedCondition.value = conditions?.[0] || "";
+  dons.value = newVal.dons || "";
+  conditions.value = newVal.conditions || "";
+  selectedDom.value = dons.value || "";
+  selectedCondition.value = conditions.value || "";
 }, { deep: true });
 </script>

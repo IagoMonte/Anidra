@@ -1,4 +1,5 @@
 <script setup>
+import { reactive } from 'vue';
 import MolduraCard from './MolduraCard.vue';
 const props = defineProps({
   charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
@@ -15,18 +16,19 @@ function RollD6() {
   let max = Math.floor(6);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function rollTeste(rolls,modi){
+function rollTeste(rolls, modi, bonus) {
   let reuslts = []
-  for(let i=0;i<rolls;i++){
+  for (let i = 0; i < rolls; i++) {
     reuslts.push(RollD6())
   }
   let res = 0
-  reuslts.forEach((a,i)=>{
-    res = res+a
+  reuslts.forEach((a, i) => {
+    res = res + a
   })
 
-  console.log(reuslts, '=', res, '+', modi)
+  console.log(reuslts, '=', res, '+', modi, '+', bonus)
 }
+
 let PercepçãoDices = 2
 let PersuasãoDices = 2
 let FurtividadeDices = 2
@@ -43,12 +45,12 @@ let SorteDices = 2
 let AuraDices = 2
 
 
-let PercepçãoValue = Math.floor(parseInt(mainAttributes.Movimento.split('/')[0]) + (secondaryStats.Carisma/2) + proficiencies.Percepção)//dons + Bonus
+let PercepçãoValue = Math.floor(parseInt(mainAttributes.Movimento.split('/')[0]) + (secondaryStats.Carisma / 2) + proficiencies.Percepção)//dons + Bonus
 let PersuasãoValue = Math.floor(secondaryStats.Carisma + proficiencies.Persuasão)//+dons + Bonus
-let FurtividadeValue = Math.floor(secondaryStats.Carisma+ proficiencies.Furtividade)// +dons + Bonus
+let FurtividadeValue = Math.floor(secondaryStats.Carisma + proficiencies.Furtividade)// +dons + Bonus
 let FurtividadeCombateValue = Math.floor(secondaryStats.Carisma + proficiencies.Furtividade_De_Combate)//dons + Bonus
 let AcrobaciaValue = Math.floor(parseInt(mainAttributes.Movimento.split('/')[0]) + proficiencies.Acrobacia)//estamina opcional + dons + Bonus
-let AcrobaciaCombateValue =Math.floor(0 + proficiencies.Acrobacia_De_Combate)//estamina opcional + dons + Bonus
+let AcrobaciaCombateValue = Math.floor(0 + proficiencies.Acrobacia_De_Combate)//estamina opcional + dons + Bonus
 let PersistênciaValue = Math.floor(0 + proficiencies.Persistência)//dons + Bonus
 let AtaqueValue = Math.floor(0 + proficiencies.Ataque)//dons  + Bonus
 let DefesaValue = Math.floor(0 + proficiencies.Defesa)//dons  + Bonus
@@ -61,7 +63,7 @@ let SorteValue = Math.floor(secondaryStats.Sorte)// + dons + Bonus
 let AuraValue = Math.floor(secondaryStats.Aura)// + dons + Bonus
 
 
-switch(dons){
+switch (dons) {
   case "Talento":
     // atribuir rollcount ao playerid
     break
@@ -83,25 +85,25 @@ switch(dons){
 }
 
 
-const testes = [
-  { label: "Percepção", value: PercepçãoValue, Dices: PercepçãoDices},
-  { label: "Persuasão", value: PersuasãoValue, Dices: PersuasãoDices},
-  { label: "Furtividade", value: FurtividadeValue, Dices: FurtividadeDices},
-  { label: "Furtividade de combate", value: FurtividadeCombateValue, Dices: FurtividadeCombateDices},
-  { label: "Acrobacia", value: AcrobaciaValue, Dices: AcrobaciaDices},
-  { label: "Acrobacia de combate", value: AcrobaciaCombateValue, Dices: AcrobaciaCombateDices},
-  { label: "Persistência", value: PersistênciaValue, Dices: PersistênciaDices},
-  { label: "Ataque", value: AtaqueValue, Dices: AtaqueDices},
-  { label: "Defesa", value: DefesaValue, Dices: DefesaDices},
-  { label: "Precisão", value: PrecisãoValue, Dices: PrecisãoDices}
-]
+const testes = reactive([
+  { label: "Percepção", value: PercepçãoValue, Dices: PercepçãoDices, bonus: 0 },
+  { label: "Persuasão", value: PersuasãoValue, Dices: PersuasãoDices, bonus: 0 },
+  { label: "Furtividade", value: FurtividadeValue, Dices: FurtividadeDices, bonus: 0 },
+  { label: "Furtividade de combate", value: FurtividadeCombateValue, Dices: FurtividadeCombateDices, bonus: 0 },
+  { label: "Acrobacia", value: AcrobaciaValue, Dices: AcrobaciaDices, bonus: 0 },
+  { label: "Acrobacia de combate", value: AcrobaciaCombateValue, Dices: AcrobaciaCombateDices, bonus: 0 },
+  { label: "Persistência", value: PersistênciaValue, Dices: PersistênciaDices, bonus: 0 },
+  { label: "Ataque", value: AtaqueValue, Dices: AtaqueDices, bonus: 0 },
+  { label: "Defesa", value: DefesaValue, Dices: DefesaDices, bonus: 0 },
+  { label: "Precisão", value: PrecisãoValue, Dices: PrecisãoDices, bonus: 0 }
+])
 
-const AtributosAtivos = [
-  { label: "Força", value: ForçaValue, Dices: ForçaDices},
-  { label: "Carisma", value: CarismaValue, Dices: CarismaDices},
-  { label: "Sorte", value: SorteValue, Dices: SorteDices},
-  { label: "Aura", value: AuraValue, Dices: AuraDices}
-]
+const AtributosAtivos = reactive([
+  { label: "Força", value: ForçaValue, Dices: ForçaDices, bonus: 0 },
+  { label: "Carisma", value: CarismaValue, Dices: CarismaDices, bonus: 0 },
+  { label: "Sorte", value: SorteValue, Dices: SorteDices, bonus: 0 },
+  { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
+])
 </script>
 
 <template>
@@ -111,26 +113,19 @@ const AtributosAtivos = [
     </h1>
 
     <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-      <MolduraCard
-        v-for="(t, i) in testes"
-        :key="i"
-        :label="t.label"
-        :value="(t.Dices+'d6+'+t.value)"
-        @click="rollTeste(t.Dices,t.value)"
-      />
+
+      <MolduraCard v-for="(t, i) in testes" :key="i" :label="t.label" :value="(t.Dices + 'd6+' + t.value)"
+        v-model:bonus="t.bonus" @click="rollTeste(t.Dices, t.value, t.bonus)" />
+
+
     </div>
     <h1 class="text-3xl font-semibold mb-3 border-b border-gray-700 pb-2">
       Atributos Ativos
     </h1>
 
     <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-      <MolduraCard
-        v-for="(t, i) in AtributosAtivos"
-        :key="i"
-        :label="t.label"
-        :value="(t.Dices+'d6+'+t.value)"
-        @click="rollTeste(t.Dices,t.value)"
-      />
+      <MolduraCard v-for="(t, i) in AtributosAtivos" :key="i" :label="t.label" :value="(t.Dices + 'd6+' + t.value)"
+        v-model:bonus="t.bonus" @click="rollTeste(t.Dices, t.value, t.bonus)" />
     </div>
   </main>
 </template>

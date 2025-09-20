@@ -2,32 +2,42 @@
 defineProps({
   label: String,
   value: String,
+  bonus: Number,
 })
 
+const emit = defineEmits(['update:bonus'])
+
 const corners = [
-  { pos: "top-0 left-0",    rot: "rot-0" },
-  { pos: "top-0 right-0",   rot: "rot-90" },
-  { pos: "bottom-0 right-0",rot: "rot-180" },
+  { pos: "top-0 left-0", rot: "rot-0" },
+  { pos: "top-0 right-0", rot: "rot-90" },
+  { pos: "bottom-0 right-0", rot: "rot-180" },
   { pos: "bottom-0 left-0", rot: "rot-270" },
 ]
+
+
+function updateBonus(newBonus) {
+  emit('update:bonus',newBonus)
+}
+
+
 </script>
 
 <template>
-  <div class="card hover:cursor-pointer">
-    <span class="text-amber-300 text-sm font-serif tracking-wide">
+  <div class="card hover:cursor-pointer max-w-xs">
+    <span class="text-amber-300 font-serif tracking-wide">
       {{ label }}
     </span>
-    <span class="text-white font-bold font-serif">
-      {{ value }}
-    </span>
-
+    <div class="flex justify-between items-center mt-3">
+      <span class="text-white font-bold font-serif">
+        {{ value }}</span>
+      <div class="flex items-center gap-2">
+        <button @click.stop="updateBonus(bonus - 1)"  class="w-5 h-5 flex items-center justify-center bg-gray-700 rounded hover:bg-gray-600">−</button>
+        <input @click.stop type="text" :value="bonus" readonly class="w-12 text-center bg-gray-800 rounded text-sm font-semibold" />
+        <button @click.stop="updateBonus(bonus + 1)" class="w-5 h-5 flex items-center justify-center bg-gray-700 rounded hover:bg-gray-600">+</button>
+      </div>
+    </div>
     <!-- Cantos com PNG -->
-    <div
-      v-for="(c, i) in corners"
-      :key="i"
-      class="corner absolute w-6 h-6"
-      :class="[c.pos, c.rot]"
-    >
+    <div v-for="(c, i) in corners" :key="i" class="corner absolute w-6 h-6" :class="[c.pos, c.rot]">
       <img src="/src/assets/img/image.svg" class="w-full h-full object-contain" />
     </div>
   </div>
@@ -37,10 +47,7 @@ const corners = [
 .card {
   position: relative;
   background: rgba(10, 18, 20, 0.85);
-  padding: 0.75rem 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 0.50rem 1rem;
 
   border: 3px solid #3d3d3d;
   border-radius: 8px;
@@ -74,9 +81,20 @@ const corners = [
 }
 
 @keyframes runeGlow {
-  0%   { opacity: 0.3; filter: blur(1px); }
-  50%  { opacity: 0.8; filter: blur(2px); }
-  100% { opacity: 0.3; filter: blur(1px); }
+  0% {
+    opacity: 0.3;
+    filter: blur(1px);
+  }
+
+  50% {
+    opacity: 0.8;
+    filter: blur(2px);
+  }
+
+  100% {
+    opacity: 0.3;
+    filter: blur(1px);
+  }
 }
 
 .corner {
@@ -85,14 +103,36 @@ const corners = [
 }
 
 
-.rot-0   { transform: rotate(0deg); }
-.rot-90  { transform: rotate(90deg); }
-.rot-180 { transform: rotate(180deg); }
-.rot-270 { transform: rotate(270deg); }
+.rot-0 {
+  transform: rotate(0deg);
+}
+
+.rot-90 {
+  transform: rotate(90deg);
+}
+
+.rot-180 {
+  transform: rotate(180deg);
+}
+
+.rot-270 {
+  transform: rotate(270deg);
+}
 
 /* puxando levemente pra fora */
-.top-0    { top: -3px; }
-.right-0  { right: -3px; }
-.bottom-0 { bottom: -3px; }
-.left-0   { left: -3px; }
+.top-0 {
+  top: -3px;
+}
+
+.right-0 {
+  right: -3px;
+}
+
+.bottom-0 {
+  bottom: -3px;
+}
+
+.left-0 {
+  left: -3px;
+}
 </style>

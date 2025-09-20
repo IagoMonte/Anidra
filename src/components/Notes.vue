@@ -1,14 +1,17 @@
 <script setup>
 import { reactive, ref } from "vue"
+import {updateMetada, getMetadaById } from "@/owlbear/syncCharacterMetadata"
 
+const props = defineProps({
+  charData: { type: Object, required: true },
+  charId: { type: String, required: true }
+})
+const emit = defineEmits(['updateData'])
 // ================================
 // Estado
 // ================================
 const notes = reactive([
-  {
-    title: "Primeira Nota",
-    content: "Esta é a primeira nota.\nEla pode ter várias linhas."
-  }
+  ...(props.charData.notes|| [])
 ])
 
 // ================================
@@ -26,10 +29,24 @@ function startEdit() {
   tempNotes.value = notes.map(note => ({ ...note }))
 }
 
-function confirmEdit() {
+async function confirmEdit() {
   notes.splice(0, notes.length, ...tempNotes.value)
   editingNotes.value = false
   openedNote.value = null
+
+  let currentData = await getMetadaById(props.charId)
+
+  currentData.info.Stats.notes = JSON.parse(JSON.stringify(notes))
+  
+  try {
+    await updateMetada(props.charId, currentData)
+    console.log("Metadata atualizado com sucesso!")
+  } catch (err) {
+    console.error("Erro ao atualizar metadata:", err)
+  }
+  emit("updateData",props.charId)
+
+
 }
 
 function cancelEdit() {
@@ -41,11 +58,13 @@ function addNote() {
   const newNote = { title: "Nova Nota", content: "" }
   const target = editingNotes.value ? tempNotes.value : notes
   target.push(newNote)
+  confirmEdit()
 }
 
 function removeNote(idx) {
   const target = editingNotes.value ? tempNotes.value : notes
   target.splice(idx, 1)
+  confirmEdit()
 }
 
 function toggleNote(idx) {
