@@ -17,7 +17,7 @@ import { setupAnidra } from './owlbear/contextMenu.js'
 import { watch } from 'vue'
 import { mytestdata } from './owlbear/datatest'
 
-const test = true
+const test = false
 const menuItems = ref([])
 const isOpen = ref(false)
 const current = ref('Stats')
