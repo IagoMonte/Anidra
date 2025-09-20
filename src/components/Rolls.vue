@@ -37,7 +37,7 @@ async function rollTeste(rolls, modi, bonus) {
   };
 
   // envia para todos
-  await OBR.broadcast.sendMessage(rollMessage, { destination: "ROOM" });
+  await OBR.broadcast.sendMessage("ROOM",rollMessage);
   console.log(reuslts, '=', res, '+', modi, '+', bonus)
 }
 

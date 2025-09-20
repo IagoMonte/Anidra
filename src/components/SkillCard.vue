@@ -1,17 +1,17 @@
 <script setup>
 import { ref, watch, defineEmits } from "vue"
 
-const emit = defineEmits(["mastered"])
+const emit = defineEmits(["mastered", 'update'])
 
 const { title, tags, description, completed } = defineProps({
   title: String,
   tags: {
     type: Array,
     default: () => [
-      { name: "10", checks: 1 },
-      { name: "8", checks: 2 },
-      { name: "6", checks: 4 },
-      { name: "4", checks: 6 }
+      { name: "10", checks: 1, checked:[false] },
+      { name: "8", checks: 2, checked:[false, false] },
+      { name: "6", checks: 4, checked:[false, false, false, false] },
+      { name: "4", checks: 6, checked:[false, false, false, false, false, false] }
     ]
   },
   description: String,
@@ -43,6 +43,7 @@ watch(testStates, (val) => {
       emit("mastered", title)
     }
   }
+  emit("update", { title, tags })
 }, { deep: true })
 </script>
 
@@ -69,7 +70,7 @@ watch(testStates, (val) => {
               v-for="(c, cIdx) in tag.checks"
               :key="cIdx"
               type="checkbox"
-              v-model="checkStates[idx][cIdx]"
+              v-model="tag.checked[cIdx]"
               class="w-5 h-5 rounded border border-gray-500 bg-transparent checked:bg-green-500 checked:border-green-500 transition"
               :disabled="!completed"
             />
@@ -86,7 +87,7 @@ watch(testStates, (val) => {
               v-for="(c, cIdx) in tag.checks"
               :key="cIdx"
               type="checkbox"
-              v-model="testStates[idx][cIdx]"
+              v-model="tag.checked[cIdx]"
               class="w-5 h-5 rounded border border-gray-500 bg-transparent checked:bg-yellow-500 checked:border-yellow-500 transition"
             />
           </div>

@@ -28,7 +28,26 @@ const tempUnmastered = ref([])
 // ================================
 // Funções
 // ================================
-function addTag(section, skillIdx, newTag = { name: "DT", checks: 1, checked: [false] }) {
+async function saveSkillUpdate(section, idx, payload) {
+  let currentData = await getMetadaById(props.charId)
+
+  if (section === "mastered") {
+    currentData.info.Stats.skills.masteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+  } else {
+    currentData.info.Stats.skills.unmasteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+  }
+
+  try {
+    await updateMetada(props.charId, currentData)
+    console.log("Auto-save de checks concluído!")
+  } catch (err) {
+    console.error("Erro no auto-save:", err)
+  }
+
+  emit("updateData", props.charId)
+}
+
+function addTag(section, skillIdx, newTag = { name: "DT", checks: 1, checked:[false] }) {
   let targetSkill
 
   if (section === "mastered") {
@@ -80,7 +99,7 @@ async function confirmEdit(section) {
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
-  emit("updateData", props.charId)
+  emit("updateData",props.charId)
 }
 
 function cancelEdit(section) {
@@ -91,8 +110,8 @@ function cancelEdit(section) {
 function addSkill(section) {
   startEdit(section)
   const newSkill = section === "mastered"
-    ? { title: "Nova Habilidade", tags: [{ name: "Combate", checks: 1 }, { name: "Campanha", checks: 1 }], description: "Descrição...", completed: true }
-    : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1 }], description: "Descrição...", completed: false }
+    ? { title: "Nova Habilidade", tags: [{ name: "Combate", checks: 1, checked: [false] }, { name: "Campanha", checks: 1, checked: [false] }], description: "Descrição...", completed: true }
+    : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1, checked: [false] }], description: "Descrição...", completed: false }
 
   const target = section === "mastered"
     ? (editingMastered.value ? tempMastered.value : masteredSkills)
@@ -134,7 +153,7 @@ function addSkill(section) {
         <div v-for="(skill, idx) in (editingMastered ? tempMastered : masteredSkills)" :key="idx"
           class="border border-gray-700 p-3 rounded">
           <div v-if="!editingMastered">
-            <SkillCard v-bind="skill" />
+            <SkillCard v-bind="skill" @update="saveSkillUpdate('mastered', idx, $event)" />
           </div>
           <div v-else class="space-y-2">
             <button @click="removeSkill('mastered', idx)"
@@ -146,21 +165,10 @@ function addSkill(section) {
             <textarea v-model="skill.description"
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
             <!-- Tags/Checks editáveis -->
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col gap-1">
-              <div class="flex gap-2 items-center">
-                <input v-model="tag.name" placeholder="DT"
-                  class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-                <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                  class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
-                  />
-              </div>
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
+              <input v-model.number="tag.checks" type="number" placeholder="Checks"
+                class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
 
-              <!-- Caixa de checks -->
-              <div class="flex gap-1">
-                <label v-for="(val, cIdx) in tag.checked" :key="cIdx" class="flex items-center gap-1">
-                  <input type="checkbox" v-model="tag.checked[cIdx]" class="accent-green-500" />
-                </label>
-              </div>
             </div>
           </div>
         </div>
@@ -196,7 +204,7 @@ function addSkill(section) {
         <div v-for="(skill, idx) in (editingUnmastered ? tempUnmastered : unmasteredSkills)" :key="idx"
           class="border border-gray-700 p-3 rounded">
           <div v-if="!editingUnmastered">
-            <SkillCard v-bind="skill" />
+            <SkillCard v-bind="skill" @update="saveSkillUpdate('unmastered', idx, $event)" />
           </div>
           <div v-else class="space-y-2">
             <button @click="removeSkill('unmastered', idx)"
@@ -207,23 +215,13 @@ function addSkill(section) {
               placeholder="Título" />
             <textarea v-model="skill.description"
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col gap-1">
-              <div class="flex gap-2 items-center">
-                <input v-model="tag.name" placeholder="DT"
-                  class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-                <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                  class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
-                  />
-              </div>
-
-              <!-- Caixa de checks -->
-              <div class="flex gap-1">
-                <label v-for="(val, cIdx) in tag.checked" :key="cIdx" class="flex items-center gap-1">
-                  <input type="checkbox" v-model="tag.checked[cIdx]" class="accent-green-500" />
-                </label>
-              </div>
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
+              <input v-model="tag.name" placeholder="DT"
+                class="w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+              <input v-model.number="tag.checks" type="number" placeholder="Checks"
+                class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
             </div>
-            <button @click="addTag('unmastered', idx, { name: 'DTS', checks: 1 })"
+            <button @click="addTag('unmastered', idx, { name: 'DTS', checks: 1, checked: [false] })"
               class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm">
               ➕ Adicionar DT
             </button>
