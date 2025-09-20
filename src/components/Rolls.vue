@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive,onMounted, onBeforeUnmount } from 'vue';
 import MolduraCard from './MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
 
@@ -37,9 +37,8 @@ async function rollTeste(rolls, modi, bonus) {
   }
 
   // envia para todos
-  await OBR.broadcast.sendMessage("ROOM", rollMessage)
-
   console.log(results, '=', sum, '+', modi, '+', bonus, '=>', finalResult)
+  await OBR.broadcast.sendMessage("ROOM", rollMessage, {destination: "ALL"})
 }
 
 let PercepçãoDices = 2
@@ -118,17 +117,17 @@ const AtributosAtivos = reactive([
   { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
 ])
 
-OBR.broadcast.onMessage("ROOM", (msg) => {
-  console.log('A mensagem do emisso chegou')
-  let { rolls, modi, bonus, total } = msg.data;
+let unsubscribe
+onMounted(() => {
+  unsubscribe = OBR.broadcast.onMessage("ROOM", (msg)=>{
+    console.log(msg)
 
-  OBR.notification.show(
-    `🎲 Rolou: [${rolls.join(", ")}] = ${rolls.reduce((a, b) => a + b, 0)} + ${modi} + ${bonus} = ${total}`,
-    { duration: 8000 }
-  );
-});
+  })
+})
 
-
+onBeforeUnmount(() => {
+  if (unsubscribe) unsubscribe()
+})
 </script>
 
 <template>
