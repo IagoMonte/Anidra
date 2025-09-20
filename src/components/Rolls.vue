@@ -116,18 +116,6 @@ const AtributosAtivos = reactive([
   { label: "Sorte", value: SorteValue, Dices: SorteDices, bonus: 0 },
   { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
 ])
-
-let unsubscribe
-onMounted(() => {
-  unsubscribe = OBR.broadcast.onMessage("ROOM", (msg)=>{
-    console.log(msg)
-
-  })
-})
-
-onBeforeUnmount(() => {
-  if (unsubscribe) unsubscribe()
-})
 </script>
 
 <template>
