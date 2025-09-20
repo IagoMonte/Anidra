@@ -119,6 +119,7 @@ const AtributosAtivos = reactive([
 ])
 
 OBR.broadcast.onMessage("ROOM", (msg) => {
+  console.log('A mensagem do emisso chegou')
   let { rolls, modi, bonus, total } = msg.data;
 
   OBR.notification.show(
