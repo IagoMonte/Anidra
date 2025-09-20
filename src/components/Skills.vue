@@ -28,7 +28,7 @@ const tempUnmastered = ref([])
 // ================================
 // Funções
 // ================================
-function addTag(section, skillIdx, newTag = { name: "DT", checks: 1 }) {
+function addTag(section, skillIdx, newTag = { name: "DT", checks: 1, checked: [false] }) {
   let targetSkill
 
   if (section === "mastered") {
@@ -80,7 +80,7 @@ async function confirmEdit(section) {
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
-  emit("updateData",props.charId)
+  emit("updateData", props.charId)
 }
 
 function cancelEdit(section) {
@@ -146,12 +146,21 @@ function addSkill(section) {
             <textarea v-model="skill.description"
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
             <!-- Tags/Checks editáveis -->
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
-              <input v-model="tag.name" placeholder="DT"
-                class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-              <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col gap-1">
+              <div class="flex gap-2 items-center">
+                <input v-model="tag.name" placeholder="DT"
+                  class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+                <input v-model.number="tag.checks" type="number" placeholder="Checks"
+                  class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
+                  />
+              </div>
 
+              <!-- Caixa de checks -->
+              <div class="flex gap-1">
+                <label v-for="(val, cIdx) in tag.checked" :key="cIdx" class="flex items-center gap-1">
+                  <input type="checkbox" v-model="tag.checked[cIdx]" class="accent-green-500" />
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -198,11 +207,21 @@ function addSkill(section) {
               placeholder="Título" />
             <textarea v-model="skill.description"
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
-              <input v-model="tag.name" placeholder="DT"
-                class="w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-              <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col gap-1">
+              <div class="flex gap-2 items-center">
+                <input v-model="tag.name" placeholder="DT"
+                  class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+                <input v-model.number="tag.checks" type="number" placeholder="Checks"
+                  class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
+                  />
+              </div>
+
+              <!-- Caixa de checks -->
+              <div class="flex gap-1">
+                <label v-for="(val, cIdx) in tag.checked" :key="cIdx" class="flex items-center gap-1">
+                  <input type="checkbox" v-model="tag.checked[cIdx]" class="accent-green-500" />
+                </label>
+              </div>
             </div>
             <button @click="addTag('unmastered', idx, { name: 'DTS', checks: 1 })"
               class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm">

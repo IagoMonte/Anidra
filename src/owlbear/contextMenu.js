@@ -41,8 +41,8 @@ const initcharacterSheet = {
       {
         title: "Habilidade",
         tags: [
-          { name: "combate", checks: 1 },
-          { name: "campanha", checks: 1 },
+          { name: "combate", checks: 1, checked: [false] },
+          { name: "campanha", checks: 1, checked: [false] },
         ],
         description: "Descricao da Habilidade",
         completed: true,
@@ -53,10 +53,10 @@ const initcharacterSheet = {
       {
         title: "Habilidade não dominada",
         tags: [
-          { name: "10", checks: 1 },
-          { name: "8", checks: 2 },
-          { name: "6", checks: 4 },
-          { name: "4", checks: 6 },
+          { name: "10", checks: 1, checked: [false] },
+          { name: "8", checks: 2, checked: [false,false] },
+          { name: "6", checks: 4, checked: [false,false,false,false] },
+          { name: "4", checks: 6, checked: [false,false,false,false,false,false]},
         ],
         description: "Não dominada ainda.",
         completed: false,

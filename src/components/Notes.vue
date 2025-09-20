@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue"
-import {updateMetada, getMetadaById } from "@/owlbear/syncCharacterMetadata"
+import { updateMetada, getMetadaById } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
   charData: { type: Object, required: true },
@@ -11,7 +11,7 @@ const emit = defineEmits(['updateData'])
 // Estado
 // ================================
 const notes = reactive([
-  ...(props.charData.notes|| [])
+  ...(props.charData.notes || [])
 ])
 
 // ================================
@@ -37,14 +37,14 @@ async function confirmEdit() {
   let currentData = await getMetadaById(props.charId)
 
   currentData.info.Stats.notes = JSON.parse(JSON.stringify(notes))
-  
+
   try {
     await updateMetada(props.charId, currentData)
     console.log("Metadata atualizado com sucesso!")
   } catch (err) {
     console.error("Erro ao atualizar metadata:", err)
   }
-  emit("updateData",props.charId)
+  emit("updateData", props.charId)
 
 
 }
@@ -81,14 +81,13 @@ function toggleNote(idx) {
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-bold">Notas</h1>
       <div class="flex gap-2">
-        <button v-if="!editingNotes" @click="startEdit"
-          class="text-sm text-gray-400 hover:text-white">
-            Editar</button>
+        <button v-if="!editingNotes" @click="startEdit" class="text-sm text-gray-400 hover:text-white">
+          Editar</button>
         <template v-else>
           <button @click="confirmEdit" class="text-sm text-green-400 hover:text-green-200">
-              ✔ Confirmar</button>
+            ✔ Confirmar</button>
           <button @click="cancelEdit" class="text-sm text-red-400 hover:text-red-200">
-              ✖ Cancelar</button>
+            ✖ Cancelar</button>
         </template>
       </div>
     </div>
@@ -102,33 +101,34 @@ function toggleNote(idx) {
 
     <!-- Lista rolável de notas -->
     <div class="flex-1 overflow-y-auto space-y-4">
-  <div v-for="(note, idx) in (editingNotes ? tempNotes : notes)" :key="idx"
-    class="border border-gray-600 rounded p-3">
+      <div v-for="(note, idx) in (editingNotes ? tempNotes : notes)" :key="idx"
+        class="border border-gray-600 rounded p-3"
+        @click="toggleNote(idx)">
 
-    <!-- 🔹 Visualização (SEM edição) -->
-    <div v-if="!editingNotes">
-      <div class="flex justify-between items-center cursor-pointer" @click="toggleNote(idx)">
-        <h2 class="text-white text-[20px] font-normal">{{ note.title }}</h2>
-        <button @click.stop="removeNote(idx)"
-          class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑</button>
+        <!-- 🔹 Visualização (SEM edição) -->
+        <div v-if="!editingNotes">
+          <div class="flex justify-between items-center cursor-pointer">
+            <h2 class="text-white text-[20px] font-normal">{{ note.title }}</h2>
+            <button @click.stop="removeNote(idx)"
+              class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑</button>
+          </div>
+
+          <!-- Mostra só primeira linha ou todo conteúdo se aberto -->
+          <p class="text-gray-400 text-[16px] font-normal whitespace-pre-line">
+            {{ openedNote === idx ? note.content : note.content.split('\n')[0] }}
+          </p>
+        </div>
+
+        <!-- 🔹 Modo edição -->
+        <div v-else class="space-y-2">
+          <input v-model="note.title" placeholder="Título"
+            class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+          <textarea v-model="note.content" placeholder="Conteúdo"
+            class="w-full h-65 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"></textarea>
+        </div>
+
       </div>
-
-      <!-- Mostra só primeira linha ou todo conteúdo se aberto -->
-      <p class="text-gray-400 text-[16px] font-normal whitespace-pre-line">
-        {{ openedNote === idx ? note.content : note.content.split('\n')[0] }}
-      </p>
     </div>
-
-    <!-- 🔹 Modo edição -->
-    <div v-else class="space-y-2">
-      <input v-model="note.title" placeholder="Título"
-        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
-      <textarea v-model="note.content" placeholder="Conteúdo"
-        class="w-full h-65 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"></textarea>
-    </div>
-
-  </div>
-</div>
 
   </main>
 </template>

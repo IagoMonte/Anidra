@@ -1,6 +1,8 @@
 <script setup>
 import { reactive } from 'vue';
 import MolduraCard from './MolduraCard.vue';
+import OBR from "@owlbear-rodeo/sdk";
+
 const props = defineProps({
   charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
   charId: { type: String, required: true } // id do item no Owlbear
@@ -16,16 +18,26 @@ function RollD6() {
   let max = Math.floor(6);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function rollTeste(rolls, modi, bonus) {
-  let reuslts = []
+async function rollTeste(rolls, modi, bonus) {
+  let results = [];
   for (let i = 0; i < rolls; i++) {
-    reuslts.push(RollD6())
+    results.push(RollD6());
   }
-  let res = 0
-  reuslts.forEach((a, i) => {
-    res = res + a
-  })
 
+  let sum = results.reduce((a, b) => a + b, 0);
+  let finalResult = sum + modi + bonus;
+
+  // objeto da mensagem
+  let rollMessage = {
+    type: "ROLL_RESULT",
+    rolls: results,
+    modi,
+    bonus,
+    total: finalResult,
+  };
+
+  // envia para todos
+  await OBR.broadcast.sendMessage(rollMessage, { destination: "ROOM" });
   console.log(reuslts, '=', res, '+', modi, '+', bonus)
 }
 
@@ -104,6 +116,17 @@ const AtributosAtivos = reactive([
   { label: "Sorte", value: SorteValue, Dices: SorteDices, bonus: 0 },
   { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
 ])
+
+OBR.broadcast.onMessage("ROLL_RESULT", (msg) => {
+  let { rolls, modi, bonus, total } = msg.data;
+
+  OBR.notification.show(
+    `🎲 Rolou: [${rolls.join(", ")}] = ${rolls.reduce((a, b) => a + b, 0)} + ${modi} + ${bonus} = ${total}`,
+    { duration: 8000 }
+  );
+});
+
+
 </script>
 
 <template>
