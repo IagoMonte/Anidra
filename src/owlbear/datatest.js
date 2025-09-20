@@ -146,11 +146,13 @@ export function mytestdata(){
                                 "tags": [
                                     {
                                         "name": "combate",
-                                        "checks": 1
+                                        "checks": 3,
+                                        "checked": [false,false,false]
                                     },
                                     {
                                         "name": "campanha",
-                                        "checks": 1
+                                        "checks": 3,
+                                        "checked": [false,false,false]
                                     }
                                 ],
                                 "description": "Descricao da Habilidade",
@@ -163,19 +165,23 @@ export function mytestdata(){
                                 "tags": [
                                     {
                                         "name": "10",
-                                        "checks": 1
+                                        "checks": 3,
+                                        "checked": [false,false,false]
                                     },
                                     {
                                         "name": "8",
-                                        "checks": 2
+                                        "checks": 3,
+                                        "checked": [false,false,false]
                                     },
                                     {
                                         "name": "6",
-                                        "checks": 4
+                                        "checks": 3,
+                                        "checked": [false,false,false]
                                     },
                                     {
                                         "name": "4",
-                                        "checks": 6
+                                        "checks": 3,
+                                        "checked": [false,false,false]
                                     }
                                 ],
                                 "description": "Não dominada ainda.",

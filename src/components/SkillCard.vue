@@ -30,16 +30,21 @@ const corners = [
 ]
 
 // Watch para emitir evento quando todos testes são concluídos
-watch(tags, (val) => {
-  if (!completed) {
-    const allDone = val.every(arr => arr.every(v => v))
-    if (allDone) {
-      emit("mastered", title)
+watch(
+  () => tags,  // <- usa função getter
+  (val) => {
+    if (!completed) {
+      const allDone = val.every(tag => tag.checked.every(c => c))
+      if (allDone) {
+        emit("mastered", title)
+      }
     }
-  }
-  console.log('1. to aqui')
-  emit("update", { title, tags })
-}, { deep: true })
+
+    // Emitir sempre o auto-save
+    emit("update", { title, tags })
+  },
+  { deep: true }
+)
 </script>
 
 <template>
