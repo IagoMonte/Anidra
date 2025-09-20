@@ -314,8 +314,8 @@ function confirmEdit(section) {
     mainAttributesReactive,
     secondaryStatsReactive,
     proficienciesReactive,
-    dons: props.charData.dons,
-    conditions: props.charData.conditions,
+    dons: dons.value,
+    conditions: conditions.value,
     skills: props.charData.skills,
     inventory: props.charData.inventory,
     notes: props.charData.notes
