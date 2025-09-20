@@ -27,18 +27,19 @@ async function rollTeste(rolls, modi, bonus) {
   let sum = results.reduce((a, b) => a + b, 0);
   let finalResult = sum + modi + bonus;
 
-  // objeto da mensagem
-  let rollMessage = {
+ let rollMessage = {
     type: "ROLL_RESULT",
+    playerId: props.charId, // quem rolou
     rolls: results,
     modi,
     bonus,
     total: finalResult,
-  };
+  }
 
   // envia para todos
-  await OBR.broadcast.sendMessage("ROOM",rollMessage);
-  console.log(reuslts, '=', res, '+', modi, '+', bonus)
+  await OBR.broadcast.sendMessage("ROOM", rollMessage)
+
+  console.log(results, '=', sum, '+', modi, '+', bonus, '=>', finalResult)
 }
 
 let PercepçãoDices = 2
