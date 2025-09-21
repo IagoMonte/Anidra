@@ -18,7 +18,7 @@ function RollD6() {
   let max = Math.floor(6);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-async function rollTeste(rolls, modi, bonus) {
+async function rollTeste(label,rolls, modi, bonus) {
   let results = [];
   for (let i = 0; i < rolls; i++) {
     results.push(RollD6());
@@ -30,6 +30,7 @@ async function rollTeste(rolls, modi, bonus) {
  let rollMessage = {
     type: "ROLL_RESULT",
     playerId: props.charId, // quem rolou
+    testLabel:label,
     rolls: results,
     modi,
     bonus,
@@ -124,7 +125,7 @@ const AtributosAtivos = reactive([
     <div class="grid grid-cols-2 gap-x-4 gap-y-2">
 
       <MolduraCard v-for="(t, i) in testes" :key="i" :label="t.label" :value="(t.Dices + 'd6+' + t.value)"
-        v-model:bonus="t.bonus" @click="rollTeste(t.Dices, t.value, t.bonus)" />
+        v-model:bonus="t.bonus" @click="rollTeste(t.label,t.Dices, t.value, t.bonus)" />
 
 
     </div>
@@ -134,7 +135,7 @@ const AtributosAtivos = reactive([
 
     <div class="grid grid-cols-2 gap-x-4 gap-y-2">
       <MolduraCard v-for="(t, i) in AtributosAtivos" :key="i" :label="t.label" :value="(t.Dices + 'd6+' + t.value)"
-        v-model:bonus="t.bonus" @click="rollTeste(t.Dices, t.value, t.bonus)" />
+        v-model:bonus="t.bonus" @click="rollTeste(t.label,t.Dices, t.value, t.bonus)" />
     </div>
   </main>
 </template>
