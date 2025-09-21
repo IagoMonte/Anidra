@@ -23,21 +23,25 @@ function updateBonus(newBonus) {
 </script>
 
 <template>
-  <div class="card hover:cursor-pointer max-w-xs">
-    <span class="text-amber-300 font-serif tracking-wide">
+  <div class="card hover:cursor-pointer max-w-[200px] sm:max-w-xs p-2 sm:p-4">
+    <span class="text-amber-300 font-serif tracking-wide text-sm sm:text-base">
       {{ label }}
     </span>
-    <div class="flex justify-between items-center mt-3">
-      <span class="text-white font-bold font-serif">
-        {{ value }}</span>
-      <div class="flex items-center gap-2">
-        <button @click.stop="updateBonus(bonus - 1)"  class="w-5 h-5 flex items-center justify-center bg-gray-700 rounded hover:bg-gray-600">−</button>
-        <input @click.stop type="text" :value="bonus" readonly class="w-12 text-center bg-gray-800 rounded text-sm font-semibold" />
-        <button @click.stop="updateBonus(bonus + 1)" class="w-5 h-5 flex items-center justify-center bg-gray-700 rounded hover:bg-gray-600">+</button>
+    <div class="flex justify-between items-center mt-2 sm:mt-3">
+      <span class="text-white font-bold font-serif text-sm sm:text-base">
+        {{ value }}
+      </span>
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button @click.stop="updateBonus(bonus - 1)"  
+          class="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center bg-gray-700 rounded hover:bg-gray-600 text-xs sm:text-sm">−</button>
+        <input @click.stop type="text" :value="bonus" readonly 
+          class="w-10 sm:w-12 text-center bg-gray-800 rounded text-xs sm:text-sm font-semibold" />
+        <button @click.stop="updateBonus(bonus + 1)" 
+          class="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center bg-gray-700 rounded hover:bg-gray-600 text-xs sm:text-sm">+</button>
       </div>
     </div>
     <!-- Cantos com PNG -->
-    <div v-for="(c, i) in corners" :key="i" class="corner absolute w-6 h-6" :class="[c.pos, c.rot]">
+    <div v-for="(c, i) in corners" :key="i" class="corner absolute w-5 h-5 sm:w-6 sm:h-6" :class="[c.pos, c.rot]">
       <img src="/src/assets/img/image.svg" class="w-full h-full object-contain" />
     </div>
   </div>

@@ -125,52 +125,61 @@ function addSkill(section) {
 
 
 <template>
-  <main class="bg-[#121212] min-h-screen p-4 text-white font-sans">
+  <main class="bg-[#121212] min-h-screen text-white font-sans sm:p-4">
     <!-- DOMINADAS -->
-    <section class="mb-6 border border-gray-600 rounded-lg p-3" :class="editingMastered ? 'ring-2 ring-green-500' : ''">
-      <div class="flex justify-between items-center mb-3">
-        <h1 class="text-2xl font-bold">Habilidades Dominadas</h1>
-        <div class="flex gap-2">
-          <button v-if="!editingMastered" @click="startEdit('mastered')" class="text-sm text-gray-400 hover:text-white">
+    <section class="mb-6 border border-gray-600 rounded-lg p-3"
+      :class="editingMastered ? 'ring-2 ring-green-500' : ''">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+        <h1 class="text-xl sm:text-2xl font-bold">Habilidades Dominadas</h1>
+        <div class="flex gap-2 flex-wrap">
+          <button v-if="!editingMastered" @click="startEdit('mastered')" 
+            class="text-xs sm:text-sm text-gray-400 hover:text-white">
             Editar
           </button>
           <template v-else>
-            <button @click="confirmEdit('mastered')" class="text-sm text-green-400 hover:text-green-200">
+            <button @click="confirmEdit('mastered')" 
+              class="text-xs sm:text-sm text-green-400 hover:text-green-200">
               ✔ Confirmar
             </button>
-            <button @click="cancelEdit('mastered')" class="text-sm text-red-400 hover:text-red-200">
+            <button @click="cancelEdit('mastered')" 
+              class="text-xs sm:text-sm text-red-400 hover:text-red-200">
               ✖ Cancelar
             </button>
-            <!-- Botão remover -->
           </template>
         </div>
       </div>
 
-      <button @click="addSkill('mastered')" class="mb-4 px-3 py-2 bg-green-600 rounded hover:bg-green-500 text-sm">
+      <button @click="addSkill('mastered')" 
+        class="mb-4 px-3 py-2 bg-green-600 rounded hover:bg-green-500 text-xs sm:text-sm w-full sm:w-auto">
         ➕ Adicionar dominada
       </button>
 
       <div class="space-y-4">
         <div v-for="(skill, idx) in (editingMastered ? tempMastered : masteredSkills)" :key="idx"
-          class="border border-gray-700 p-3 rounded">
+          class="rounded space-y-2">
+
           <div v-if="!editingMastered">
             <SkillCard v-bind="skill" @update="saveSkillUpdate('mastered', idx, $event)" />
           </div>
+
           <div v-else class="space-y-2">
             <button @click="removeSkill('mastered', idx)"
-              class="mt-2 px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">
+              class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-xs sm:text-sm">
               🗑 Remover
             </button>
-            <input v-model="skill.title" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
+            <input v-model="skill.title" 
+              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base"
               placeholder="Título" />
             <textarea v-model="skill.description"
-              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
-            <!-- Tags/Checks editáveis -->
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
-              <span class="text-xs uppercase text-gray-400 mr-2">{{ tag.name }}</span>
-              <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base"
+              placeholder="Descrição"></textarea>
 
+            <!-- Tags/Checks -->
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+              <span class="text-xs sm:text-sm uppercase text-gray-400">{{ tag.name }}</span>
+              <input v-model.number="tag.checks" type="number" placeholder="Checks"
+                class="w-full sm:w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
             </div>
           </div>
         </div>
@@ -180,51 +189,61 @@ function addSkill(section) {
     <!-- NÃO DOMINADAS -->
     <section class="mb-6 border border-gray-600 rounded-lg p-3"
       :class="editingUnmastered ? 'ring-2 ring-yellow-500' : ''">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Habilidades Não Dominadas</h2>
-        <div class="flex gap-2">
-          <button v-if="!editingUnmastered" @click="startEdit('unmastered')"
-            class="text-sm text-gray-400 hover:text-white">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+        <h2 class="text-xl sm:text-2xl font-bold">Habilidades Não Dominadas</h2>
+        <div class="flex gap-2 flex-wrap">
+          <button v-if="!editingUnmastered" @click="startEdit('unmastered')" 
+            class="text-xs sm:text-sm text-gray-400 hover:text-white">
             Editar
           </button>
           <template v-else>
-            <button @click="confirmEdit('unmastered')" class="text-sm text-green-400 hover:text-green-200">
+            <button @click="confirmEdit('unmastered')" 
+              class="text-xs sm:text-sm text-green-400 hover:text-green-200">
               ✔ Confirmar
             </button>
-            <button @click="cancelEdit('unmastered')" class="text-sm text-red-400 hover:text-red-200">
+            <button @click="cancelEdit('unmastered')" 
+              class="text-xs sm:text-sm text-red-400 hover:text-red-200">
               ✖ Cancelar
             </button>
           </template>
         </div>
       </div>
 
-      <button @click="addSkill('unmastered')" class="mb-4 px-3 py-2 bg-yellow-600 rounded hover:bg-yellow-500 text-sm">
+      <button @click="addSkill('unmastered')" 
+        class="mb-4 px-3 py-2 bg-yellow-600 rounded hover:bg-yellow-500 text-xs sm:text-sm w-full sm:w-auto">
         ➕ Adicionar não dominada
       </button>
 
       <div class="space-y-4">
         <div v-for="(skill, idx) in (editingUnmastered ? tempUnmastered : unmasteredSkills)" :key="idx"
-          class="border border-gray-700 p-3 rounded">
+          class="rounded space-y-2">
+
           <div v-if="!editingUnmastered">
             <SkillCard v-bind="skill" @update="saveSkillUpdate('unmastered', idx, $event)" />
           </div>
+
           <div v-else class="space-y-2">
             <button @click="removeSkill('unmastered', idx)"
-              class="mt-2 px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">
+              class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-xs sm:text-sm">
               🗑 Remover
             </button>
-            <input v-model="skill.title" class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"
+            <input v-model="skill.title" 
+              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base"
               placeholder="Título" />
             <textarea v-model="skill.description"
-              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
+              class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base"
+              placeholder="Descrição"></textarea>
+
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <input v-model="tag.name" placeholder="DT"
-                class="w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+                class="w-full sm:w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
               <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                class="w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
+                class="w-full sm:w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
             </div>
+
             <button @click="addTag('unmastered', idx, { name: 'DTS', checks: 1, checked: [false] })"
-              class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm">
+              class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded text-xs sm:text-sm w-full sm:w-auto">
               ➕ Adicionar DT
             </button>
           </div>
@@ -233,3 +252,4 @@ function addSkill(section) {
     </section>
   </main>
 </template>
+

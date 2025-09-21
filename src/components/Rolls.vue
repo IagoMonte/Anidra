@@ -115,27 +115,40 @@ const AtributosAtivos = reactive([
   { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
 ])
 </script>
-
 <template>
-  <main class="bg-[#121212] text-white min-h-screen p-4">
-    <h1 class="text-3xl font-semibold mb-3 border-b border-gray-700 pb-2">
+  <main class="bg-[#121212] text-white min-h-screen p-2 sm:p-0">
+    <!-- Título Testes -->
+    <h1 class="text-2xl sm:text-3xl font-semibold mb-2 sm:mb-3 border-b border-gray-700 pb-1 sm:pb-2">
       Testes
     </h1>
 
-    <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-
-      <MolduraCard v-for="(t, i) in testes" :key="i" :label="t.label" :value="(t.Dices + 'd6+' + t.value)"
-        v-model:bonus="t.bonus" @click="rollTeste(t.label,t.Dices, t.value, t.bonus)" />
-
-
+    <!-- Grid de Testes -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-items-center gap-2 sm:gap-4">
+      <MolduraCard
+        v-for="(t, i) in testes" :key="i"
+        class="w-full max-w-[300px]" 
+        :label="t.label"
+        :value="t.Dices + 'd6+' + t.value"
+        v-model:bonus="t.bonus"
+        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)"
+      />
     </div>
-    <h1 class="text-3xl font-semibold mb-3 border-b border-gray-700 pb-2">
+
+    <!-- Título Atributos Ativos -->
+    <h1 class="text-2xl sm:text-3xl font-semibold mt-6 mb-2 sm:mb-3 border-b border-gray-700 pb-1 sm:pb-2">
       Atributos Ativos
     </h1>
 
-    <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-      <MolduraCard v-for="(t, i) in AtributosAtivos" :key="i" :label="t.label" :value="(t.Dices + 'd6+' + t.value)"
-        v-model:bonus="t.bonus" @click="rollTeste(t.label,t.Dices, t.value, t.bonus)" />
+    <!-- Grid de Atributos Ativos -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-items-center gap-2 sm:gap-4">
+      <MolduraCard
+        v-for="(t, i) in AtributosAtivos" :key="i"
+        class="w-full max-w-[300px]"
+        :label="t.label"
+        :value="t.Dices + 'd6+' + t.value"
+        v-model:bonus="t.bonus"
+        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)"
+      />
     </div>
   </main>
 </template>

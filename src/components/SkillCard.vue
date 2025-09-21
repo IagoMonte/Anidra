@@ -49,29 +49,29 @@ watch(
 
 <template>
   <article
-    class="relative border-2 border-gray-700 rounded-lg bg-[rgba(10,18,20,0.85)] shadow-md p-4 flex items-start transition hover:border-amber-400 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)] overflow-hidden"
+    class="relative border-2 border-gray-700 rounded-lg bg-[rgba(10,18,20,0.85)] shadow-md p-4 flex flex-col sm:flex-row items-start transition hover:border-amber-400 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)] overflow-hidden"
     :class="{ 'opacity-70': !completed }"
   >
     <!-- Cantos ornamentados -->
-    <div v-for="(c, i) in corners" :key="i" class="absolute w-6 h-6 overflow-visible" :class="[c.pos, c.rot]">
+    <div v-for="(c, i) in corners" :key="i" class="absolute w-5 h-5 sm:w-6 sm:h-6 overflow-visible" :class="[c.pos, c.rot]">
       <img src="/src/assets/img/image.svg" class="w-full h-full object-contain" />
     </div>
 
     <!-- Conteúdo principal -->
     <div class="flex-1">
-      <h2 class="text-lg font-bold mb-2 text-white">{{ title }}</h2>
+      <h2 class="text-base sm:text-lg font-bold mb-2 text-white">{{ title }}</h2>
 
       <!-- Se já está dominada -->
       <template v-if="completed">
         <div v-for="(tag, idx) in tags" :key="idx" class="mb-2">
-          <span class="text-xs uppercase text-gray-400 mr-2">{{ tag.name }}</span>
-          <div class="inline-flex space-x-2">
+          <span class="text-xs sm:text-sm uppercase text-gray-400 mr-2">{{ tag.name }}</span>
+          <div class="inline-flex flex-wrap gap-1 sm:gap-2">
             <input
               v-for="(c, cIdx) in tag.checks"
               :key="cIdx"
               type="checkbox"
               v-model="tag.checked[cIdx]"
-              class="w-5 h-5 rounded border border-gray-500 bg-transparent checked:bg-green-500 checked:border-green-500 transition"
+              class="w-4 h-4 sm:w-5 sm:h-5 rounded border border-gray-500 bg-transparent checked:bg-green-500 checked:border-green-500 transition"
               :disabled="!completed"
             />
           </div>
@@ -81,14 +81,14 @@ watch(
       <!-- Se ainda NÃO dominada -->
       <template v-else>
         <div v-for="(tag, idx) in tags" :key="idx" class="mb-2">
-          <span class="text-xs uppercase text-red-400 mr-2">DT {{ tag.name }}</span>
-          <div class="inline-flex space-x-2">
+          <span class="text-xs sm:text-sm uppercase text-red-400 mr-2">DT {{ tag.name }}</span>
+          <div class="inline-flex flex-wrap gap-1 sm:gap-2">
             <input
               v-for="(c, cIdx) in tag.checks"
               :key="cIdx"
               type="checkbox"
               v-model="tag.checked[cIdx]"
-              class="w-5 h-5 rounded border border-gray-500 bg-transparent checked:bg-yellow-500 checked:border-yellow-500 transition"
+              class="w-4 h-4 sm:w-5 sm:h-5 rounded border border-gray-500 bg-transparent checked:bg-yellow-500 checked:border-yellow-500 transition"
             />
           </div>
         </div>
@@ -97,7 +97,7 @@ watch(
 
     <!-- Descrição -->
     <div
-      class="ml-4 bg-[rgba(30,30,30,0.8)] p-3 text-xs leading-relaxed max-w-[220px] rounded-md border border-gray-600 italic"
+      class="mt-3 sm:mt-0 sm:ml-4 bg-[rgba(30,30,30,0.8)] p-2 sm:p-3 text-xs sm:text-sm leading-relaxed max-w-full sm:max-w-[220px] rounded-md border border-gray-600 italic"
     >
       {{ description }}
     </div>

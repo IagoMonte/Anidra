@@ -22,7 +22,7 @@
       </div>
 
       <!-- Principais -->
-      <div class="grid grid-cols-2 gap-3 mb-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         <div v-for="(attr, i) in mainAttributesReactive" :key="i"
           class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
           <span>{{ attr.label }}</span>
@@ -32,7 +32,7 @@
       </div>
 
       <!-- Secundários -->
-      <div class="grid grid-cols-5 gap-3 mb-4">
+      <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-4">
         <article v-for="(stat, i) in secondaryStatsReactive" :key="i"
           class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
           <span class="mb-1">{{ stat.label }}</span>
@@ -107,34 +107,37 @@
     <!-- Proficiencias -->
     <section class="mb-4 border border-gray-600 rounded-lg p-3"
       :class="editingProficiencies ? 'ring-2 ring-blue-500' : ''">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xl font-bold">Proficências</h2>
+
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+        <h2 class="text-lg sm:text-xl font-bold">Proficências</h2>
         <div class="flex gap-2">
           <button v-if="!editingProficiencies" @click="startEdit('proficiencies')"
-            class="text-sm text-gray-400 hover:text-white">
+            class="text-xs sm:text-sm text-gray-400 hover:text-white">
             Editar
           </button>
           <template v-else>
-            <button @click="confirmEdit('proficiencies')" class="text-sm text-green-400 hover:text-green-200">
+            <button @click="confirmEdit('proficiencies')"
+              class="text-xs sm:text-sm text-green-400 hover:text-green-200">
               ✔ Confirmar
             </button>
-            <button @click="cancelEdit('proficiencies')" class="text-sm text-red-400 hover:text-red-200">
+            <button @click="cancelEdit('proficiencies')" class="text-xs sm:text-sm text-red-400 hover:text-red-200">
               ✖ Cancelar
             </button>
           </template>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div v-for="(prof, i) in proficienciesReactive" :key="i"
-          class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+          class="border border-gray-600 rounded-md px-2 sm:px-3 py-1 flex justify-between items-center text-sm sm:text-base">
           <span>{{ prof.label }}</span>
 
           <input v-if="prof.type === 'checkbox'" type="checkbox" v-model="prof.value" :disabled="!editingProficiencies"
-            class="w-5 h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white" />
+            class="w-4 h-4 sm:w-5 sm:h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white" />
 
-          <span v-else-if="!editingProficiencies">{{ prof.value }}</span>
-          <input v-else v-model="prof.tempValue" type="number" class="w-14 text-white text-center rounded px-1" />
+          <span v-else-if="!editingProficiencies" class="truncate">{{ prof.value }}</span>
+          <input v-else v-model="prof.tempValue" type="number"
+            class="w-12 sm:w-14 text-white text-center rounded px-1 text-sm sm:text-base" />
         </div>
       </div>
     </section>
