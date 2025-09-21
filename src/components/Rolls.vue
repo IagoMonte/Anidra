@@ -1,6 +1,6 @@
 <script setup>
 import { reactive,onMounted, onBeforeUnmount } from 'vue';
-import MolduraCard from './MolduraCard.vue';
+import MolduraCard from '@/components/MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
 
 const props = defineProps({

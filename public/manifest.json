@@ -5,11 +5,11 @@
   "description": "Uma ficha personalizada para Anidra",
   "author": "Iagodt",
   "icon": "https://anidraowlbear.netlify.app/icon.svg",
-  "homepage_url": "https://anidraowlbear.netlify.app",
+  "homepage_url": "https://anidraowlbear.netlify.app/owlbear",
   "action": {
     "title": "AnidraCtl",
     "icon": "https://anidraowlbear.netlify.app/icon.svg",
-    "popover": "https://anidraowlbear.netlify.app",
+    "popover": "https://anidraowlbear.netlify.app/owlbear",
     "width": 700,
     "height": 750
   }

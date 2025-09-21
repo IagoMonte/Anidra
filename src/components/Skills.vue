@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref, toRaw } from "vue"
-import SkillCard from "./SkillCard.vue"
-import { getMetadaById, updateCharacterSheet, updateMetada } from "@/owlbear/syncCharacterMetadata"
+import SkillCard from "@/components/SkillCard.vue"
+import { getMetadaById, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
   charData: { type: Object, required: true },
@@ -167,6 +167,7 @@ function addSkill(section) {
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" placeholder="Descrição" />
             <!-- Tags/Checks editáveis -->
             <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex gap-2 items-center">
+              <span class="text-xs uppercase text-gray-400 mr-2">{{ tag.name }}</span>
               <input v-model.number="tag.checks" type="number" placeholder="Checks"
                 class="w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
 
