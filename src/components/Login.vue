@@ -51,7 +51,7 @@ async function handleLogin() {
             id="username"
             v-model="username" 
             class="p-3 rounded-md border border-gray-600 bg-[#121212] text-white focus:ring-2 focus:ring-yellow-500" 
-            placeholder="Digite seu email"
+            placeholder="Digite seu Usuário"
           />
         </div>
 

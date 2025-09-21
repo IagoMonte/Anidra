@@ -34,7 +34,7 @@ const navItems = [
 ]
 
 async function getUserCharSheet() {
-
+    console.log(props.userData)
       const characters = await mytestdata()
       console.log(characters)
       return characters
