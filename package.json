@@ -13,7 +13,10 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
+    "@netlify/neon": "^0.1.0",
     "@owlbear-rodeo/sdk": "^3.1.0",
+    "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
   },

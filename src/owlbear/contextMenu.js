@@ -2,9 +2,9 @@ import OBR from "@owlbear-rodeo/sdk";
 const ID = "com.anidra.addto"
 
 const initcharacterSheet = {
-  dons: null, // pode virar array depois
+  dons: null,
 
-  conditions: null, // pode virar array depois
+  conditions: null,
   stats: {
     mainAttributes: {
       Vida: "1 / 1",
