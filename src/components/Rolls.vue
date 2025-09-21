@@ -35,10 +35,7 @@ async function rollTeste(rolls, modi, bonus) {
     bonus,
     total: finalResult,
   }
-
-  // envia para todos
-  console.log(results, '=', sum, '+', modi, '+', bonus, '=>', finalResult)
-  await OBR.broadcast.sendMessage("ROOM", rollMessage, {destination: "ALL"})
+  await OBR.broadcast.sendMessage("Roll_Result", rollMessage, {destination: "ALL"})
 }
 
 let PercepçãoDices = 2

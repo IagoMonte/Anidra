@@ -129,8 +129,13 @@ export function setupAnidra() {
       }
     },
   });
-  OBR.broadcast.onMessage('ROOM', (msg) => {
-    console.log('Received message:', msg);
+  OBR.broadcast.onMessage('Roll_Result', async (msg) => {
+
+    const charLabel = await OBR.scene.items.getItems([msg.data.playerId]).label
+
+    let res = `${charLabel}: [${msg.data.rolls.join(",")}] + ${msg.data.modi} + ${msg.data.bonus} => ${msg.data.total}`
+
+    OBR.notification.show(res)
   });
 
 }
