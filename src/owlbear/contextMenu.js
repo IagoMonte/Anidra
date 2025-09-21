@@ -134,7 +134,7 @@ export function setupAnidra() {
     let charid = msg.data.playerId
     const charData = await OBR.scene.items.getItems([charid])
     console.log(charid)
-    console.log(charData)
+    console.log(charData[0].name)
     let res = `${charData[0].name}: [${msg.data.rolls.join(",")}] + ${msg.data.modi} + ${msg.data.bonus} => ${msg.data.total}`
 
     OBR.notification.show(res)
