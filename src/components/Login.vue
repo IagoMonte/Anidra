@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue";
 
+const emit = defineEmits(["login-success"]);
+
 const username = ref("");
 const password = ref("");
 const message = ref("");
@@ -26,6 +28,7 @@ async function handleLogin() {
       message.value = "Login bem-sucedido!";
       username.value = "";
       password.value = "";
+      emit("login-success");
     }
   } catch (err) {
     console.error(err);

@@ -1,148 +1,3 @@
-<template>
-  <main class="bg-[#121212] flex-grow px-4 pt-4 pb-20 text-white min-h-screen p-4">
-    <!-- Atributos -->
-    <section class="mb-6 border border-gray-600 rounded-lg p-3"
-      :class="editingAttributes ? 'ring-2 ring-yellow-500' : ''">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xl font-bold">Atributos</h2>
-        <div class="flex gap-2">
-          <button v-if="!editingAttributes" @click="startEdit('attributes')"
-            class="text-sm text-gray-400 hover:text-white">
-            Editar
-          </button>
-          <template v-else>
-            <button @click="confirmEdit('attributes')" class="text-sm text-green-400 hover:text-green-200">
-              ✔ Confirmar
-            </button>
-            <button @click="cancelEdit('attributes')" class="text-sm text-red-400 hover:text-red-200">
-              ✖ Cancelar
-            </button>
-          </template>
-        </div>
-      </div>
-
-      <!-- Principais -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-        <div v-for="(attr, i) in mainAttributesReactive" :key="i"
-          class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
-          <span>{{ attr.label }}</span>
-          <span v-if="!editingAttributes">{{ attr.value }}</span>
-          <input v-else v-model="attr.tempValue" class="w-24 text-white text-center rounded px-1" />
-        </div>
-      </div>
-
-      <!-- Secundários -->
-      <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-4">
-        <article v-for="(stat, i) in secondaryStatsReactive" :key="i"
-          class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
-          <span class="mb-1">{{ stat.label }}</span>
-          <span v-if="!editingAttributes" class="text-2xl font-light">{{ stat.value }}</span>
-          <input v-else v-model="stat.tempValue" type="number" class="w-12 text-white text-center rounded px-1" />
-          <div v-for="corner in corners" :key="corner"
-            :class="`absolute ${corner} w-4 h-4 border-gray-600 decorative-corner`"></div>
-        </article>
-      </div>
-    </section>
-
-    <!-- Dons -->
-    <section class="mb-2">
-      <div class="flex items-center justify-between mb-1">
-        <p class="text-base font-normal">Dom</p>
-        <div class="flex gap-2">
-          <button v-if="!editingDom" @click="startEdit('dom')" class="text-xs text-gray-400 hover:text-white">
-            Editar
-          </button>
-          <template v-else>
-            <button @click="confirmEdit('dom')" class="text-xs text-green-400 hover:text-green-200">✔ Confirmar</button>
-            <button @click="cancelEdit('dom')" class="text-xs text-red-400 hover:text-red-200">✖ Cancelar</button>
-          </template>
-        </div>
-      </div>
-      <hr class="border-gray-700 mb-2" />
-
-      <p v-if="!editingDom" class="text-gray-300 text-sm">
-        {{ dons || "Nenhum dom selecionado" }}
-      </p>
-
-      <select v-else v-model="selectedDom"
-        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
-        <option disabled value="">Selecione um Dom</option>
-        <option v-for="(dom, i) in domList" :key="i" :value="dom">
-          {{ dom }}
-        </option>
-      </select>
-    </section>
-
-    <!-- Condições -->
-    <section class="mb-4">
-      <div class="flex items-center justify-between mb-1">
-        <p class="text-base font-normal">Condição</p>
-        <div class="flex gap-2">
-          <button v-if="!editingCondition" @click="startEdit('condition')"
-            class="text-xs text-gray-400 hover:text-white">
-            Editar
-          </button>
-          <template v-else>
-            <button @click="confirmEdit('condition')" class="text-xs text-green-400 hover:text-green-200">✔
-              Confirmar</button>
-            <button @click="cancelEdit('condition')" class="text-xs text-red-400 hover:text-red-200">✖ Cancelar</button>
-          </template>
-        </div>
-      </div>
-      <hr class="border-gray-700 mb-2" />
-
-      <p v-if="!editingCondition" class="text-gray-300 text-sm">
-        {{ conditions || "Nenhuma condição selecionada" }}
-      </p>
-
-      <select v-else v-model="selectedCondition"
-        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
-        <option disabled value="">Selecione uma Condição</option>
-        <option v-for="(cond, i) in conditionsList" :key="i" :value="cond">
-          {{ cond }}
-        </option>
-      </select>
-    </section>
-
-    <!-- Proficiencias -->
-    <section class="mb-4 border border-gray-600 rounded-lg p-3"
-      :class="editingProficiencies ? 'ring-2 ring-blue-500' : ''">
-
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-        <h2 class="text-lg sm:text-xl font-bold">Proficências</h2>
-        <div class="flex gap-2">
-          <button v-if="!editingProficiencies" @click="startEdit('proficiencies')"
-            class="text-xs sm:text-sm text-gray-400 hover:text-white">
-            Editar
-          </button>
-          <template v-else>
-            <button @click="confirmEdit('proficiencies')"
-              class="text-xs sm:text-sm text-green-400 hover:text-green-200">
-              ✔ Confirmar
-            </button>
-            <button @click="cancelEdit('proficiencies')" class="text-xs sm:text-sm text-red-400 hover:text-red-200">
-              ✖ Cancelar
-            </button>
-          </template>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div v-for="(prof, i) in proficienciesReactive" :key="i"
-          class="border border-gray-600 rounded-md px-2 sm:px-3 py-1 flex justify-between items-center text-sm sm:text-base">
-          <span>{{ prof.label }}</span>
-
-          <input v-if="prof.type === 'checkbox'" type="checkbox" v-model="prof.value" :disabled="!editingProficiencies"
-            class="w-4 h-4 sm:w-5 sm:h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white" />
-
-          <span v-else-if="!editingProficiencies" class="truncate">{{ prof.value }}</span>
-          <input v-else v-model="prof.tempValue" type="number"
-            class="w-12 sm:w-14 text-white text-center rounded px-1 text-sm sm:text-base" />
-        </div>
-      </div>
-    </section>
-  </main>
-</template>
 
 <script setup>
 import { reactive, ref, watch } from "vue";
@@ -350,3 +205,149 @@ watch(() => props.charData, (newVal) => {
   selectedCondition.value = conditions.value || "";
 }, { deep: true });
 </script>
+
+<template>
+  <main class="bg-[#121212] flex-grow px-4 pt-4 pb-20 text-white min-h-screen p-4">
+    <!-- Atributos -->
+    <section class="mb-6 border border-gray-600 rounded-lg p-3"
+      :class="editingAttributes ? 'ring-2 ring-yellow-500' : ''">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-bold">Atributos</h2>
+        <div class="flex gap-2">
+          <button v-if="!editingAttributes" @click="startEdit('attributes')"
+            class="text-sm text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('attributes')" class="text-sm text-green-400 hover:text-green-200">
+              ✔ Confirmar
+            </button>
+            <button @click="cancelEdit('attributes')" class="text-sm text-red-400 hover:text-red-200">
+              ✖ Cancelar
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <!-- Principais -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        <div v-for="(attr, i) in mainAttributesReactive" :key="i"
+          class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
+          <span>{{ attr.label }}</span>
+          <span v-if="!editingAttributes">{{ attr.value }}</span>
+          <input v-else v-model="attr.tempValue" class="w-24 text-white text-center rounded px-1" />
+        </div>
+      </div>
+
+      <!-- Secundários -->
+      <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-4">
+        <article v-for="(stat, i) in secondaryStatsReactive" :key="i"
+          class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
+          <span class="mb-1">{{ stat.label }}</span>
+          <span v-if="!editingAttributes" class="text-2xl font-light">{{ stat.value }}</span>
+          <input v-else v-model="stat.tempValue" type="number" class="w-12 text-white text-center rounded px-1" />
+          <div v-for="corner in corners" :key="corner"
+            :class="`absolute ${corner} w-4 h-4 border-gray-600 decorative-corner`"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Dons -->
+    <section class="mb-2">
+      <div class="flex items-center justify-between mb-1">
+        <p class="text-base font-normal">Dom</p>
+        <div class="flex gap-2">
+          <button v-if="!editingDom" @click="startEdit('dom')" class="text-xs text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('dom')" class="text-xs text-green-400 hover:text-green-200">✔ Confirmar</button>
+            <button @click="cancelEdit('dom')" class="text-xs text-red-400 hover:text-red-200">✖ Cancelar</button>
+          </template>
+        </div>
+      </div>
+      <hr class="border-gray-700 mb-2" />
+
+      <p v-if="!editingDom" class="text-gray-300 text-sm">
+        {{ dons || "Nenhum dom selecionado" }}
+      </p>
+
+      <select v-else v-model="selectedDom"
+        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
+        <option disabled value="">Selecione um Dom</option>
+        <option v-for="(dom, i) in domList" :key="i" :value="dom">
+          {{ dom }}
+        </option>
+      </select>
+    </section>
+
+    <!-- Condições -->
+    <section class="mb-4">
+      <div class="flex items-center justify-between mb-1">
+        <p class="text-base font-normal">Condição</p>
+        <div class="flex gap-2">
+          <button v-if="!editingCondition" @click="startEdit('condition')"
+            class="text-xs text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('condition')" class="text-xs text-green-400 hover:text-green-200">✔
+              Confirmar</button>
+            <button @click="cancelEdit('condition')" class="text-xs text-red-400 hover:text-red-200">✖ Cancelar</button>
+          </template>
+        </div>
+      </div>
+      <hr class="border-gray-700 mb-2" />
+
+      <p v-if="!editingCondition" class="text-gray-300 text-sm">
+        {{ conditions || "Nenhuma condição selecionada" }}
+      </p>
+
+      <select v-else v-model="selectedCondition"
+        class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600">
+        <option disabled value="">Selecione uma Condição</option>
+        <option v-for="(cond, i) in conditionsList" :key="i" :value="cond">
+          {{ cond }}
+        </option>
+      </select>
+    </section>
+
+    <!-- Proficiencias -->
+    <section class="mb-4 border border-gray-600 rounded-lg p-3"
+      :class="editingProficiencies ? 'ring-2 ring-blue-500' : ''">
+
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+        <h2 class="text-lg sm:text-xl font-bold">Proficências</h2>
+        <div class="flex gap-2">
+          <button v-if="!editingProficiencies" @click="startEdit('proficiencies')"
+            class="text-xs sm:text-sm text-gray-400 hover:text-white">
+            Editar
+          </button>
+          <template v-else>
+            <button @click="confirmEdit('proficiencies')"
+              class="text-xs sm:text-sm text-green-400 hover:text-green-200">
+              ✔ Confirmar
+            </button>
+            <button @click="cancelEdit('proficiencies')" class="text-xs sm:text-sm text-red-400 hover:text-red-200">
+              ✖ Cancelar
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div v-for="(prof, i) in proficienciesReactive" :key="i"
+          class="border border-gray-600 rounded-md px-2 sm:px-3 py-1 flex justify-between items-center text-sm sm:text-base">
+          <span>{{ prof.label }}</span>
+
+          <input v-if="prof.type === 'checkbox'" type="checkbox" v-model="prof.value" :disabled="!editingProficiencies"
+            class="w-4 h-4 sm:w-5 sm:h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white" />
+
+          <span v-else-if="!editingProficiencies" class="truncate">{{ prof.value }}</span>
+          <input v-else v-model="prof.tempValue" type="number"
+            class="w-12 sm:w-14 text-white text-center rounded px-1 text-sm sm:text-base" />
+        </div>
+      </div>
+    </section>
+  </main>
+</template>

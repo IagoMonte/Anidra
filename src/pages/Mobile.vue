@@ -17,9 +17,10 @@ import Skills from '@/components/Skills.vue'
 import Rolls from '@/components/Rolls.vue'
 import Notes from '@/components/Notes.vue'
 
-const test = true
-const menuItems = ref([])
-const isOpen = ref(false)
+const props = defineProps({
+  userData: { type: Object, required: true },
+})
+
 const current = ref('Stats')
 const selectedChar = ref(null) // personagem selecionado
 
@@ -32,25 +33,22 @@ const navItems = [
   { label: "Notes", icon: DocumentTextIcon },
 ]
 
-async function getAnidraCharacters() {
-  if(test === true){
+async function getUserCharSheet() {
+
       const characters = await mytestdata()
       console.log(characters)
       return characters
-  }
+  
 
 }
 
 async function loadChar() {
   try {
-    const characters = await getAnidraCharacters()
+    const characters = await getUserCharSheet()
     selectedChar.value = characters[1] 
   } catch (err) {
     console.error('Erro ao carregar personagens do AnidraCtl:', err)
   }
-}
-function getMenuItemById(id) {
-  return menuItems.value.find(item => item.charId === id)
 }
 
 function atualizarPersonagem(charid) {
