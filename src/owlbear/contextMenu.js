@@ -130,9 +130,11 @@ export function setupAnidra() {
     },
   });
   OBR.broadcast.onMessage('Roll_Result', async (msg) => {
-
-    const charLabel = await OBR.scene.items.getItems([msg.data.playerId]).label
-
+    console.log(msg)
+    let charid = msg.data.playerId
+    const charLabel = await OBR.scene.items.getItems([charid])
+    console.log(charid)
+    console.log(charLabel)
     let res = `${charLabel}: [${msg.data.rolls.join(",")}] + ${msg.data.modi} + ${msg.data.bonus} => ${msg.data.total}`
 
     OBR.notification.show(res)
