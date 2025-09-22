@@ -78,6 +78,35 @@ function startEdit(section) {
   }
 }
 
+async function updateCharSheet(newSheet) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.warn("Nenhum token encontrado, usuário não autenticado");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/updateCharSheet", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ char_sheet: newSheet })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao atualizar ficha: ${res.status}`);
+    }
+    return true;
+  } catch (err) {
+    console.error("Erro na atualização da ficha:", err);
+    return false;
+  }
+}
+
+
+
 async function confirmEdit(section) {
   if (section === "mastered") {
     masteredSkills.splice(0, masteredSkills.length, ...tempMastered.value)
@@ -92,7 +121,7 @@ async function confirmEdit(section) {
   currentData.info.Stats.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
   currentData.info.Stats.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
 
-
+  await updateCharSheet(currentData)
 
   try {
     await updateMetada(props.charId, currentData)
