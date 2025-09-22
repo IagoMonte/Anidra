@@ -210,6 +210,7 @@ async function confirmEdit(section) {
 
   console.log('to chegando aqui')
   OBR.scene.items.updateItems([props.charId], (items) => {
+    console.log(items)
     for (let item of items) {
       item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } };
     }
