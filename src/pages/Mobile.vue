@@ -50,7 +50,7 @@ async function AtualizarUserData() {
     }
 
     const userData = await res.json();
-    selectedChar.value = userData // ✅ mantém o usuário inteiro (tem id + char_sheet)
+    selectedChar.value = userData 
   } catch (err) {
     console.error(err);
     localStorage.removeItem("token");
@@ -61,7 +61,6 @@ async function AtualizarUserData() {
 onMounted(() => {
   getUserCharSheet()
 })
-console.log("selectedChar inicial:", selectedChar.value)
 </script>
 
 <template>

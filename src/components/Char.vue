@@ -5,10 +5,9 @@ import OBR from "@owlbear-rodeo/sdk";
 
 const ID = "com.anidra.addto";
 
-// Props esperam receber o objeto completo de selectedChar.data.info.Stats
 const props = defineProps({
-  charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
-  charId: { type: String, required: true } // id do item no Owlbear
+  charData: { type: Object, required: true }, 
+  charId: { type: String, required: true }
 })
 const emit = defineEmits(['updateData'])
 
@@ -17,7 +16,6 @@ const editingCondition = ref(false);
 const editingAttributes = ref(false);
 const editingProficiencies = ref(false);
 
-// Reativos que serão usados na UI
 const mainAttributesReactive = reactive(
   Object.entries(props.charData.stats.mainAttributes || {}).map(([label, value]) => ({ label, value }))
 );
@@ -147,7 +145,35 @@ function startEdit(section) {
   }
 }
 
-function confirmEdit(section) {
+async function updateCharSheet(newSheet) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.warn("Nenhum token encontrado, usuário não autenticado");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/updateCharSheet", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ char_sheet: newSheet })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao atualizar ficha: ${res.status}`);
+    }
+    return true;
+  } catch (err) {
+    console.error("Erro na atualização da ficha:", err);
+    return false;
+  }
+}
+
+
+async function confirmEdit(section) {
   if (section === "attributes") {
     mainAttributesReactive.forEach((a) => (a.value = a.tempValue));
     secondaryStatsReactive.forEach((a) => (a.value = a.tempValue));
@@ -179,6 +205,8 @@ function confirmEdit(section) {
     inventory: props.charData.inventory,
     notes: props.charData.notes
   });
+
+  await updateCharSheet(newSheet)
 
   OBR.scene.items.updateItems([props.charId], (items) => {
     for (let item of items) {
