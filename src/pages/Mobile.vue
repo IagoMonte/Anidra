@@ -66,6 +66,7 @@ watch(current, async (newPage, oldPage) => {
     }
 })
 await getUserCharSheet()
+console.log(selectedChar)
 </script>
 <template>
     <div class="relative h-screen flex overflow-hidden">
