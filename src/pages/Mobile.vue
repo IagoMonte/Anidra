@@ -1,16 +1,12 @@
 <script setup>
 import { ref } from 'vue'
-import OBR from '@owlbear-rodeo/sdk'
 import {
-    HeartIcon,
-    CubeIcon,
-    ArchiveBoxIcon,
-    DocumentTextIcon,
-    SparklesIcon
+  HeartIcon,
+  CubeIcon,
+  ArchiveBoxIcon,
+  DocumentTextIcon,
+  SparklesIcon
 } from "@heroicons/vue/24/solid"
-import { setupAnidra } from '@/owlbear/contextMenu.js'
-import { watch } from 'vue'
-import { mytestdata } from '@/owlbear/datatest'
 import Inventory from '@/components/Inventory.vue'
 import Char from '@/components/Char.vue'
 import Skills from '@/components/Skills.vue'
@@ -18,27 +14,26 @@ import Rolls from '@/components/Rolls.vue'
 import Notes from '@/components/Notes.vue'
 
 const props = defineProps({
-    userData: { type: Object, required: true },
+  userData: { type: Object, required: true }, // deve ter { id, username, char_sheet, ... }
 })
 
-
 const current = ref('Stats')
-const selectedChar = ref(null) // personagem selecionado
-const user = ref(null)
-
+const selectedChar = ref(null)
 
 // Itens da navbar inferior
 const navItems = [
-    { label: "Stats", icon: HeartIcon },
-    { label: "Skills", icon: SparklesIcon },
-    { label: "Roll", icon: CubeIcon },
-    { label: "Inventory", icon: ArchiveBoxIcon },
-    { label: "Notes", icon: DocumentTextIcon },
+  { label: "Stats", icon: HeartIcon },
+  { label: "Skills", icon: SparklesIcon },
+  { label: "Roll", icon: CubeIcon },
+  { label: "Inventory", icon: ArchiveBoxIcon },
+  { label: "Notes", icon: DocumentTextIcon },
 ]
 
+// inicializa com os dados do usuário que vieram por props
 async function getUserCharSheet() {
   selectedChar.value = props.userData || null
 }
+
 async function AtualizarUserData() {
   const token = localStorage.getItem("token");
   if (!token) return;
@@ -63,14 +58,11 @@ async function AtualizarUserData() {
   }
 }
 
-watch(current, async (newPage, oldPage) => {
-    if (selectedChar.value) {
-        await AtualizarUserData()
-    }
-})
+// inicializa
 await getUserCharSheet()
-console.log(selectedChar.value)
+console.log("selectedChar inicial:", selectedChar.value)
 </script>
+
 <template>
     <div class="relative h-screen flex overflow-hidden">
         <!-- Conteúdo principal -->
