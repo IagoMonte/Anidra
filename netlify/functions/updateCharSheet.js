@@ -31,7 +31,7 @@ export async function handler(event) {
     // ✅ atualiza no banco
     await sql`
       UPDATE usuarios
-      SET char_sheet = ${char_sheet}
+      SET char_sheet = ${JSON.stringify(char_sheet)}::jsonb
       WHERE id = ${decoded.id};
     `;
 
@@ -40,7 +40,7 @@ export async function handler(event) {
       body: JSON.stringify({ message: "Ficha atualizada com sucesso" })
     };
   } catch (err) {
-    console.error("Erro no update:", err);
-    return { statusCode: 500, body: "Erro interno" };
+    console.error("Erro no update:", err.message, err.stack);
+    return { statusCode: 500, body: "Erro interno: " + err.message };
   }
 }
