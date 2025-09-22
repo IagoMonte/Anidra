@@ -40,7 +40,11 @@ async function saveSkillUpdate(section, idx, payload) {
     await updateCharSheet(currentData)
   } else {
     let currentData = await getMetadaById(props.charId)
-    
+    if (section === "mastered") {
+    currentData.info.Stats.skills.masteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+  } else {
+    currentData.info.Stats.skills.unmasteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+  }
     try {
       await updateMetada(props.charId, currentData)
       console.log("Auto-save de checks concluído!")
