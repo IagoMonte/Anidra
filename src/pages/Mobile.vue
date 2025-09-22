@@ -21,8 +21,11 @@ const props = defineProps({
     userData: { type: Object, required: true },
 })
 
+
 const current = ref('Stats')
 const selectedChar = ref(null) // personagem selecionado
+const user = ref(null)
+
 
 // Itens da navbar inferior
 const navItems = [
