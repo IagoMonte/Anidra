@@ -37,30 +37,30 @@ const navItems = [
 ]
 
 async function getUserCharSheet() {
-  selectedChar.value = props.userData || null;
+  selectedChar.value = props.userData || null
 }
 async function AtualizarUserData() {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  const token = localStorage.getItem("token");
+  if (!token) return;
 
-    try {
-        const res = await fetch("/api/me", {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+  try {
+    const res = await fetch("/api/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-        if (!res.ok) {
-            localStorage.removeItem("token");
-            user.value = null;
-            return;
-        }
-
-        const userData = await res.json();
-        selectedChar.value = userData
-    } catch (err) {
-        console.error(err);
-        localStorage.removeItem("token");
-        user.value = null;
+    if (!res.ok) {
+      localStorage.removeItem("token");
+      selectedChar.value = null;
+      return;
     }
+
+    const userData = await res.json();
+    selectedChar.value = userData // ✅ mantém o usuário inteiro (tem id + char_sheet)
+  } catch (err) {
+    console.error(err);
+    localStorage.removeItem("token");
+    selectedChar.value = null;
+  }
 }
 
 watch(current, async (newPage, oldPage) => {
