@@ -7,7 +7,8 @@ const ID = "com.anidra.addto";
 
 const props = defineProps({
   charData: { type: Object, required: true }, 
-  charId: { type: String, required: true }
+  charId: { type: String, required: true },
+  standAlone: { type: Boolean, required: false}
 })
 const emit = defineEmits(['updateData'])
 
@@ -205,16 +206,19 @@ async function confirmEdit(section) {
     inventory: props.charData.inventory,
     notes: props.charData.notes
   });
-
-  await updateCharSheet(newSheet)
-
-  console.log('to chegando aqui')
-  OBR.scene.items.updateItems([props.charId], (items) => {
+  if(props.standAlone){
+    await updateCharSheet(newSheet)
+  }
+  else{
+    OBR.scene.items.updateItems([props.charId], (items) => {
     console.log(items)
     for (let item of items) {
       item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } };
     }
   });
+  }
+
+  
 
   emit("updateData", props.charId)
 }

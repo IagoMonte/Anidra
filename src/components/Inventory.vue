@@ -4,7 +4,8 @@ import {updateMetada, getMetadaById } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
   charData: { type: Object, required: true },
-  charId: { type: String, required: true }
+  charId: { type: String, required: true },
+  standAlone: { type: Boolean, required: false }
 })
 const emit = defineEmits(['updateData'])
 
@@ -62,18 +63,25 @@ async function confirmEdit() {
   inventory.splice(0, inventory.length, ...tempInventory.value)
   editingInventory.value = false
 
-  let currentData = await getMetadaById(props.charId)
+ if (props.standAlone){
+    let currentData = props.charId
 
-  currentData.info.Stats.inventory = JSON.parse(JSON.stringify(inventory))
-  
-  await updateCharSheet(currentData)
+    currentData.inventory = JSON.parse(JSON.stringify(inventory))
+    
+    await updateCharSheet(currentData)
 
-  try {
-    await updateMetada(props.charId, currentData)
-    console.log("Metadata atualizado com sucesso!")
-  } catch (err) {
-    console.error("Erro ao atualizar metadata:", err)
+  }else{
+    let currentData = await getMetadaById(props.charId)
+    currentData.info.Stats.inventory = JSON.parse(JSON.stringify(inventory))
+    try {
+      await updateMetada(props.charId, currentData)
+      console.log("Metadata atualizado com sucesso!")
+    } catch (err) {
+      console.error("Erro ao atualizar metadata:", err)
+    }
   }
+
+  
   emit("updateData",props.charId)
 
 }

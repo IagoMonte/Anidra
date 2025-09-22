@@ -5,7 +5,8 @@ import { getMetadaById, updateMetada } from "@/owlbear/syncCharacterMetadata"
 
 const props = defineProps({
   charData: { type: Object, required: true },
-  charId: { type: String, required: true }
+  charId: { type: String, required: true },
+  standAlone: { type: Boolean, required: false }
 })
 // ================================
 // Estado
@@ -29,28 +30,32 @@ const tempUnmastered = ref([])
 // Funções
 // ================================
 async function saveSkillUpdate(section, idx, payload) {
-  console.log('2. to aqui')
-  let currentData = await getMetadaById(props.charId)
-
-  if (section === "mastered") {
-    currentData.info.Stats.skills.masteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+  if (props.standAlone) {
+    let currentData = props.charId
+    if (section === "mastered") {
+      currentData.skills.masteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+    } else {
+      currentData.skills.unmasteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+    }
+    await updateCharSheet(currentData)
   } else {
-    currentData.info.Stats.skills.unmasteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
+    let currentData = await getMetadaById(props.charId)
+    
+    try {
+      await updateMetada(props.charId, currentData)
+      console.log("Auto-save de checks concluído!")
+    } catch (err) {
+      console.error("Erro no auto-save:", err)
+    }
   }
 
-  await updateCharSheet(currentData)
 
-  try {
-    await updateMetada(props.charId, currentData)
-    console.log("Auto-save de checks concluído!")
-  } catch (err) {
-    console.error("Erro no auto-save:", err)
-  }
+
 
   emit("updateData", props.charId)
 }
 
-function addTag(section, skillIdx, newTag = { name: "DT", checks: 1, checked:[false] }) {
+function addTag(section, skillIdx, newTag = { name: "DT", checks: 1, checked: [false] }) {
   let targetSkill
 
   if (section === "mastered") {
@@ -119,20 +124,25 @@ async function confirmEdit(section) {
     unmasteredSkills.splice(0, unmasteredSkills.length, ...tempUnmastered.value)
     editingUnmastered.value = false
   }
-  let currentData = await getMetadaById(props.charId)
 
-  currentData.info.Stats.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
-  currentData.info.Stats.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
-
-  await updateCharSheet(currentData)
-
-  try {
-    await updateMetada(props.charId, currentData)
-    console.log("Metadata atualizado com sucesso!")
-  } catch (err) {
-    console.error("Erro ao atualizar metadata:", err)
+  if (props.standAlone) {
+    let currentData = props.charId
+    currentData.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
+    currentData.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
+    await updateCharSheet(currentData)
+  } else {
+    let currentData = await getMetadaById(props.charId)
+    currentData.info.Stats.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
+    currentData.info.Stats.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
+    try {
+      await updateMetada(props.charId, currentData)
+      console.log("Metadata atualizado com sucesso!")
+    } catch (err) {
+      console.error("Erro ao atualizar metadata:", err)
+    }
   }
-  emit("updateData",props.charId)
+
+  emit("updateData", props.charId)
 }
 
 function cancelEdit(section) {
@@ -159,30 +169,27 @@ function addSkill(section) {
 <template>
   <main class="bg-[#121212] min-h-screen text-white font-sans sm:p-4">
     <!-- DOMINADAS -->
-    <section class="mb-6 border border-gray-600 rounded-lg p-3"
-      :class="editingMastered ? 'ring-2 ring-green-500' : ''">
-      
+    <section class="mb-6 border border-gray-600 rounded-lg p-3" :class="editingMastered ? 'ring-2 ring-green-500' : ''">
+
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
         <h1 class="text-xl sm:text-2xl font-bold">Habilidades Dominadas</h1>
         <div class="flex gap-2 flex-wrap">
-          <button v-if="!editingMastered" @click="startEdit('mastered')" 
+          <button v-if="!editingMastered" @click="startEdit('mastered')"
             class="text-xs sm:text-sm text-gray-400 hover:text-white">
             Editar
           </button>
           <template v-else>
-            <button @click="confirmEdit('mastered')" 
-              class="text-xs sm:text-sm text-green-400 hover:text-green-200">
+            <button @click="confirmEdit('mastered')" class="text-xs sm:text-sm text-green-400 hover:text-green-200">
               ✔ Confirmar
             </button>
-            <button @click="cancelEdit('mastered')" 
-              class="text-xs sm:text-sm text-red-400 hover:text-red-200">
+            <button @click="cancelEdit('mastered')" class="text-xs sm:text-sm text-red-400 hover:text-red-200">
               ✖ Cancelar
             </button>
           </template>
         </div>
       </div>
 
-      <button @click="addSkill('mastered')" 
+      <button @click="addSkill('mastered')"
         class="mb-4 px-3 py-2 bg-green-600 rounded hover:bg-green-500 text-xs sm:text-sm w-full sm:w-auto">
         ➕ Adicionar dominada
       </button>
@@ -200,7 +207,7 @@ function addSkill(section) {
               class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-xs sm:text-sm">
               🗑 Remover
             </button>
-            <input v-model="skill.title" 
+            <input v-model="skill.title"
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base"
               placeholder="Título" />
             <textarea v-model="skill.description"
@@ -208,7 +215,8 @@ function addSkill(section) {
               placeholder="Descrição"></textarea>
 
             <!-- Tags/Checks -->
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx"
+              class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <span class="text-xs sm:text-sm uppercase text-gray-400">{{ tag.name }}</span>
               <input v-model.number="tag.checks" type="number" placeholder="Checks"
                 class="w-full sm:w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
@@ -221,28 +229,26 @@ function addSkill(section) {
     <!-- NÃO DOMINADAS -->
     <section class="mb-6 border border-gray-600 rounded-lg p-3"
       :class="editingUnmastered ? 'ring-2 ring-yellow-500' : ''">
-      
+
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
         <h2 class="text-xl sm:text-2xl font-bold">Habilidades Não Dominadas</h2>
         <div class="flex gap-2 flex-wrap">
-          <button v-if="!editingUnmastered" @click="startEdit('unmastered')" 
+          <button v-if="!editingUnmastered" @click="startEdit('unmastered')"
             class="text-xs sm:text-sm text-gray-400 hover:text-white">
             Editar
           </button>
           <template v-else>
-            <button @click="confirmEdit('unmastered')" 
-              class="text-xs sm:text-sm text-green-400 hover:text-green-200">
+            <button @click="confirmEdit('unmastered')" class="text-xs sm:text-sm text-green-400 hover:text-green-200">
               ✔ Confirmar
             </button>
-            <button @click="cancelEdit('unmastered')" 
-              class="text-xs sm:text-sm text-red-400 hover:text-red-200">
+            <button @click="cancelEdit('unmastered')" class="text-xs sm:text-sm text-red-400 hover:text-red-200">
               ✖ Cancelar
             </button>
           </template>
         </div>
       </div>
 
-      <button @click="addSkill('unmastered')" 
+      <button @click="addSkill('unmastered')"
         class="mb-4 px-3 py-2 bg-yellow-600 rounded hover:bg-yellow-500 text-xs sm:text-sm w-full sm:w-auto">
         ➕ Adicionar não dominada
       </button>
@@ -260,14 +266,15 @@ function addSkill(section) {
               class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-xs sm:text-sm">
               🗑 Remover
             </button>
-            <input v-model="skill.title" 
+            <input v-model="skill.title"
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base"
               placeholder="Título" />
             <textarea v-model="skill.description"
               class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base"
               placeholder="Descrição"></textarea>
 
-            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx" class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            <div v-for="(tag, tIdx) in skill.tags" :key="tIdx"
+              class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
               <input v-model="tag.name" placeholder="DT"
                 class="w-full sm:w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
               <input v-model.number="tag.checks" type="number" placeholder="Checks"
@@ -284,4 +291,3 @@ function addSkill(section) {
     </section>
   </main>
 </template>
-

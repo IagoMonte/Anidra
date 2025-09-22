@@ -87,23 +87,23 @@ onMounted(() => {
                     <main class="flex-1 overflow-auto p-4 bg-[#121212] pb-20">
                         <template v-if="selectedChar">
                             <section v-if="current === 'Stats'">
-                                <Char :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                                <Char :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
                                     @updateData="AtualizarUserData" />
                             </section>
                             <section v-else-if="current === 'Skills'">
-                                <Skills :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                                <Skills :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
                                     @updateData="AtualizarUserData" />
                             </section>
                             <section v-else-if="current === 'Roll'">
-                                <Rolls :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                                <Rolls :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
                                     @updateData="AtualizarUserData" />
                             </section>
                             <section v-else-if="current === 'Inventory'">
-                                <Inventory :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                                <Inventory :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
                                     @updateData="AtualizarUserData" />
                             </section>
                             <section v-else-if="current === 'Notes'">
-                                <Notes :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                                <Notes :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
                                     @updateData="AtualizarUserData" />
                             </section>
                         </template>
