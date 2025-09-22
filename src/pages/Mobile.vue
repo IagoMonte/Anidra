@@ -52,7 +52,7 @@ async function AtualizarUserData() {
         }
 
         const userData = await res.json();
-        selectedChar.value = userData.char_sheet;
+        selectedChar.value = userData
     } catch (err) {
         console.error(err);
         localStorage.removeItem("token");
@@ -66,7 +66,7 @@ watch(current, async (newPage, oldPage) => {
     }
 })
 await getUserCharSheet()
-console.log(selectedChar)
+console.log(selectedChar.value)
 </script>
 <template>
     <div class="relative h-screen flex overflow-hidden">
