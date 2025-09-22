@@ -29,6 +29,33 @@ function startEdit() {
   tempNotes.value = notes.map(note => ({ ...note }))
 }
 
+async function updateCharSheet(newSheet) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.warn("Nenhum token encontrado, usuário não autenticado");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/updateCharSheet", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ char_sheet: newSheet })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao atualizar ficha: ${res.status}`);
+    }
+    return true;
+  } catch (err) {
+    console.error("Erro na atualização da ficha:", err);
+    return false;
+  }
+}
+
 async function confirmEdit() {
   notes.splice(0, notes.length, ...tempNotes.value)
   editingNotes.value = false
@@ -37,6 +64,9 @@ async function confirmEdit() {
   let currentData = await getMetadaById(props.charId)
 
   currentData.info.Stats.notes = JSON.parse(JSON.stringify(notes))
+
+  await updateCharSheet(currentData)
+
 
   try {
     await updateMetada(props.charId, currentData)

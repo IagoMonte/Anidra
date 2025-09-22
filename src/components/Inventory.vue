@@ -30,6 +30,34 @@ function startEdit() {
   tempInventory.value = inventory.map(item => ({ ...item }))
 }
 
+
+async function updateCharSheet(newSheet) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.warn("Nenhum token encontrado, usuário não autenticado");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/updateCharSheet", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ char_sheet: newSheet })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao atualizar ficha: ${res.status}`);
+    }
+    return true;
+  } catch (err) {
+    console.error("Erro na atualização da ficha:", err);
+    return false;
+  }
+}
+
 async function confirmEdit() {
   inventory.splice(0, inventory.length, ...tempInventory.value)
   editingInventory.value = false
@@ -38,6 +66,8 @@ async function confirmEdit() {
 
   currentData.info.Stats.inventory = JSON.parse(JSON.stringify(inventory))
   
+  await updateCharSheet(currentData)
+
   try {
     await updateMetada(props.charId, currentData)
     console.log("Metadata atualizado com sucesso!")
