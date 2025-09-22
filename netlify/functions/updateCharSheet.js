@@ -30,7 +30,7 @@ export async function handler(event) {
 
     // ✅ atualiza no banco
     await sql`
-      UPDATE users
+      UPDATE "Usuarios".users
       SET char_sheet = ${JSON.stringify(char_sheet)}::jsonb
       WHERE id = ${decoded.id};
     `;
