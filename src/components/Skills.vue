@@ -38,6 +38,8 @@ async function saveSkillUpdate(section, idx, payload) {
     currentData.info.Stats.skills.unmasteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
   }
 
+  await updateCharSheet(currentData)
+
   try {
     await updateMetada(props.charId, currentData)
     console.log("Auto-save de checks concluído!")
@@ -79,6 +81,7 @@ function startEdit(section) {
 }
 
 async function updateCharSheet(newSheet) {
+  console.log('fui chamado')
   const token = localStorage.getItem("token");
   if (!token) {
     console.warn("Nenhum token encontrado, usuário não autenticado");
