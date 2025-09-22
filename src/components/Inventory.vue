@@ -64,7 +64,7 @@ async function confirmEdit() {
   editingInventory.value = false
 
  if (props.standAlone){
-    let currentData = props.charId
+    let currentData = props.charData
     console.log(currentData)
     currentData.inventory = JSON.parse(JSON.stringify(inventory))
     await updateCharSheet(currentData)

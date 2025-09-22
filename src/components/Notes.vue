@@ -63,8 +63,8 @@ async function confirmEdit() {
   openedNote.value = null
 
   if (props.standAlone){
-    
-    let currentData = props.charId
+
+    let currentData = props.charData
     currentData.notes = JSON.parse(JSON.stringify(notes))
     await updateCharSheet(currentData)
 

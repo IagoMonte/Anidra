@@ -31,7 +31,7 @@ const tempUnmastered = ref([])
 // ================================
 async function saveSkillUpdate(section, idx, payload) {
   if (props.standAlone) {
-    let currentData = props.charId
+    let currentData = props.charData
     if (section === "mastered") {
       currentData.skills.masteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
     } else {
@@ -130,7 +130,7 @@ async function confirmEdit(section) {
   }
 
   if (props.standAlone) {
-    let currentData = props.charId
+    let currentData = props.charData
     currentData.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
     currentData.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
     await updateCharSheet(currentData)
