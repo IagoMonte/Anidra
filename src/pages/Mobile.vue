@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
   HeartIcon,
   CubeIcon,
@@ -58,8 +58,9 @@ async function AtualizarUserData() {
   }
 }
 
-// inicializa
-await getUserCharSheet()
+onMounted(() => {
+  getUserCharSheet()
+})
 console.log("selectedChar inicial:", selectedChar.value)
 </script>
 
