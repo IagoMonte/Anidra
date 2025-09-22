@@ -34,7 +34,7 @@ const navItems = [
 ]
 
 async function getUserCharSheet() {
-  selectedChar.value = props.userData.char_sheet || null;
+  selectedChar.value = props.userData || null;
 }
 async function AtualizarUserData() {
     const token = localStorage.getItem("token");
