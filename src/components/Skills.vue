@@ -279,7 +279,7 @@ function addSkill(section) {
               <input v-model="tag.name" placeholder="DT"
                 class="w-full sm:w-16 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
               <input v-model.number="tag.checks" type="number" placeholder="Checks"
-                class="w-full sm:w-20 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
+                class="w-full sm:w-24 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600 text-sm sm:text-base" />
             </div>
 
             <button @click="addTag('unmastered', idx, { name: 'DTS', checks: 1, checked: [false] })"

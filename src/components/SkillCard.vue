@@ -90,7 +90,8 @@ const corners = [
               type="checkbox"
               v-model="tag.checked[cIdx]"
               class="w-4 h-4 sm:w-5 sm:h-5 rounded border border-gray-500 bg-transparent checked:bg-yellow-500 checked:border-yellow-500 transition"
-            />
+              @change="emit('update', { title, tags })"
+              />
           </div>
         </div>
       </template>
