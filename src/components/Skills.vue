@@ -37,7 +37,7 @@ async function saveSkillUpdate(section, idx, payload) {
     } else {
       currentData.skills.unmasteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
     }
-    await confirmEdit(section)
+    await updateCharSheet(currentData)
   } else {
     let currentData = await getMetadaById(props.charId)
     if (section === "mastered") {
@@ -52,11 +52,6 @@ async function saveSkillUpdate(section, idx, payload) {
       console.error("Erro no auto-save:", err)
     }
   }
-
-
-
-
-  emit("updateData", props.charId)
 }
 
 function addTag(section, skillIdx, newTag = { name: "DT", checks: 1, checked: [false] }) {
