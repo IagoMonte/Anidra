@@ -54,6 +54,7 @@ async function saveSkillUpdate(section, idx, payload) {
       console.error("Erro no auto-save:", err)
     }
   }
+  emit("updateData", props.charId)
 }
 
 function addTag(section, skillIdx, newTag = { name: "DT", checks: 1, checked: [false] }) {

@@ -30,21 +30,21 @@ const corners = [
 ]
 
 // Watch para emitir evento quando todos testes são concluídos
-watch(
-  () => tags,  // <- usa função getter
-  (val) => {
-    if (!completed) {
-      const allDone = val.every(tag => tag.checked.every(c => c))
-      if (allDone) {
-        emit("mastered", title)
-      }
-    }
+// watch(
+//   () => tags,  // <- usa função getter
+//   (val) => {
+//     if (!completed) {
+//       const allDone = val.every(tag => tag.checked.every(c => c))
+//       if (allDone) {
+//         emit("mastered", title)
+//       }
+//     }
 
-    // Emitir sempre o auto-save
-    emit("update", { title, tags })
-  },
-  { deep: true }
-)
+//     // Emitir sempre o auto-save
+//     emit("update", { title, tags })
+//   },
+//   { deep: true }
+// )
 </script>
 
 <template>
@@ -73,6 +73,7 @@ watch(
               v-model="tag.checked[cIdx]"
               class="w-4 h-4 sm:w-5 sm:h-5 rounded border border-gray-500 bg-transparent checked:bg-green-500 checked:border-green-500 transition"
               :disabled="!completed"
+              @change="emit('update', { title, tags })"
             />
           </div>
         </div>
