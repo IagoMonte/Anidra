@@ -131,6 +131,7 @@ async function confirmEdit(section) {
     let currentData = props.charData
     currentData.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
     currentData.skills.unmasteredSkills = JSON.parse(JSON.stringify(unmasteredSkills))
+    await updateCharSheet(currentData)
   } else {
     let currentData = await getMetadaById(props.charId)
     currentData.info.Stats.skills.masteredSkills = JSON.parse(JSON.stringify(masteredSkills))
