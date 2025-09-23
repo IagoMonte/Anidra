@@ -39,6 +39,7 @@ async function saveSkillUpdate(section, idx, payload) {
     }
     //await updateCharSheet(currentData)
     console.log('pq krls vc ta chamando esse krl inifinitamente seu demonio?')
+    return
   } else {
     let currentData = await getMetadaById(props.charId)
     if (section === "mastered") {
