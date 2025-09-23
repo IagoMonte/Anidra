@@ -37,7 +37,8 @@ async function saveSkillUpdate(section, idx, payload) {
     } else {
       currentData.skills.unmasteredSkills[idx].tags = JSON.parse(JSON.stringify(payload.tags))
     }
-    await updateCharSheet(currentData)
+    //await updateCharSheet(currentData)
+    console.log('pq krls vc ta chamando esse krl inifinitamente seu demonio?')
   } else {
     let currentData = await getMetadaById(props.charId)
     if (section === "mastered") {
