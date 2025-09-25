@@ -19,32 +19,35 @@ let touchStartY = 0
 let touchStartTime = 0
 let moved = false
 let holdTimer = null
+let startX = 0
+let startY = 0
 
 function startDrag(e) {
   if (showCalc.value) return
+  e.preventDefault()
 
-  e.preventDefault() // FIX: Previne zoom/scroll inicial no touch
+  const isTouch = e.type.includes('touch')
+  if (isTouch && e.touches.length > 1) return
 
-  const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX
-  const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY
+  const point = isTouch ? e.touches[0] : e
+  const clientX = point.clientX
+  const clientY = point.clientY
 
-  if (e.type.includes('touch') && e.touches.length > 1) return // FIX: Ignora multi-touch
+  // capture início para ambos
+  startX = clientX
+  startY = clientY
+  moved = false
 
-  if (e.type.includes('touch')) {
-    // salvar dados iniciais
+  if (isTouch) {
     touchStartX = clientX
     touchStartY = clientY
     touchStartTime = Date.now()
-    moved = false
-
-    // timer para liberar arraste só depois do holdDelay
     holdTimer = setTimeout(() => {
       dragging.value = true
       offset.x = clientX - posX.value
       offset.y = clientY - posY.value
     }, holdDelay)
   } else {
-    // mouse → arraste imediato
     dragging.value = true
     offset.x = clientX - posX.value
     offset.y = clientY - posY.value
@@ -53,19 +56,20 @@ function startDrag(e) {
 
 function onDrag(e) {
   if (!dragging.value) return
-  const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX
-  const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY
 
-  if (e.type.includes('touch')) {
-    const dx = Math.abs(clientX - touchStartX)
-    const dy = Math.abs(clientY - touchStartY)
-    if (dx > dragThreshold || dy > dragThreshold) moved = true
-  }
+  const isTouch = e.type.includes('touch')
+  const point = isTouch ? e.touches[0] : e
+  const clientX = point.clientX
+  const clientY = point.clientY
+
+  // detecta movimento para mouse e touch
+  const dx = Math.abs(clientX - startX)
+  const dy = Math.abs(clientY - startY)
+  if (dx > dragThreshold || dy > dragThreshold) moved = true
 
   let newX = clientX - offset.x
   let newY = clientY - offset.y
 
-  // limites
   if (newX < 0) newX = 0
   if (newX > window.innerWidth - BUTTON_SIZE) newX = window.innerWidth - BUTTON_SIZE
   if (newY < 0) newY = 0
@@ -78,15 +82,23 @@ function onDrag(e) {
 function stopDrag(e) {
   clearTimeout(holdTimer)
 
-  if (e.type.includes('touch')) {
+  const isTouch = e.type && e.type.includes && e.type.includes('touch')
+
+  if (isTouch) {
     const elapsed = Date.now() - touchStartTime
-    // se toque foi rápido e não houve movimento → clique
+    // toque rápido e sem movimento → clique
     if (elapsed < holdDelay && !moved) {
+      toggleCalc()
+    }
+  } else {
+    // mouse: se não houve movimento acima do threshold → clique
+    if (!moved) {
       toggleCalc()
     }
   }
 
   dragging.value = false
+  moved = false
 }
 
 function toggleCalc() {
@@ -161,7 +173,6 @@ function clearAll() {
 <template>
   <!-- Botão arrastável -->
   <button
-    @click="toggleCalc"
     @mousedown="startDrag"
     @touchstart="startDrag"
     class="fixed z-50 bg-[#121212] text-white font-bold rounded-full hover:glow-border border border-gray-600 shadow-lg cursor-pointer select-none transition duration-200"
