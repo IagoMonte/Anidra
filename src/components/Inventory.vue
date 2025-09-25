@@ -90,11 +90,11 @@ function cancelEdit() {
 }
 
 function addItem() {
-  startEdit()
+  //startEdit()
   const newItem = { name: "Novo Item", quantity: 1, description: "" }
   const target = editingInventory.value ? tempInventory.value : inventory
   target.push(newItem)
-  confirmEdit()
+  //confirmEdit()
 }
 
 function removeItem(idx) {
@@ -123,7 +123,7 @@ function removeItem(idx) {
     </div>
 
     <!-- Botão adicionar item -->
-    <button @click="addItem"
+    <button v-if="editingInventory" @click="addItem"
       class="flex items-center gap-2 bg-[#f2c500] text-black text-[16px] font-normal rounded-md px-6 py-3 mb-4">
       <i class="fas fa-plus text-[20px]"></i>
       ADICIONAR ITENS

@@ -1,20 +1,22 @@
 <script setup>
-import { ref } from "vue";
+import { ref } from "vue"
+import { useRouter } from "vue-router"
 
-const username = ref("");
-const name = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-const message = ref("");
+const router = useRouter()
+
+const username = ref("")
+const name = ref("")
+const password = ref("")
+const confirmPassword = ref("")
+const message = ref("")
 
 async function handleRegister() {
-    message.value = "";
-    
-    if (password.value !== confirmPassword.value) {
-        message.value = "As senhas não coincidem!";
-        return;
-    }
+    message.value = ""
 
+    if (password.value !== confirmPassword.value) {
+        message.value = "As senhas não coincidem!"
+        return
+    }
     try {
         const res = await fetch("/api/register", {
             method: "POST",
@@ -24,25 +26,43 @@ async function handleRegister() {
                 name: name.value,
                 password: password.value
             })
-        });
+        })
 
-        const data = await res.json();
+        const data = await res.json()
 
         if (!res.ok) {
-            message.value = data?.message || "Erro ao registrar";
+            message.value = data?.message || "Erro ao registrar"
         } else {
-            message.value = `Usuário ${data.username} registrado com sucesso!`;
-            username.value = "";
-            name.value = "";
-            password.value = "";
-            confirmPassword.value = "";
+            // Registro OK, faz login automático
+            const loginRes = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: username.value,
+                    password: password.value
+                })
+            })
+            const loginData = await loginRes.json()
+
+            if (!loginRes.ok) {
+                message.value = loginData?.message || "Registro OK, mas houve erro ao logar."
+            } else {
+                localStorage.setItem("token", loginData.token)
+                message.value = "Usuário registrado e logado com sucesso!"
+                username.value = ""
+                name.value = ""
+                password.value = ""
+                confirmPassword.value = ""
+                router.push("/") // redireciona para home
+            }
         }
     } catch (err) {
-        console.error(err);
-        message.value = "Erro ao conectar com o servidor";
+        console.error(err)
+        message.value = "Erro ao conectar com o servidor"
     }
 }
 </script>
+
 
 <template>
     <div class="min-h-screen flex items-center justify-center bg-[#121212] text-white p-4">

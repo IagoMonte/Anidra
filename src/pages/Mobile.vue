@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   HeartIcon,
   CubeIcon,
@@ -12,13 +13,20 @@ import Char from '@/components/Char.vue'
 import Skills from '@/components/Skills.vue'
 import Rolls from '@/components/Rolls.vue'
 import Notes from '@/components/Notes.vue'
+import FloatingCalc from '@/components/FloatingCalc.vue'
+import Notification from '@/components/Notification.vue'
+
+
 
 const props = defineProps({
   userData: { type: Object, required: true }, // deve ter { id, username, char_sheet, ... }
 })
 
+const router = useRouter() // instancia router
 const current = ref('Stats')
 const selectedChar = ref(null)
+const showNotification = ref(false)
+const msgNotification = ref('')
 
 // Itens da navbar inferior
 const navItems = [
@@ -32,6 +40,12 @@ const navItems = [
 // inicializa com os dados do usuário que vieram por props
 async function getUserCharSheet() {
   selectedChar.value = props.userData || null
+}
+
+function openNotification(msg) {
+  showNotification.value = true
+  msgNotification.value = msg
+
 }
 
 async function AtualizarUserData() {
@@ -50,12 +64,18 @@ async function AtualizarUserData() {
     }
 
     const userData = await res.json();
-    selectedChar.value = userData 
+    selectedChar.value = userData
   } catch (err) {
     console.error(err);
     localStorage.removeItem("token");
     selectedChar.value = null;
   }
+}
+
+function logout() {
+  localStorage.removeItem('token')        // limpa token
+  selectedChar.value = null                // limpa dados do usuário
+  router.push('/')                         // redireciona para home
 }
 
 onMounted(() => {
@@ -64,68 +84,78 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="relative h-screen flex overflow-hidden">
-        <!-- Conteúdo principal -->
-        <div class="flex-1 bg-gray-900">
-            <div class="flex h-screen">
-                <div class="flex-1 flex flex-col overflow-hidden">
-                    <!-- Header -->
-                    <header
-                        class="flex items-center justify-between px-4 py-3 bg-[#1e1e1e] border-b border-gray-700 flex-shrink-0">
-                        <div>
-                            <h1 class="text-white text-lg font-normal">
-                                {{ selectedChar ? selectedChar.name : "Nenhum personagem" }}
-                            </h1>
-                            <p class="text-gray-500 text-xs -mt-1">{{ current }}</p>
-                        </div>
-                        <!-- 
+  <div class="relative h-screen flex overflow-hidden">
+    <!-- Conteúdo principal -->
+    <div class="flex-1 bg-gray-900">
+      <div class="flex h-screen">
+        <div class="flex-1 flex flex-col overflow-hidden">
+          <!-- Header -->
+          <header
+            class="flex items-center justify-between px-4 py-3 bg-[#1e1e1e] border-b border-gray-700 flex-shrink-0">
+            <div>
+              <h1 class="text-white text-lg font-normal">
+                {{ selectedChar ? selectedChar.name : "Nenhum personagem" }}
+              </h1>
+              <p class="text-gray-500 text-xs -mt-1">{{ current }}</p>
+            </div>
+            <!-- 
             <img v-if="selectedChar?.icon && selectedChar.icon !== '🧙'" :src="selectedChar.icon" alt="Imagem de perfil"
               class="rounded-full border border-gray-600" height="64" width="64" /> -->
-                    </header>
+            <button
+              @click="logout"
+              class="ml-4 px-3 py-1 rounded-md border border-gray-600 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              title="Sair"
+            >
+              Logout
+            </button>
+          
+          
+            </header>
 
-                    <!-- Conteúdo que muda -->
-                    <main class="flex-1 overflow-auto p-4 bg-[#121212] pb-20">
-                        <template v-if="selectedChar">
-                            <section v-if="current === 'Stats'">
-                                <Char :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
-                                    @updateData="AtualizarUserData" />
-                            </section>
-                            <section v-else-if="current === 'Skills'">
-                                <Skills :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
-                                    @updateData="AtualizarUserData" />
-                            </section>
-                            <section v-else-if="current === 'Roll'">
-                                <Rolls :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
-                                    @updateData="AtualizarUserData" />
-                            </section>
-                            <section v-else-if="current === 'Inventory'">
-                                <Inventory :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
-                                    @updateData="AtualizarUserData" />
-                            </section>
-                            <section v-else-if="current === 'Notes'">
-                                <Notes :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
-                                    @updateData="AtualizarUserData" />
-                            </section>
-                        </template>
-                        <template v-else>
-                            <div class="h-full flex items-center justify-center text-gray-500 text-lg">
-                                Nenhum personagem selecionado
-                            </div>
-                        </template>
-                    </main>
+          <!-- Conteúdo que muda -->
+          <main class="flex-1 overflow-auto p-4 bg-[#121212] pb-20">
+            <template v-if="selectedChar">
+              <section v-if="current === 'Stats'">
+                <Char :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                  @updateData="AtualizarUserData" />
+              </section>
+              <section v-else-if="current === 'Skills'">
+                <Skills :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                  @updateData="AtualizarUserData" />
+              </section>
+              <section v-else-if="current === 'Roll'">
+                <Rolls @showNofication="openNotification" :standAlone="true" :charData="selectedChar.char_sheet"
+                  :charId="selectedChar.id" @updateData="AtualizarUserData" />
+              </section>
+              <section v-else-if="current === 'Inventory'">
+                <Inventory :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                  @updateData="AtualizarUserData" />
+              </section>
+              <section v-else-if="current === 'Notes'">
+                <Notes :standAlone="true" :charData="selectedChar.char_sheet" :charId="selectedChar.id"
+                  @updateData="AtualizarUserData" />
+              </section>
+            </template>
+            <template v-else>
+              <div class="h-full flex items-center justify-center text-gray-500 text-lg">
+                Nenhum personagem selecionado
+              </div>
+            </template>
+          </main>
 
-                    <!-- Navbar inferior -->
-                    <nav
-                        class="flex-shrink-0 fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono">
-                        <button v-for="(item, i) in navItems" :key="i" class="flex flex-col items-center space-y-1"
-                            :class="current === item.label ? 'text-white' : 'text-gray-400'"
-                            @click="current = item.label">
-                            <component :is="item.icon" class="w-6 h-6" />
-                            <span>{{ item.label }}</span>
-                        </button>
-                    </nav>
-                </div>
-            </div>
+          <!-- Navbar inferior -->
+          <nav
+            class="flex-shrink-0 fixed bottom-0 left-0 w-full bg-[#2a2a2a] border-t border-gray-700 flex justify-around py-2 text-gray-400 text-xs font-mono">
+            <button v-for="(item, i) in navItems" :key="i" class="flex flex-col items-center space-y-1"
+              :class="current === item.label ? 'text-white' : 'text-gray-400'" @click="current = item.label">
+              <component :is="item.icon" class="w-6 h-6" />
+              <span>{{ item.label }}</span>
+            </button>
+          </nav>
         </div>
+      </div>
     </div>
+  </div>
+  <FloatingCalc />
+  <Notification v-model="showNotification" :message="msgNotification" :duration="3000" />
 </template>

@@ -29,6 +29,7 @@ async function handleLogin() {
       username.value = "";
       password.value = "";
       emit("login-success");
+      router.push("/")
     }
   } catch (err) {
     console.error(err);

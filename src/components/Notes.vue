@@ -91,18 +91,18 @@ function cancelEdit() {
 }
 
 function addNote() {
-  startEdit()
+  //startEdit()
   const newNote = { title: "Nova Nota", content: "" }
   const target = editingNotes.value ? tempNotes.value : notes
   target.push(newNote)
-  confirmEdit()
+  //confirmEdit()
 }
 
 function removeNote(idx) {
-  startEdit()
+  //startEdit()
   const target = editingNotes.value ? tempNotes.value : notes
   target.splice(idx, 1)
-  confirmEdit()
+  //confirmEdit()
 }
 
 function toggleNote(idx) {
@@ -129,7 +129,7 @@ function toggleNote(idx) {
     </div>
 
     <!-- Botão adicionar nota -->
-    <button @click="addNote"
+    <button v-if="editingNotes" @click="addNote"
       class="flex items-center gap-2 bg-[#f2c500] text-black text-[16px] font-normal rounded-md px-6 py-3 mb-4">
       <i class="fas fa-plus text-[20px]"></i>
       ADICIONAR NOTA
@@ -145,8 +145,6 @@ function toggleNote(idx) {
         <div v-if="!editingNotes">
           <div class="flex justify-between items-center cursor-pointer">
             <h2 class="text-white text-[20px] font-normal">{{ note.title }}</h2>
-            <button @click.stop="removeNote(idx)"
-              class="px-2 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑</button>
           </div>
 
           <!-- Mostra só primeira linha ou todo conteúdo se aberto -->
@@ -161,6 +159,8 @@ function toggleNote(idx) {
             class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
           <textarea v-model="note.content" placeholder="Conteúdo"
             class="w-full h-65 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"></textarea>
+           <button @click="removeItem(idx)"
+            class="px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑 Remover</button>
         </div>
 
       </div>

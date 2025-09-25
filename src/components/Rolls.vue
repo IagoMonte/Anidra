@@ -1,24 +1,65 @@
 <script setup>
-import { reactive,onMounted, onBeforeUnmount } from 'vue';
+import { reactive, ref } from 'vue';
 import MolduraCard from '@/components/MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
+import CustomRoll from '@/components/customRoll.vue';
 
 const props = defineProps({
   charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
-  charId: { type: String, required: true } // id do item no Owlbear
+  charId: { type: String, required: true }, // id do item no Owlbear
+  standAlone: { type: Boolean, required: false }
 })
+
+const emit = defineEmits(['showNofication'])
+
+const customNumDice = ref(2)
+const customDiceSides = ref(6)
+const customBonus = ref(0)
 
 const mainAttributes = props.charData.stats.mainAttributes
 const secondaryStats = props.charData.stats.secondaryStats
 const proficiencies = props.charData.stats.proficiencies
 const dons = props.charData.dons
 
+
+
+async function CRoll(dices, faces, bonus) {
+  let min = Math.ceil(1)
+  let max = Math.floor(faces)
+  let results = []
+  for (let i = 0; i < dices; i++) {
+    results.push(Math.floor(Math.random() * (max - min + 1)) + min)
+  }
+
+  let sum = results.reduce((a, b) => a + b, 0)
+  let finalResult = Math.floor(sum + bonus)
+
+  let rollMessage = {
+    type: "ROLL_RESULT",
+    playerId: props.charId, // quem rolou
+    testLabel: 'Rolagem Personalizada',
+    rolls: results,
+    modi: 0,
+    bonus,
+    total: finalResult,
+  }
+
+  if (props.standAlone) {
+    let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
+    emit('showNofication', msgShow)
+  } else {
+    await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
+
+  }
+
+}
+
 function RollD6() {
   let min = Math.ceil(1);
   let max = Math.floor(6);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-async function rollTeste(label,rolls, modi, bonus) {
+async function rollTeste(label, rolls, modi, bonus) {
   let results = [];
   for (let i = 0; i < rolls; i++) {
     results.push(RollD6());
@@ -27,16 +68,24 @@ async function rollTeste(label,rolls, modi, bonus) {
   let sum = results.reduce((a, b) => a + b, 0);
   let finalResult = sum + modi + bonus;
 
- let rollMessage = {
+  let rollMessage = {
     type: "ROLL_RESULT",
     playerId: props.charId, // quem rolou
-    testLabel:label,
+    testLabel: label,
     rolls: results,
     modi,
     bonus,
     total: finalResult,
   }
-  await OBR.broadcast.sendMessage("Roll_Result", rollMessage, {destination: "ALL"})
+
+
+  if (props.standAlone) {
+    let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
+    emit('showNofication', msgShow)
+  } else {
+    await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
+
+  }
 }
 
 let PercepçãoDices = 2
@@ -124,14 +173,9 @@ const AtributosAtivos = reactive([
 
     <!-- Grid de Testes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-items-center gap-2 sm:gap-4">
-      <MolduraCard
-        v-for="(t, i) in testes" :key="i"
-        class="w-full max-w-[300px]" 
-        :label="t.label"
-        :value="t.Dices + 'd6+' + t.value"
-        v-model:bonus="t.bonus"
-        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)"
-      />
+      <MolduraCard v-for="(t, i) in testes" :key="i" class="w-full max-w-[300px]" :label="t.label"
+        :value="t.Dices + 'd6+' + t.value" v-model:bonus="t.bonus"
+        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)" />
     </div>
 
     <!-- Título Atributos Ativos -->
@@ -141,14 +185,17 @@ const AtributosAtivos = reactive([
 
     <!-- Grid de Atributos Ativos -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-items-center gap-2 sm:gap-4">
-      <MolduraCard
-        v-for="(t, i) in AtributosAtivos" :key="i"
-        class="w-full max-w-[300px]"
-        :label="t.label"
-        :value="t.Dices + 'd6+' + t.value"
-        v-model:bonus="t.bonus"
-        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)"
-      />
+      <MolduraCard v-for="(t, i) in AtributosAtivos" :key="i" class="w-full max-w-[300px]" :label="t.label"
+        :value="t.Dices + 'd6+' + t.value" v-model:bonus="t.bonus"
+        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)" />
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-semibold mt-6 mb-2 sm:mb-3 border-b border-gray-700 pb-1 sm:pb-2">
+      Dados Personalizados
+    </h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-items-center gap-2 sm:gap-4">
+      <CustomRoll :label="'Rolagem personalizada'" v-model:CustomBonus="customBonus"
+        v-model:CustomSides="customDiceSides" v-model:CustomNumDice="customNumDice"
+        @click="CRoll(customNumDice, customDiceSides, customBonus)" />
     </div>
   </main>
 </template>

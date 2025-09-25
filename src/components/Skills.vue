@@ -153,7 +153,7 @@ function cancelEdit(section) {
 }
 
 function addSkill(section) {
-  startEdit(section)
+  //startEdit(section)
   const newSkill = section === "mastered"
     ? { title: "Nova Habilidade", tags: [{ name: "Combate", checks: 1, checked: [false] }, { name: "Campanha", checks: 1, checked: [false] }], description: "Descrição...", completed: true }
     : { title: "Nova Habilidade", tags: [{ name: "10", checks: 1, checked: [false] }], description: "Descrição...", completed: false }
@@ -163,7 +163,7 @@ function addSkill(section) {
     : (editingUnmastered.value ? tempUnmastered.value : unmasteredSkills)
 
   target.push(newSkill)
-  confirmEdit(section)
+  //confirmEdit(section)
 }
 </script>
 
@@ -191,7 +191,7 @@ function addSkill(section) {
         </div>
       </div>
 
-      <button @click="addSkill('mastered')"
+      <button v-if="editingMastered" @click="addSkill('mastered')"
         class="mb-4 px-3 py-2 bg-green-600 rounded hover:bg-green-500 text-xs sm:text-sm w-full sm:w-auto">
         ➕ Adicionar dominada
       </button>
@@ -250,7 +250,7 @@ function addSkill(section) {
         </div>
       </div>
 
-      <button @click="addSkill('unmastered')"
+      <button v-if="editingUnmastered" @click="addSkill('unmastered')"
         class="mb-4 px-3 py-2 bg-yellow-600 rounded hover:bg-yellow-500 text-xs sm:text-sm w-full sm:w-auto">
         ➕ Adicionar não dominada
       </button>

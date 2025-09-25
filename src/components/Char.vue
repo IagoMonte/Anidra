@@ -1,4 +1,3 @@
-
 <script setup>
 import { reactive, ref, watch } from "vue";
 import OBR from "@owlbear-rodeo/sdk";
@@ -6,9 +5,9 @@ import OBR from "@owlbear-rodeo/sdk";
 const ID = "com.anidra.addto";
 
 const props = defineProps({
-  charData: { type: Object, required: true }, 
+  charData: { type: Object, required: true },
   charId: { type: String, required: true },
-  standAlone: { type: Boolean, required: false}
+  standAlone: { type: Boolean, required: false }
 })
 const emit = defineEmits(['updateData'])
 
@@ -206,19 +205,19 @@ async function confirmEdit(section) {
     inventory: props.charData.inventory,
     notes: props.charData.notes
   });
-  if(props.standAlone){
+  if (props.standAlone) {
     await updateCharSheet(newSheet)
   }
-  else{
+  else {
     OBR.scene.items.updateItems([props.charId], (items) => {
-    console.log(items)
-    for (let item of items) {
-      item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } };
-    }
-  });
+      console.log(items)
+      for (let item of items) {
+        item.metadata[`${ID}/metadata`] = { info: { Stats: newSheet } };
+      }
+    });
   }
 
-  
+
 
   emit("updateData", props.charId)
 }
@@ -374,8 +373,10 @@ watch(() => props.charData, (newVal) => {
           class="border border-gray-600 rounded-md px-2 sm:px-3 py-1 flex justify-between items-center text-sm sm:text-base">
           <span>{{ prof.label }}</span>
 
-          <input v-if="prof.type === 'checkbox'" type="checkbox" v-model="prof.value" :disabled="!editingProficiencies"
-            class="w-4 h-4 sm:w-5 sm:h-5 border border-gray-600 bg-transparent checked:bg-white checked:border-white" />
+          <input v-if="prof.type === 'checkbox'" type="checkbox" v-model="prof.value" :class="[
+            'w-4 h-4 sm:w-5 sm:h-5 border border-gray-600 bg-gray-700 checked:bg-white checked:border-white',
+            !editingProficiencies ? 'pointer-events-none opacity-70' : ''
+          ]" />
 
           <span v-else-if="!editingProficiencies" class="truncate">{{ prof.value }}</span>
           <input v-else v-model="prof.tempValue" type="number"
