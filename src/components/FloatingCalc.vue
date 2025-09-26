@@ -21,10 +21,12 @@ let moved = false
 let holdTimer = null
 let startX = 0
 let startY = 0
+let pressed = false // indica que o gesto começou no botão
 
 function startDrag(e) {
-  if (showCalc.value) return
-  e.preventDefault()
+  // NÃO retorne se showCalc estiver true — precisamos detectar o tap de fechamento
+  pressed = true
+  if (e.cancelable) e.preventDefault()
 
   const isTouch = e.type.includes('touch')
   if (isTouch && e.touches.length > 1) return
@@ -33,39 +35,53 @@ function startDrag(e) {
   const clientX = point.clientX
   const clientY = point.clientY
 
-  // capture início para ambos
   startX = clientX
   startY = clientY
   moved = false
+
+  const allowDrag = !showCalc.value
 
   if (isTouch) {
     touchStartX = clientX
     touchStartY = clientY
     touchStartTime = Date.now()
-    holdTimer = setTimeout(() => {
+    // Só inicia arraste após hold se for permitido arrastar
+    if (allowDrag) {
+      holdTimer = setTimeout(() => {
+        dragging.value = true
+        offset.x = clientX - posX.value
+        offset.y = clientY - posY.value
+      }, holdDelay)
+    }
+  } else {
+    // Mouse: só ativa arraste se permitido
+    if (allowDrag) {
       dragging.value = true
       offset.x = clientX - posX.value
       offset.y = clientY - posY.value
-    }, holdDelay)
-  } else {
-    dragging.value = true
-    offset.x = clientX - posX.value
-    offset.y = clientY - posY.value
+    }
   }
 }
 
+
 function onDrag(e) {
-  if (!dragging.value) return
+  // só reage se o gesto começou no botão
+  if (!pressed) return
 
   const isTouch = e.type.includes('touch')
   const point = isTouch ? e.touches[0] : e
   const clientX = point.clientX
   const clientY = point.clientY
 
-  // detecta movimento para mouse e touch
+  // impede scroll somente quando o gesto é do botão
+  if (isTouch && e.cancelable) e.preventDefault()
+
   const dx = Math.abs(clientX - startX)
   const dy = Math.abs(clientY - startY)
   if (dx > dragThreshold || dy > dragThreshold) moved = true
+
+  // se ainda não está arrastando (ex.: touch antes do holdDelay), não move o botão
+  if (!dragging.value) return
 
   let newX = clientX - offset.x
   let newY = clientY - offset.y
@@ -80,24 +96,28 @@ function onDrag(e) {
 }
 
 function stopDrag(e) {
+  // ignore eventos que não começaram no botão
+  if (!pressed) return
+
   clearTimeout(holdTimer)
 
-  const isTouch = e.type && e.type.includes && e.type.includes('touch')
+  const isTouch = e.type.includes && e.type.includes('touch')
 
   if (isTouch) {
     const elapsed = Date.now() - touchStartTime
-    // toque rápido e sem movimento → clique
+    // toque rápido e sem movimento → abre/fecha
     if (elapsed < holdDelay && !moved) {
       toggleCalc()
     }
   } else {
-    // mouse: se não houve movimento acima do threshold → clique
+    // mouse: clique (sem movimento acima do threshold) → abre/fecha
     if (!moved) {
       toggleCalc()
     }
   }
 
   dragging.value = false
+  pressed = false
   moved = false
 }
 
