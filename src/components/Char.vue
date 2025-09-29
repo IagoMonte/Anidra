@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, watch } from "vue";
+import { reactive, ref, watch, computed } from "vue";
 import OBR from "@owlbear-rodeo/sdk";
 
 const ID = "com.anidra.addto";
@@ -33,7 +33,7 @@ const proficienciesReactive = reactive(
   }))
 );
 
-const domList = ["Talento", "Atenção", "Força", "Sorte", "Esforço", "Carisma"]
+const domList = ["Talento", "Atenção", "Força", "Sorte", "Esforço", "Carisma", "Sem Dom"]
 const conditionsList = [
   'Saudavel',
   'Nocaute',
@@ -55,6 +55,37 @@ const conditions = ref(props.charData.conditions || "");
 
 const selectedDom = ref(dons.value || "");
 const selectedCondition = ref(conditions.value || "");
+
+const MAIN_ORDER = ['Vida','Estamina','Mana','Movimento'];
+const SECONDARY_ORDER = ['Defesa','Carisma','Força','Aura','Sorte'];
+const PROFICIENCIES_ORDER = ['Percepção', 'Persuasão', 'Furtividade', 'Furtividade_De_Combate', 'Acrobacia', 'Acrobacia_De_Combate', 'Ataque', 'Defesa', 'Persistência', 'Precisão','Conserto', 'Linguagens']
+
+const mainAttributesSorted = computed(() => {
+  const copy = [...mainAttributesReactive];
+  const idx = (k) => {
+    const i = MAIN_ORDER.indexOf(k);
+    return i === -1 ? Number.POSITIVE_INFINITY : i;
+  };
+  return copy.sort((a, b) => idx(a.label) - idx(b.label));
+});
+
+const secondaryStatsSorted = computed(() => {
+  const copy = [...secondaryStatsReactive];
+  const idx = (k) => {
+    const i = SECONDARY_ORDER.indexOf(k);
+    return i === -1 ? Number.POSITIVE_INFINITY : i;
+  };
+  return copy.sort((a, b) => idx(a.label) - idx(b.label));
+});
+
+const proficienciesSorted = computed(() => {
+  const copy = [...proficienciesReactive];
+  const idx = (k) => {
+    const i = PROFICIENCIES_ORDER.indexOf(k);
+    return i === -1 ? Number.POSITIVE_INFINITY : i;
+  };
+  return copy.sort((a, b) => idx(a.label) - idx(b.label));
+});
 
 
 const corners = [
@@ -264,7 +295,7 @@ watch(() => props.charData, (newVal) => {
 
       <!-- Principais -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-        <div v-for="(attr, i) in mainAttributesReactive" :key="i"
+        <div v-for="(attr, i) in mainAttributesSorted" :key="i"
           class="border border-gray-600 rounded-md px-3 py-1 flex justify-between items-center text-base">
           <span>{{ attr.label }}</span>
           <span v-if="!editingAttributes">{{ attr.value }}</span>
@@ -274,7 +305,7 @@ watch(() => props.charData, (newVal) => {
 
       <!-- Secundários -->
       <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-4">
-        <article v-for="(stat, i) in secondaryStatsReactive" :key="i"
+        <article v-for="(stat, i) in secondaryStatsSorted" :key="i"
           class="border border-gray-600 rounded-md px-2 pt-1 pb-2 flex flex-col items-center text-center text-xs relative">
           <span class="mb-1">{{ stat.label }}</span>
           <span v-if="!editingAttributes" class="text-2xl font-light">{{ stat.value }}</span>
@@ -369,7 +400,7 @@ watch(() => props.charData, (newVal) => {
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div v-for="(prof, i) in proficienciesReactive" :key="i"
+        <div v-for="(prof, i) in proficienciesSorted" :key="i"
           class="border border-gray-600 rounded-md px-2 sm:px-3 py-1 flex justify-between items-center text-sm sm:text-base">
           <span>{{ prof.label }}</span>
 

@@ -18,7 +18,7 @@ import Rolls from '@/components/Rolls.vue'
 import Notes from '@/components/Notes.vue'
 import FloatingCalc from '@/components/FloatingCalc.vue'
 
-const test = false
+const test = true
 const menuItems = ref([])
 const isOpen = ref(false)
 const current = ref('Stats')

@@ -73,9 +73,9 @@ async function AtualizarUserData() {
 }
 
 function logout() {
-  localStorage.removeItem('token')        // limpa token
-  selectedChar.value = null                // limpa dados do usuário
-  router.push('/')                         // redireciona para home
+  localStorage.removeItem('token')// limpa token
+  selectedChar.value = null// limpa dados do usuário
+  window.location.assign('/')// redireciona para home
 }
 
 onMounted(() => {
