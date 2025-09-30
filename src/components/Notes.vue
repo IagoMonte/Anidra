@@ -159,7 +159,7 @@ function toggleNote(idx) {
             class="w-full bg-gray-800 text-white rounded px-2 py-1 border border-gray-600" />
           <textarea v-model="note.content" placeholder="Conteúdo"
             class="w-full h-65 bg-gray-800 text-white rounded px-2 py-1 border border-gray-600"></textarea>
-           <button @click="removeItem(idx)"
+           <button @click="removeNote(idx)"
             class="px-3 py-1 bg-red-600 hover:bg-red-500 rounded text-sm">🗑 Remover</button>
         </div>
 
