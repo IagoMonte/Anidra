@@ -21,7 +21,40 @@ const secondaryStats = props.charData.stats.secondaryStats
 const proficiencies = props.charData.stats.proficiencies
 const dons = props.charData.dons
 
+async function getRollCount() {
+  const token = localStorage.getItem("token")
 
+  const response = await fetch('/rolls', {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  })
+
+  if (!response.ok) throw new Error("Erro ao buscar rollcount")
+
+  const data = await response.json()
+  return data.rolls_count
+}
+
+async function updateRollCount(newRollsCount) {
+  const token = localStorage.getItem("token")
+
+  const response = await fetch('/rolls', {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ newRollsCount })
+  })
+
+  if (!response.ok) throw new Error("Erro ao atualizar rollcount")
+
+  const data = await response.json()
+  return data.rolls_count
+}
 
 async function CRoll(dices, faces, bonus) {
   let min = Math.ceil(1)
@@ -51,7 +84,6 @@ async function CRoll(dices, faces, bonus) {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
 
   }
-
 }
 
 function RollD6() {
@@ -78,14 +110,22 @@ async function rollTeste(label, rolls, modi, bonus) {
     total: finalResult,
   }
 
-
   if (props.standAlone) {
+
+    rollcount[label]++
+    try {
+      await updateRollCount(rollcount)
+    } catch (error) {
+      console.error("Erro ao salvar rollcount:", error)
+    }
+    
     let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
 
   }
+
 }
 
 let PercepçãoDices = 2
@@ -163,6 +203,35 @@ const AtributosAtivos = reactive([
   { label: "Sorte", value: SorteValue, Dices: SorteDices, bonus: 0 },
   { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
 ])
+
+const rollcount = reactive({
+  "Aura": 0,
+  "Sorte": 0,
+  "Ataque": 0,
+  "Defesa": 0,
+  "Força": 0,
+  "Carisma": 0,
+  "Acrobacia": 0,
+  "Precisão": 0,
+  "Persuasão": 0,
+  "Furtividade": 0,
+  "Percepção": 0,
+  "Persistência": 0,
+  "Acrobacia de combate": 0,
+  "Furtividade de combate": 0
+})
+
+onMounted(async () => {
+  try {
+    const savedRollCount = await getRollCount()
+    if (savedRollCount) {
+      Object.assign(rollcount, savedRollCount)
+    }
+  } catch (error) {
+    console.error("Erro ao carregar rollcount:", error)
+  }
+})
+
 </script>
 <template>
   <main class="bg-[#121212] text-white min-h-screen p-2 sm:p-0">
