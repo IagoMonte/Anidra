@@ -1,3 +1,6 @@
+import { neon } from "@netlify/neon";
+import jwt from "jsonwebtoken";
+
 export async function handler(event) {
   const authHeader = event.headers.authorization;
   if (!authHeader) return { statusCode: 401, body: "Não autorizado" };
