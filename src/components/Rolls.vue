@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref,onMounted } from 'vue';
 import MolduraCard from '@/components/MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
 import CustomRoll from '@/components/customRoll.vue';
@@ -118,7 +118,7 @@ async function rollTeste(label, rolls, modi, bonus) {
     } catch (error) {
       console.error("Erro ao salvar rollcount:", error)
     }
-    
+
     let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
   } else {
