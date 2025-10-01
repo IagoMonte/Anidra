@@ -24,7 +24,7 @@ const dons = props.charData.dons
 async function getRollCount() {
   const token = localStorage.getItem("token")
 
-  const response = await fetch('/rolls', {
+  const response = await fetch('/api/rolls', {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -41,7 +41,7 @@ async function getRollCount() {
 async function updateRollCount(newRollsCount) {
   const token = localStorage.getItem("token")
 
-  const response = await fetch('/rolls', {
+  const response = await fetch('/api/rolls', {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
