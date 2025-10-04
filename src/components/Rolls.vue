@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, onMounted, watch } from 'vue';
+import { reactive, ref, onMounted, watch, computed } from 'vue';
 import MolduraCard from '@/components/MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
 import CustomRoll from '@/components/customRoll.vue';
@@ -255,7 +255,8 @@ function applyDons() {
 }
 
 
-const testes = reactive([
+
+const testes = computed(()=>[
   { label: "Percepção", value: PercepçãoValue, Dices: PercepçãoDices, bonus: 0 },
   { label: "Persuasão", value: PersuasãoValue, Dices: PersuasãoDices, bonus: 0 },
   { label: "Furtividade", value: FurtividadeValue, Dices: FurtividadeDices, bonus: 0 },
@@ -268,7 +269,7 @@ const testes = reactive([
   { label: "Precisão", value: PrecisãoValue, Dices: PrecisãoDices, bonus: 0 }
 ])
 
-const AtributosAtivos = reactive([
+const AtributosAtivos = computed(()=>[
   { label: "Força", value: ForçaValue, Dices: ForçaDices, bonus: 0 },
   { label: "Carisma", value: CarismaValue, Dices: CarismaDices, bonus: 0 },
   { label: "Sorte", value: SorteValue, Dices: SorteDices, bonus: 0 },
