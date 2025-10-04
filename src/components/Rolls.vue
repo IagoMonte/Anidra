@@ -196,6 +196,7 @@ let AuraValue = baseAuraValue
 
 
 function applyDons() {
+  console.log('to aplicando dom fdp')
   PercepçãoValue = basePercepçãoValue
   PersuasãoValue = basePersuasãoValue
   FurtividadeValue = baseFurtividadeValue
