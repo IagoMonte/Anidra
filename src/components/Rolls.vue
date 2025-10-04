@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref,onMounted } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import MolduraCard from '@/components/MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
 import CustomRoll from '@/components/customRoll.vue';
@@ -178,23 +178,37 @@ let baseCarismaValue = Math.floor(secondaryStats.Carisma)// + dons + Bonus
 let baseSorteValue = Math.floor(secondaryStats.Sorte)// + dons + Bonus
 let baseAuraValue = Math.floor(secondaryStats.Aura)// + dons + Bonus
 
+let PercepçãoValue = basePercepçãoValue
+let PersuasãoValue = basePersuasãoValue
+let FurtividadeValue = baseFurtividadeValue
+let FurtividadeCombateValue = baseFurtividadeCombateValue
+let AcrobaciaValue = baseAcrobaciaValue
+let AcrobaciaCombateValue = baseAcrobaciaCombateValue
+let PersistênciaValue = basePersistênciaValue
+let AtaqueValue = baseAtaqueValue
+let DefesaValue = baseDefesaValue
+let PrecisãoValue = basePrecisãoValue
+let ForçaValue = baseForçaValue
+let CarismaValue = baseCarismaValue
+let SorteValue = baseSorteValue
+let AuraValue = baseAuraValue
+
 
 function applyDons() {
-    let PercepçãoValue = basePercepçãoValue
-    let PersuasãoValue = basePersuasãoValue
-    let FurtividadeValue = baseFurtividadeValue
-    let FurtividadeCombateValue = baseFurtividadeCombateValue
-    let AcrobaciaValue = baseAcrobaciaValue
-    let AcrobaciaCombateValue = baseAcrobaciaCombateValue
-    let PersistênciaValue = basePersistênciaValue
-    let AtaqueValue = baseAtaqueValue
-    let DefesaValue = baseDefesaValue
-    let PrecisãoValue = basePrecisãoValue
-    let ForçaValue = baseForçaValue
-    let CarismaValue = baseCarismaValue
-    let SorteValue = baseSorteValue
-    let AuraValue = baseAuraValue
-
+  PercepçãoValue = basePercepçãoValue
+  PersuasãoValue = basePersuasãoValue
+  FurtividadeValue = baseFurtividadeValue
+  FurtividadeCombateValue = baseFurtividadeCombateValue
+  AcrobaciaValue = baseAcrobaciaValue
+  AcrobaciaCombateValue = baseAcrobaciaCombateValue
+  PersistênciaValue = basePersistênciaValue
+  AtaqueValue = baseAtaqueValue
+  DefesaValue = baseDefesaValue
+  PrecisãoValue = basePrecisãoValue
+  ForçaValue = baseForçaValue
+  CarismaValue = baseCarismaValue
+  SorteValue = baseSorteValue
+  AuraValue = baseAuraValue
 
   switch (dons) {
     case "Talento":
