@@ -1,11 +1,21 @@
 <script setup>
 import { ref } from "vue";
+import Notification from '@/components/Notification.vue'
 
 const emit = defineEmits(["login-success"]);
 
 const username = ref("");
 const password = ref("");
 const message = ref("");
+const showNotification = ref(false)
+const msgNotification = ref('')
+
+function openNotification(msg) {
+  showNotification.value = true
+  msgNotification.value = msg
+
+}
+
 
 async function handleLogin() {
   message.value = "";
@@ -23,9 +33,11 @@ async function handleLogin() {
 
     if (!res.ok) {
       message.value = data || "Usuário ou senha inválidos";
+      openNotification(message.value)
     } else {
       localStorage.setItem("token", data.token);
       message.value = "Login bem-sucedido!";
+      openNotification(message.value)
       username.value = "";
       password.value = "";
       emit("login-success");
@@ -34,6 +46,7 @@ async function handleLogin() {
   } catch (err) {
     console.error(err);
     message.value = "Erro ao conectar com o servidor";
+    openNotification(message.value)
   }
 }
 </script>
@@ -81,4 +94,5 @@ async function handleLogin() {
       </p>
     </div>
   </div>
+  <Notification v-model="showNotification" :message="msgNotification" :duration="3000" />
 </template>

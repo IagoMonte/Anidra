@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue"
 import { useRouter } from "vue-router"
+import Notification from '@/components/Notification.vue'
 
 const router = useRouter()
 
@@ -9,12 +10,21 @@ const name = ref("")
 const password = ref("")
 const confirmPassword = ref("")
 const message = ref("")
+const showNotification = ref(false)
+const msgNotification = ref('')
+
+function openNotification(msg) {
+  showNotification.value = true
+  msgNotification.value = msg
+
+}
 
 async function handleRegister() {
     message.value = ""
 
     if (password.value !== confirmPassword.value) {
         message.value = "As senhas não coincidem!"
+        openNotification(message.value)
         return
     }
     try {
@@ -46,9 +56,11 @@ async function handleRegister() {
 
             if (!loginRes.ok) {
                 message.value = loginData?.message || "Registro OK, mas houve erro ao logar."
+                openNotification(message.value)
             } else {
                 localStorage.setItem("token", loginData.token)
                 message.value = "Usuário registrado e logado com sucesso!"
+                openNotification(message.value)
                 username.value = ""
                 name.value = ""
                 password.value = ""
@@ -59,6 +71,7 @@ async function handleRegister() {
     } catch (err) {
         console.error(err)
         message.value = "Erro ao conectar com o servidor"
+        openNotification(message.value)
     }
 }
 </script>
@@ -110,4 +123,5 @@ async function handleRegister() {
             </p>
         </div>
     </div>
+    <Notification v-model="showNotification" :message="msgNotification" :duration="3000" />
 </template>
