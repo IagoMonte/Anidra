@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, watch } from 'vue';
 import MolduraCard from '@/components/MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
 import CustomRoll from '@/components/customRoll.vue';
