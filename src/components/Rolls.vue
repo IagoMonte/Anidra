@@ -131,6 +131,7 @@ async function rollTeste(label, rolls, modi, bonus) {
   if (props.standAlone) {
 
     rollcount[label]++
+    applyDons()
     try {
       await updateRollCount(rollcount)
     } catch (error) {
@@ -254,8 +255,6 @@ function applyDons() {
 
 }
 
-
-
 const testes = computed(()=>[
   { label: "Percepção", value: PercepçãoValue, Dices: PercepçãoDices, bonus: 0 },
   { label: "Persuasão", value: PersuasãoValue, Dices: PersuasãoDices, bonus: 0 },
@@ -287,10 +286,6 @@ onMounted(async () => {
     console.error("Erro ao carregar rollcount:", error)
   }
 })
-watch(rollcount, () => {
-  applyDons()
-}, { deep: true })
-
 
 </script>
 <template>
