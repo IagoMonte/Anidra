@@ -92,6 +92,7 @@ function RollD6() {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 async function rollTeste(label, rolls, modi, bonus) {
+  getDons()
   let results = [];
   for (let i = 0; i < rolls; i++) {
     results.push(RollD6());
@@ -162,9 +163,29 @@ let SorteValue = Math.floor(secondaryStats.Sorte)// + dons + Bonus
 let AuraValue = Math.floor(secondaryStats.Aura)// + dons + Bonus
 
 
-switch (dons) {
+function getDons(){
+  switch (dons) {
   case "Talento":
-    // atribuir rollcount ao playerid
+    let totalRolls = 0
+    Object.values(rollcount).forEach(element => {
+      totalRolls = totalRolls+element
+    });
+    if (totalRolls % 2 != 0 ){
+      PercepçãoValue = Math.floor(PercepçãoValue+1) 
+      PersuasãoValue = Math.floor(PersuasãoValue+1) 
+      FurtividadeValue = Math.floor(FurtividadeValue+1) 
+      FurtividadeCombateValue = Math.floor(FurtividadeCombateValue+1) 
+      AcrobaciaValue = Math.floor(AcrobaciaValue+1) 
+      AcrobaciaCombateValue = Math.floor(AcrobaciaCombateValue+1) 
+      PersistênciaValue = Math.floor(PersistênciaValue+1) 
+      AtaqueValue = Math.floor(AtaqueValue+1) 
+      DefesaValue = Math.floor(DefesaValue+1) 
+      PrecisãoValue = Math.floor(PrecisãoValue+1) 
+      ForçaValue = Math.floor(ForçaValue+1) 
+      CarismaValue = Math.floor(CarismaValue+1) 
+      SorteValue = Math.floor(SorteValue+1) 
+      AuraValue = Math.floor(AuraValue+1) 
+    }
     break
   case "Atenção":
     PercepçãoValue = Math.floor(PercepçãoValue + 3)
@@ -173,7 +194,9 @@ switch (dons) {
     ForçaValue = Math.floor(ForçaValue + 2)
     break
   case "Sorte":
-    // atribuir rollcount ao playerid
+    if (rollcount['Sorte'] % 3 == 0){
+      SorteValue = Math.floor(SorteValue + 2)
+    }
     break
   case "Esforço":
     PersistênciaValue = Math.floor(PersistênciaValue + 2)
@@ -182,6 +205,8 @@ switch (dons) {
     PersuasãoDices = PersuasãoDices + 1
     break
 }
+}
+
 
 
 const testes = reactive([
