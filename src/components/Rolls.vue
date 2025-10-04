@@ -179,38 +179,38 @@ let baseCarismaValue = Math.floor(secondaryStats.Carisma)// + dons + Bonus
 let baseSorteValue = Math.floor(secondaryStats.Sorte)// + dons + Bonus
 let baseAuraValue = Math.floor(secondaryStats.Aura)// + dons + Bonus
 
-let PercepçãoValue = basePercepçãoValue
-let PersuasãoValue = basePersuasãoValue
-let FurtividadeValue = baseFurtividadeValue
-let FurtividadeCombateValue = baseFurtividadeCombateValue
-let AcrobaciaValue = baseAcrobaciaValue
-let AcrobaciaCombateValue = baseAcrobaciaCombateValue
-let PersistênciaValue = basePersistênciaValue
-let AtaqueValue = baseAtaqueValue
-let DefesaValue = baseDefesaValue
-let PrecisãoValue = basePrecisãoValue
-let ForçaValue = baseForçaValue
-let CarismaValue = baseCarismaValue
-let SorteValue = baseSorteValue
-let AuraValue = baseAuraValue
+let PercepçãoValue = ref(basePercepçãoValue)
+let PersuasãoValue = ref(basePersuasãoValue)
+let FurtividadeValue = ref(baseFurtividadeValue)
+let FurtividadeCombateValue = ref(baseFurtividadeCombateValue)
+let AcrobaciaValue = ref(baseAcrobaciaValue)
+let AcrobaciaCombateValue = ref(baseAcrobaciaCombateValue)
+let PersistênciaValue = ref(basePersistênciaValue)
+let AtaqueValue = ref(baseAtaqueValue)
+let DefesaValue = ref(baseDefesaValue)
+let PrecisãoValue = ref(basePrecisãoValue)
+let ForçaValue = ref(baseForçaValue)
+let CarismaValue = ref(baseCarismaValue)
+let SorteValue = ref(baseSorteValue)
+let AuraValue = ref(baseAuraValue)
 
 
 function applyDons() {
   console.log('to aplicando dom fdp')
-  PercepçãoValue = basePercepçãoValue
-  PersuasãoValue = basePersuasãoValue
-  FurtividadeValue = baseFurtividadeValue
-  FurtividadeCombateValue = baseFurtividadeCombateValue
-  AcrobaciaValue = baseAcrobaciaValue
-  AcrobaciaCombateValue = baseAcrobaciaCombateValue
-  PersistênciaValue = basePersistênciaValue
-  AtaqueValue = baseAtaqueValue
-  DefesaValue = baseDefesaValue
-  PrecisãoValue = basePrecisãoValue
-  ForçaValue = baseForçaValue
-  CarismaValue = baseCarismaValue
-  SorteValue = baseSorteValue
-  AuraValue = baseAuraValue
+  PercepçãoValue.value = basePercepçãoValue
+  PersuasãoValue.value = basePersuasãoValue
+  FurtividadeValue.value = baseFurtividadeValue
+  FurtividadeCombateValue.value = baseFurtividadeCombateValue
+  AcrobaciaValue.value = baseAcrobaciaValue
+  AcrobaciaCombateValue.value = baseAcrobaciaCombateValue
+  PersistênciaValue.value = basePersistênciaValue
+  AtaqueValue.value = baseAtaqueValue
+  DefesaValue.value = baseDefesaValue
+  PrecisãoValue.value = basePrecisãoValue
+  ForçaValue.value = baseForçaValue
+  CarismaValue.value = baseCarismaValue
+  SorteValue.value = baseSorteValue
+  AuraValue.value = baseAuraValue
 
   switch (dons) {
     case "Talento":
@@ -219,35 +219,35 @@ function applyDons() {
         totalRolls = totalRolls + element
       });
       if (totalRolls % 2 != 0) {
-        PercepçãoValue = Math.floor(PercepçãoValue + 1)
-        PersuasãoValue = Math.floor(PersuasãoValue + 1)
-        FurtividadeValue = Math.floor(FurtividadeValue + 1)
-        FurtividadeCombateValue = Math.floor(FurtividadeCombateValue + 1)
-        AcrobaciaValue = Math.floor(AcrobaciaValue + 1)
-        AcrobaciaCombateValue = Math.floor(AcrobaciaCombateValue + 1)
-        PersistênciaValue = Math.floor(PersistênciaValue + 1)
-        AtaqueValue = Math.floor(AtaqueValue + 1)
-        DefesaValue = Math.floor(DefesaValue + 1)
-        PrecisãoValue = Math.floor(PrecisãoValue + 1)
-        ForçaValue = Math.floor(ForçaValue + 1)
-        CarismaValue = Math.floor(CarismaValue + 1)
-        SorteValue = Math.floor(SorteValue + 1)
-        AuraValue = Math.floor(AuraValue + 1)
+        PercepçãoValue.value = Math.floor(PercepçãoValue.value + 1)
+        PersuasãoValue.value = Math.floor(PersuasãoValue.value + 1)
+        FurtividadeValue.value = Math.floor(FurtividadeValue.value + 1)
+        FurtividadeCombateValue.value = Math.floor(FurtividadeCombateValue.value + 1)
+        AcrobaciaValue.value = Math.floor(AcrobaciaValue.value + 1)
+        AcrobaciaCombateValue.value = Math.floor(AcrobaciaCombateValue.value + 1)
+        PersistênciaValue.value = Math.floor(PersistênciaValue.value + 1)
+        AtaqueValue.value = Math.floor(AtaqueValue.value + 1)
+        DefesaValue.value = Math.floor(DefesaValue.value + 1)
+        PrecisãoValue.value = Math.floor(PrecisãoValue.value + 1)
+        ForçaValue.value = Math.floor(ForçaValue.value + 1)
+        CarismaValue.value = Math.floor(CarismaValue.value + 1)
+        SorteValue.value = Math.floor(SorteValue.value + 1)
+        AuraValue.value = Math.floor(AuraValue.value + 1)
       }
       break
     case "Atenção":
-      PercepçãoValue = Math.floor(PercepçãoValue + 3)
+      PercepçãoValue.value = Math.floor(PercepçãoValue.value + 3)
       break
     case "Força":
-      ForçaValue = Math.floor(ForçaValue + 2)
+      ForçaValue.value = Math.floor(ForçaValue.value + 2)
       break
     case "Sorte":
       if (rollcount['Sorte'] % 3 == 0) {
-        SorteValue = Math.floor(SorteValue + 2)
+        SorteValue.value = Math.floor(SorteValue.value + 2)
       }
       break
     case "Esforço":
-      PersistênciaValue = Math.floor(PersistênciaValue + 2)
+      PersistênciaValue.value = Math.floor(PersistênciaValue.value + 2)
       break
     case "Carisma":
       PersuasãoDices = PersuasãoDices + 1
@@ -257,23 +257,23 @@ function applyDons() {
 }
 
 const testes = computed(()=>[
-  { label: "Percepção", value: PercepçãoValue, Dices: PercepçãoDices, bonus: 0 },
-  { label: "Persuasão", value: PersuasãoValue, Dices: PersuasãoDices, bonus: 0 },
-  { label: "Furtividade", value: FurtividadeValue, Dices: FurtividadeDices, bonus: 0 },
-  { label: "Furtividade de combate", value: FurtividadeCombateValue, Dices: FurtividadeCombateDices, bonus: 0 },
-  { label: "Acrobacia", value: AcrobaciaValue, Dices: AcrobaciaDices, bonus: 0 },
-  { label: "Acrobacia de combate", value: AcrobaciaCombateValue, Dices: AcrobaciaCombateDices, bonus: 0 },
-  { label: "Persistência", value: PersistênciaValue, Dices: PersistênciaDices, bonus: 0 },
-  { label: "Ataque", value: AtaqueValue, Dices: AtaqueDices, bonus: 0 },
-  { label: "Defesa", value: DefesaValue, Dices: DefesaDices, bonus: 0 },
-  { label: "Precisão", value: PrecisãoValue, Dices: PrecisãoDices, bonus: 0 }
+  { label: "Percepção", value: PercepçãoValue.value, Dices: PercepçãoDices, bonus: 0 },
+  { label: "Persuasão", value: PersuasãoValue.value, Dices: PersuasãoDices, bonus: 0 },
+  { label: "Furtividade", value: FurtividadeValue.value, Dices: FurtividadeDices, bonus: 0 },
+  { label: "Furtividade de combate", value: FurtividadeCombateValue.value, Dices: FurtividadeCombateDices, bonus: 0 },
+  { label: "Acrobacia", value: AcrobaciaValue.value, Dices: AcrobaciaDices, bonus: 0 },
+  { label: "Acrobacia de combate", value: AcrobaciaCombateValue.value, Dices: AcrobaciaCombateDices, bonus: 0 },
+  { label: "Persistência", value: PersistênciaValue.value, Dices: PersistênciaDices, bonus: 0 },
+  { label: "Ataque", value: AtaqueValue.value, Dices: AtaqueDices, bonus: 0 },
+  { label: "Defesa", value: DefesaValue.value, Dices: DefesaDices, bonus: 0 },
+  { label: "Precisão", value: PrecisãoValue.value, Dices: PrecisãoDices, bonus: 0 }
 ])
 
 const AtributosAtivos = computed(()=>[
-  { label: "Força", value: ForçaValue, Dices: ForçaDices, bonus: 0 },
-  { label: "Carisma", value: CarismaValue, Dices: CarismaDices, bonus: 0 },
-  { label: "Sorte", value: SorteValue, Dices: SorteDices, bonus: 0 },
-  { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
+  { label: "Força", value: ForçaValue.value, Dices: ForçaDices, bonus: 0 },
+  { label: "Carisma", value: CarismaValue.value, Dices: CarismaDices, bonus: 0 },
+  { label: "Sorte", value: SorteValue.value, Dices: SorteDices, bonus: 0 },
+  { label: "Aura", value: AuraValue.value, Dices: AuraDices, bonus: 0 }
 ])
 
 onMounted(async () => {
