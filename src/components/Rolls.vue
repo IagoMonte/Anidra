@@ -20,6 +20,24 @@ const mainAttributes = props.charData.stats.mainAttributes
 const secondaryStats = props.charData.stats.secondaryStats
 const proficiencies = props.charData.stats.proficiencies
 const dons = props.charData.dons
+const rollcount = reactive({
+  "Aura": 0,
+  "Sorte": 0,
+  "Ataque": 0,
+  "Defesa": 0,
+  "Força": 0,
+  "Carisma": 0,
+  "Acrobacia": 0,
+  "Precisão": 0,
+  "Persuasão": 0,
+  "Furtividade": 0,
+  "Percepção": 0,
+  "Persistência": 0,
+  "Acrobacia de combate": 0,
+  "Furtividade de combate": 0
+})
+
+
 
 async function getRollCount() {
   const token = localStorage.getItem("token")
@@ -144,68 +162,83 @@ let SorteDices = 2
 let AuraDices = 2
 
 
-let PercepçãoValue = Math.floor(parseInt(mainAttributes.Movimento.split('/')[0]) + (secondaryStats.Carisma / 2) + proficiencies.Percepção)//dons + Bonus
-let PersuasãoValue = Math.floor(secondaryStats.Carisma + proficiencies.Persuasão)//+dons + Bonus
-let FurtividadeValue = Math.floor(secondaryStats.Carisma + proficiencies.Furtividade)// +dons + Bonus
-let FurtividadeCombateValue = Math.floor(secondaryStats.Carisma + proficiencies.Furtividade_De_Combate)//dons + Bonus
-let AcrobaciaValue = Math.floor(parseInt(mainAttributes.Movimento.split('/')[0]) + proficiencies.Acrobacia)//estamina opcional + dons + Bonus
-let AcrobaciaCombateValue = Math.floor(0 + proficiencies.Acrobacia_De_Combate)//estamina opcional + dons + Bonus
-let PersistênciaValue = Math.floor(0 + proficiencies.Persistência)//dons + Bonus
-let AtaqueValue = Math.floor(0 + proficiencies.Ataque)//dons  + Bonus
-let DefesaValue = Math.floor(0 + proficiencies.Defesa)//dons  + Bonus
-let PrecisãoValue = Math.floor(0 + proficiencies.Precisão)//dons  + Bonus
+let basePercepçãoValue = Math.floor(parseInt(mainAttributes.Movimento.split('/')[0]) + (secondaryStats.Carisma / 2) + proficiencies.Percepção)//dons + Bonus
+let basePersuasãoValue = Math.floor(secondaryStats.Carisma + proficiencies.Persuasão)//+dons + Bonus
+let baseFurtividadeValue = Math.floor(secondaryStats.Carisma + proficiencies.Furtividade)// +dons + Bonus
+let baseFurtividadeCombateValue = Math.floor(secondaryStats.Carisma + proficiencies.Furtividade_De_Combate)//dons + Bonus
+let baseAcrobaciaValue = Math.floor(parseInt(mainAttributes.Movimento.split('/')[0]) + proficiencies.Acrobacia)//estamina opcional + dons + Bonus
+let baseAcrobaciaCombateValue = Math.floor(0 + proficiencies.Acrobacia_De_Combate)//estamina opcional + dons + Bonus
+let basePersistênciaValue = Math.floor(0 + proficiencies.Persistência)//dons + Bonus
+let baseAtaqueValue = Math.floor(0 + proficiencies.Ataque)//dons  + Bonus
+let baseDefesaValue = Math.floor(0 + proficiencies.Defesa)//dons  + Bonus
+let basePrecisãoValue = Math.floor(0 + proficiencies.Precisão)//dons  + Bonus
+
+let baseForçaValue = Math.floor(secondaryStats.Força)// + dons + Bonus
+let baseCarismaValue = Math.floor(secondaryStats.Carisma)// + dons + Bonus
+let baseSorteValue = Math.floor(secondaryStats.Sorte)// + dons + Bonus
+let baseAuraValue = Math.floor(secondaryStats.Aura)// + dons + Bonus
 
 
-let ForçaValue = Math.floor(secondaryStats.Força)// + dons + Bonus
-let CarismaValue = Math.floor(secondaryStats.Carisma)// + dons + Bonus
-let SorteValue = Math.floor(secondaryStats.Sorte)// + dons + Bonus
-let AuraValue = Math.floor(secondaryStats.Aura)// + dons + Bonus
+function applyDons() {
+    let PercepçãoValue = basePercepçãoValue
+    let PersuasãoValue = basePersuasãoValue
+    let FurtividadeValue = baseFurtividadeValue
+    let FurtividadeCombateValue = baseFurtividadeCombateValue
+    let AcrobaciaValue = baseAcrobaciaValue
+    let AcrobaciaCombateValue = baseAcrobaciaCombateValue
+    let PersistênciaValue = basePersistênciaValue
+    let AtaqueValue = baseAtaqueValue
+    let DefesaValue = baseDefesaValue
+    let PrecisãoValue = basePrecisãoValue
+    let ForçaValue = baseForçaValue
+    let CarismaValue = baseCarismaValue
+    let SorteValue = baseSorteValue
+    let AuraValue = baseAuraValue
 
 
+  switch (dons) {
+    case "Talento":
+      let totalRolls = 0
+      Object.values(rollcount).forEach(element => {
+        totalRolls = totalRolls + element
+      });
+      if (totalRolls % 2 != 0) {
+        PercepçãoValue = Math.floor(PercepçãoValue + 1)
+        PersuasãoValue = Math.floor(PersuasãoValue + 1)
+        FurtividadeValue = Math.floor(FurtividadeValue + 1)
+        FurtividadeCombateValue = Math.floor(FurtividadeCombateValue + 1)
+        AcrobaciaValue = Math.floor(AcrobaciaValue + 1)
+        AcrobaciaCombateValue = Math.floor(AcrobaciaCombateValue + 1)
+        PersistênciaValue = Math.floor(PersistênciaValue + 1)
+        AtaqueValue = Math.floor(AtaqueValue + 1)
+        DefesaValue = Math.floor(DefesaValue + 1)
+        PrecisãoValue = Math.floor(PrecisãoValue + 1)
+        ForçaValue = Math.floor(ForçaValue + 1)
+        CarismaValue = Math.floor(CarismaValue + 1)
+        SorteValue = Math.floor(SorteValue + 1)
+        AuraValue = Math.floor(AuraValue + 1)
+      }
+      break
+    case "Atenção":
+      PercepçãoValue = Math.floor(PercepçãoValue + 3)
+      break
+    case "Força":
+      ForçaValue = Math.floor(ForçaValue + 2)
+      break
+    case "Sorte":
+      if (rollcount['Sorte'] % 3 == 0) {
+        SorteValue = Math.floor(SorteValue + 2)
+      }
+      break
+    case "Esforço":
+      PersistênciaValue = Math.floor(PersistênciaValue + 2)
+      break
+    case "Carisma":
+      PersuasãoDices = PersuasãoDices + 1
+      break
+  }
 
-switch (dons) {
-  case "Talento":
-    let totalRolls = 0
-    Object.values(rollcount).forEach(element => {
-      totalRolls = totalRolls + element
-    });
-    if (totalRolls % 2 != 0) {
-      PercepçãoValue = Math.floor(PercepçãoValue + 1)
-      PersuasãoValue = Math.floor(PersuasãoValue + 1)
-      FurtividadeValue = Math.floor(FurtividadeValue + 1)
-      FurtividadeCombateValue = Math.floor(FurtividadeCombateValue + 1)
-      AcrobaciaValue = Math.floor(AcrobaciaValue + 1)
-      AcrobaciaCombateValue = Math.floor(AcrobaciaCombateValue + 1)
-      PersistênciaValue = Math.floor(PersistênciaValue + 1)
-      AtaqueValue = Math.floor(AtaqueValue + 1)
-      DefesaValue = Math.floor(DefesaValue + 1)
-      PrecisãoValue = Math.floor(PrecisãoValue + 1)
-      ForçaValue = Math.floor(ForçaValue + 1)
-      CarismaValue = Math.floor(CarismaValue + 1)
-      SorteValue = Math.floor(SorteValue + 1)
-      AuraValue = Math.floor(AuraValue + 1)
-    }
-    break
-  case "Atenção":
-    PercepçãoValue = Math.floor(PercepçãoValue + 3)
-    break
-  case "Força":
-    ForçaValue = Math.floor(ForçaValue + 2)
-    break
-  case "Sorte":
-    if (rollcount['Sorte'] % 3 == 0) {
-      SorteValue = Math.floor(SorteValue + 2)
-    }
-    break
-  case "Esforço":
-    PersistênciaValue = Math.floor(PersistênciaValue + 2)
-    break
-  case "Carisma":
-    PersuasãoDices = PersuasãoDices + 1
-    break
 }
-
-
 
 
 const testes = reactive([
@@ -228,33 +261,21 @@ const AtributosAtivos = reactive([
   { label: "Aura", value: AuraValue, Dices: AuraDices, bonus: 0 }
 ])
 
-const rollcount = reactive({
-  "Aura": 0,
-  "Sorte": 0,
-  "Ataque": 0,
-  "Defesa": 0,
-  "Força": 0,
-  "Carisma": 0,
-  "Acrobacia": 0,
-  "Precisão": 0,
-  "Persuasão": 0,
-  "Furtividade": 0,
-  "Percepção": 0,
-  "Persistência": 0,
-  "Acrobacia de combate": 0,
-  "Furtividade de combate": 0
-})
-
 onMounted(async () => {
   try {
     const savedRollCount = await getRollCount()
     if (savedRollCount) {
       Object.assign(rollcount, savedRollCount)
     }
+    applyDons()
   } catch (error) {
     console.error("Erro ao carregar rollcount:", error)
   }
 })
+watch(rollcount, () => {
+  applyDons()
+}, { deep: true })
+
 
 </script>
 <template>
