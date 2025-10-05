@@ -132,7 +132,7 @@ export function setupAnidra() {
     // let res = `${msg.data.testLabel} de ${charData[0].name}: [${msg.data.rolls.join(",")}] + ${msg.data.modi} + ${msg.data.bonus} => ${msg.data.total}`
     
     let res = `${msg.data.testLabel}: [${msg.data.rolls.join(",")}] + ${msg.data.modi} + ${msg.data.bonus} => ${msg.data.total}`
-    
+    console.log(msg)
     OBR.notification.show(res)
   });
 
