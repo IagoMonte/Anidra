@@ -91,7 +91,6 @@ async function updateRollCount(newRollsCount) {
 function emitir(data) {
   const signalRef = dbRef(db, `broadcasts/${canalAtual.value}`)
   set(signalRef, { payload: data, ts: Date.now() })
-  input.value = ""
 }
 
 async function CRoll(dices, faces, bonus) {
@@ -117,8 +116,6 @@ async function CRoll(dices, faces, bonus) {
 
   if (props.standAlone) {
     let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
-    console.log('estou tentado enviar pelo standalone')
-    emitir(rollMessage)
     emit('showNofication', msgShow)
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
@@ -161,6 +158,8 @@ async function rollTeste(label, rolls, modi, bonus) {
 
     let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
+    console.log('estou tentado enviar pelo standalone')
+    emitir(rollMessage)
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
 
