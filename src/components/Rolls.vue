@@ -111,11 +111,12 @@ async function CRoll(dices, faces, bonus) {
   if (props.standAlone) {
     let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
+
     const signalRef = dbRef(db, `broadcasts/${canalAtual.value}`)
-    set(signalRef, { payload: msgShow, ts: Date.now() })
+    set(signalRef, { payload: rollMessage, ts: Date.now() })
+    console.log('estou tentado enviar pelo standalone')
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
-
   }
 }
 

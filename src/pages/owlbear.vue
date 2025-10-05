@@ -114,6 +114,7 @@ onMounted(() => {
   const signalRef = dbRef(db, `broadcasts/${canalAtual.value}`)
 
   onValue(signalRef, async (snapshot) => {
+    console.log('estou recebendo no owlbear')
     if (snapshot.exists()) {
       const data = snapshot.val()
       await OBR.broadcast.sendMessage("Roll_Result", data, { destination: "ALL" })
