@@ -9,7 +9,8 @@ import { getDatabase, ref as dbRef, set } from "firebase/database"
 const props = defineProps({
   charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
   charId: { type: String, required: true }, // id do item no Owlbear
-  standAlone: { type: Boolean, required: false }
+  standAlone: { type: Boolean, required: false },
+  charName: { type: Boolean, required: false }
 })
 
 const emit = defineEmits(['showNofication'])
@@ -156,10 +157,10 @@ async function rollTeste(label, rolls, modi, bonus) {
       console.error("Erro ao salvar rollcount:", error)
     }
 
-    let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
+    let msgShow = `${rollMessage.testLabel} de ${props.charData.name}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
     console.log('estou tentado enviar pelo standalone')
-    emitir(rollMessage)
+    emitir(msgShow)
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
 

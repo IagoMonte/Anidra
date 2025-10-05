@@ -124,7 +124,7 @@ onMounted(() => {
                   @updateData="AtualizarUserData" />
               </section>
               <section v-else-if="current === 'Roll'">
-                <Rolls @showNofication="openNotification" :standAlone="true" :charData="selectedChar.char_sheet"
+                <Rolls @showNofication="openNotification" :charName="selectedChar.name" :standAlone="true" :charData="selectedChar.char_sheet"
                   :charId="selectedChar.id" @updateData="AtualizarUserData" />
               </section>
               <section v-else-if="current === 'Inventory'">

@@ -127,8 +127,14 @@ export function setupAnidra() {
     },
   });
   OBR.broadcast.onMessage('Roll_Result', async (msg) => {
-    console.log(msg)
-    OBR.notification.show(msg)
+    if ('payload' in msg.data) {
+        OBR.notification.show(msg.data.payload)
+    } else {
+        let charid = msg.data.playerId
+        const charData = await OBR.scene.items.getItems([charid])
+        let res = `${msg.data.testLabel} de ${charData[0].name}: [${msg.data.rolls.join(",")}] + ${msg.data.modi} + ${msg.data.bonus} => ${msg.data.total}`
+        OBR.notification.show(res)
+    }
   });
 
 }
