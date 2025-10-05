@@ -157,7 +157,7 @@ async function rollTeste(label, rolls, modi, bonus) {
       console.error("Erro ao salvar rollcount:", error)
     }
 
-    let msgShow = `${rollMessage.testLabel} de ${props.charData.name}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
+    let msgShow = `${rollMessage.testLabel} de ${props.charName}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
     console.log('estou tentado enviar pelo standalone')
     emitir(msgShow)
