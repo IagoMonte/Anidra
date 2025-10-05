@@ -20,7 +20,7 @@ import FloatingCalc from '@/components/FloatingCalc.vue'
 import { initializeApp } from "firebase/app"
 import { getDatabase, ref as dbRef, onValue, remove } from "firebase/database"
 
-const test = true
+const test = false
 const menuItems = ref([])
 const isOpen = ref(false)
 const current = ref('Stats')
