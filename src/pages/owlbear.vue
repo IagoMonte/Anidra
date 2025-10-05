@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import OBR from '@owlbear-rodeo/sdk'
 import {
   HeartIcon,
@@ -17,6 +17,8 @@ import Skills from '@/components/Skills.vue'
 import Rolls from '@/components/Rolls.vue'
 import Notes from '@/components/Notes.vue'
 import FloatingCalc from '@/components/FloatingCalc.vue'
+import { initializeApp } from "firebase/app"
+import { getDatabase, ref as dbRef, onValue, remove } from "firebase/database"
 
 const test = true
 const menuItems = ref([])
@@ -32,6 +34,15 @@ const navItems = [
   { label: "Inventory", icon: ArchiveBoxIcon },
   { label: "Notes", icon: DocumentTextIcon },
 ]
+const firebaseConfig = {
+  apiKey: "AIzaSyCcfyq1sGmlsHw4PeyhZib9DD9Xk7eFXoM",
+  authDomain: "anidra-backend.firebaseapp.com",
+  databaseURL: "https://anidra-backend-default-rtdb.firebaseio.com",
+  projectId: "anidra-backend",
+}
+const app = initializeApp(firebaseConfig)
+const db = getDatabase(app)
+const canalAtual = ref("iagodtOwlbear1704")
 
 async function getAnidraCharacters() {
   if(test === true){
@@ -98,6 +109,19 @@ OBR.onReady(() => {
   })
 })
 loadMenuItems()
+
+onMounted(() => {
+  const signalRef = dbRef(db, `broadcasts/${canalAtual.value}`)
+
+  onValue(signalRef, async (snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val()
+      await OBR.broadcast.sendMessage("Roll_Result", data, { destination: "ALL" })
+      // limpa depois de recebido (efêmero)
+      remove(signalRef)
+    }
+  })
+})
 </script>
 <template>
   <div class="relative h-screen flex overflow-hidden">

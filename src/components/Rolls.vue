@@ -3,6 +3,8 @@ import { reactive, ref, onMounted, watch, computed } from 'vue';
 import MolduraCard from '@/components/MolduraCard.vue';
 import OBR from "@owlbear-rodeo/sdk";
 import CustomRoll from '@/components/customRoll.vue';
+import { initializeApp } from "firebase/app"
+import { getDatabase, ref as dbRef, set } from "firebase/database"
 
 const props = defineProps({
   charData: { type: Object, required: true }, // aqui passa selectedChar.data.info.Stats
@@ -11,6 +13,17 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['showNofication'])
+const firebaseConfig = {
+  apiKey: "AIzaSyCcfyq1sGmlsHw4PeyhZib9DD9Xk7eFXoM",
+  authDomain: "anidra-backend.firebaseapp.com",
+  databaseURL: "https://anidra-backend-default-rtdb.firebaseio.com",
+  projectId: "anidra-backend",
+}
+const app = initializeApp(firebaseConfig)
+const db = getDatabase(app)
+const canalAtual = ref("iagodtOwlbear1704")
+
+
 
 const customNumDice = ref(2)
 const customDiceSides = ref(6)
@@ -98,6 +111,8 @@ async function CRoll(dices, faces, bonus) {
   if (props.standAlone) {
     let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
+    const signalRef = dbRef(db, `broadcasts/${canalAtual.value}`)
+    set(signalRef, { payload: msgShow, ts: Date.now() })
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
 
