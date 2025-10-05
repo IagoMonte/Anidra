@@ -298,7 +298,7 @@ const AtributosAtivos = computed(() => [
 ])
 
 onMounted(async () => {
-  if (standAlone) {
+  if (props.standAlone) {
     try {
       const savedRollCount = await getRollCount()
       if (savedRollCount) {
