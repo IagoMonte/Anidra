@@ -116,8 +116,9 @@ async function CRoll(dices, faces, bonus) {
   }
 
   if (props.standAlone) {
-    let msgShow = `${rollMessage.testLabel}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
+    let msgShow = `${rollMessage.testLabel} de  ${props.charName}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
+    emitir(msgShow)
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
   }
@@ -159,7 +160,6 @@ async function rollTeste(label, rolls, modi, bonus) {
 
     let msgShow = `${rollMessage.testLabel} de ${props.charName}: [${rollMessage.rolls.join(",")}] + ${rollMessage.modi} + ${rollMessage.bonus} => ${rollMessage.total}`
     emit('showNofication', msgShow)
-    console.log('estou tentado enviar pelo standalone')
     emitir(msgShow)
   } else {
     await OBR.broadcast.sendMessage("Roll_Result", rollMessage, { destination: "ALL" })
