@@ -277,7 +277,7 @@ function applyDons() {
 
 }
 
-const testes = computed(()=>[
+const testes = computed(() => [
   { label: "Percepção", value: PercepçãoValue.value, Dices: PercepçãoDices, bonus: 0 },
   { label: "Persuasão", value: PersuasãoValue.value, Dices: PersuasãoDices, bonus: 0 },
   { label: "Furtividade", value: FurtividadeValue.value, Dices: FurtividadeDices, bonus: 0 },
@@ -290,7 +290,7 @@ const testes = computed(()=>[
   { label: "Precisão", value: PrecisãoValue.value, Dices: PrecisãoDices, bonus: 0 }
 ])
 
-const AtributosAtivos = computed(()=>[
+const AtributosAtivos = computed(() => [
   { label: "Força", value: ForçaValue.value, Dices: ForçaDices, bonus: 0 },
   { label: "Carisma", value: CarismaValue.value, Dices: CarismaDices, bonus: 0 },
   { label: "Sorte", value: SorteValue.value, Dices: SorteDices, bonus: 0 },
@@ -298,15 +298,18 @@ const AtributosAtivos = computed(()=>[
 ])
 
 onMounted(async () => {
-  try {
-    const savedRollCount = await getRollCount()
-    if (savedRollCount) {
-      Object.assign(rollcount, savedRollCount)
+  if (standAlone) {
+    try {
+      const savedRollCount = await getRollCount()
+      if (savedRollCount) {
+        Object.assign(rollcount, savedRollCount)
+      }
+      applyDons()
+    } catch (error) {
+      console.error("Erro ao carregar rollcount:", error)
     }
-    applyDons()
-  } catch (error) {
-    console.error("Erro ao carregar rollcount:", error)
   }
+
 })
 
 </script>
