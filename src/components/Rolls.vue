@@ -215,6 +215,23 @@ let CarismaValue = ref(baseCarismaValue)
 let SorteValue = ref(baseSorteValue)
 let AuraValue = ref(baseAuraValue)
 
+const percepçãoBonus = ref(0)
+const persuasãoBonus = ref(0)
+const furtividadeBonus = ref(0)
+const furtividadeCombateBonus = ref(0)
+const acrobaciaBonus = ref(0)
+const acrobaciaCombateBonus = ref(0)
+const persistênciaBonus = ref(0)
+const ataqueBonus = ref(0)
+const defesaBonus = ref(0)
+const precisãoBonus = ref(0)
+
+const forçaBonus = ref(0)
+const carismaBonus = ref(0)
+const sorteBonus = ref(0)
+const auraBonus = ref(0)
+
+
 
 function applyDons() {
   console.log('to aplicando dom fdp')
@@ -278,23 +295,23 @@ function applyDons() {
 }
 
 const testes = computed(() => [
-  { label: "Percepção", value: PercepçãoValue.value, Dices: PercepçãoDices, bonus: 0 },
-  { label: "Persuasão", value: PersuasãoValue.value, Dices: PersuasãoDices, bonus: 0 },
-  { label: "Furtividade", value: FurtividadeValue.value, Dices: FurtividadeDices, bonus: 0 },
-  { label: "Furtividade de combate", value: FurtividadeCombateValue.value, Dices: FurtividadeCombateDices, bonus: 0 },
-  { label: "Acrobacia", value: AcrobaciaValue.value, Dices: AcrobaciaDices, bonus: 0 },
-  { label: "Acrobacia de combate", value: AcrobaciaCombateValue.value, Dices: AcrobaciaCombateDices, bonus: 0 },
-  { label: "Persistência", value: PersistênciaValue.value, Dices: PersistênciaDices, bonus: 0 },
-  { label: "Ataque", value: AtaqueValue.value, Dices: AtaqueDices, bonus: 0 },
-  { label: "Defesa", value: DefesaValue.value, Dices: DefesaDices, bonus: 0 },
-  { label: "Precisão", value: PrecisãoValue.value, Dices: PrecisãoDices, bonus: 0 }
+  { label: "Percepção", value: PercepçãoValue.value, Dices: PercepçãoDices, bonus: percepçãoBonus },
+  { label: "Persuasão", value: PersuasãoValue.value, Dices: PersuasãoDices, bonus: persuasãoBonus },
+  { label: "Furtividade", value: FurtividadeValue.value, Dices: FurtividadeDices, bonus: furtividadeBonus },
+  { label: "Furtividade de combate", value: FurtividadeCombateValue.value, Dices: FurtividadeCombateDices, bonus: furtividadeCombateBonus },
+  { label: "Acrobacia", value: AcrobaciaValue.value, Dices: AcrobaciaDices, bonus: acrobaciaBonus },
+  { label: "Acrobacia de combate", value: AcrobaciaCombateValue.value, Dices: AcrobaciaCombateDices, bonus: acrobaciaCombateBonus },
+  { label: "Persistência", value: PersistênciaValue.value, Dices: PersistênciaDices, bonus: persistênciaBonus },
+  { label: "Ataque", value: AtaqueValue.value, Dices: AtaqueDices, bonus: ataqueBonus },
+  { label: "Defesa", value: DefesaValue.value, Dices: DefesaDices, bonus: defesaBonus },
+  { label: "Precisão", value: PrecisãoValue.value, Dices: PrecisãoDices, bonus: precisãoBonus }
 ])
 
 const AtributosAtivos = computed(() => [
-  { label: "Força", value: ForçaValue.value, Dices: ForçaDices, bonus: 0 },
-  { label: "Carisma", value: CarismaValue.value, Dices: CarismaDices, bonus: 0 },
-  { label: "Sorte", value: SorteValue.value, Dices: SorteDices, bonus: 0 },
-  { label: "Aura", value: AuraValue.value, Dices: AuraDices, bonus: 0 }
+  { label: "Força", value: ForçaValue.value, Dices: ForçaDices, bonus: forçaBonus },
+  { label: "Carisma", value: CarismaValue.value, Dices: CarismaDices, bonus: carismaBonus },
+  { label: "Sorte", value: SorteValue.value, Dices: SorteDices, bonus: sorteBonus },
+  { label: "Aura", value: AuraValue.value, Dices: AuraDices, bonus: auraBonus }
 ])
 
 onMounted(async () => {
@@ -323,8 +340,8 @@ onMounted(async () => {
     <!-- Grid de Testes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-items-center gap-2 sm:gap-4">
       <MolduraCard v-for="(t, i) in testes" :key="i" class="w-full max-w-[300px]" :label="t.label"
-        :value="t.Dices + 'd6+' + t.value" v-model:bonus="t.bonus"
-        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)" />
+        :value="t.Dices + 'd6+' + t.value" v-model:bonus="t.bonus.value"
+        @click="rollTeste(t.label, t.Dices, t.value, t.bonus.value)" />
     </div>
 
     <!-- Título Atributos Ativos -->
@@ -335,8 +352,8 @@ onMounted(async () => {
     <!-- Grid de Atributos Ativos -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 justify-items-center gap-2 sm:gap-4">
       <MolduraCard v-for="(t, i) in AtributosAtivos" :key="i" class="w-full max-w-[300px]" :label="t.label"
-        :value="t.Dices + 'd6+' + t.value" v-model:bonus="t.bonus"
-        @click="rollTeste(t.label, t.Dices, t.value, t.bonus)" />
+        :value="t.Dices + 'd6+' + t.value" v-model:bonus="t.bonus.value"
+        @click="rollTeste(t.label, t.Dices, t.value, t.bonus.value)" />
     </div>
     <h1 class="text-2xl sm:text-3xl font-semibold mt-6 mb-2 sm:mb-3 border-b border-gray-700 pb-1 sm:pb-2">
       Dados Personalizados
